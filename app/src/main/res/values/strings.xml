@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Ptt</string>
+
+    <string name="ip_hint">※ 發信站: 批踢踢實業坊(ptt.cc), 來自: </string>
+</resources>
