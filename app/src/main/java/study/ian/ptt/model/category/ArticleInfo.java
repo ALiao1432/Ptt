@@ -1,4 +1,4 @@
-package study.ian.ptt.model.category.category;
+package study.ian.ptt.model.category;
 
 public class ArticleInfo {
     private String title;
@@ -8,15 +8,25 @@ public class ArticleInfo {
     private String sameAuthorHref;
     private String date;
     private String count;
+    private String mark;
     private boolean isRead = false;
 
-    ArticleInfo(String title, String href, String author, String sameTitleHref, String sameAuthorHref, String date, String count) {
+    public ArticleInfo(
+            String title,
+            String href,
+            String author,
+            String sameTitleHref,
+            String sameAuthorHref,
+            String date,
+            String mark,
+            String count) {
         this.title = title;
         this.href = href;
         this.author = author;
         this.sameTitleHref = sameTitleHref;
         this.sameAuthorHref = sameAuthorHref;
         this.date = date;
+        this.mark = mark;
         this.count = count;
     }
 
@@ -48,6 +58,10 @@ public class ArticleInfo {
         return count;
     }
 
+    public String getMark() {
+        return mark;
+    }
+
     public boolean isRead() {
         return isRead;
     }
@@ -66,6 +80,7 @@ public class ArticleInfo {
                 ", sameAuthorHref='" + sameAuthorHref + '\'' +
                 ", date='" + date + '\'' +
                 ", count='" + count + '\'' +
+                ", mark='" + mark + '\'' +
                 ", isRead=" + isRead +
                 '}';
     }

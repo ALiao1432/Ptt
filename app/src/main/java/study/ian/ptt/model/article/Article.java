@@ -5,10 +5,12 @@ import android.text.Spanned;
 import android.util.Log;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import study.ian.ptt.util.ContentConverter;
 
@@ -71,12 +73,10 @@ public class Article {
         doc.getElementsByClass("push").remove();
         doc.outputSettings(new Document.OutputSettings().prettyPrint(false));
 
-        Elements mainElements = doc.getElementsByClass("bbs-screen bbs-content");
-        String mainTemp = mainElements.toString();
+        Element mainElement = doc.getElementById("main-content");
+        String mainTemp = mainElement.toString();
         mainTemp = ContentConverter.classToStyle(mainTemp);
         mainTemp = ContentConverter.newLineToBr(mainTemp);
-        Log.d(TAG, "Article: mainTemp : " + mainTemp);
-        mainTemp = "<pre>" + mainTemp + "</pre>";
         mainContent = HtmlCompat.fromHtml(mainTemp, HtmlCompat.FROM_HTML_MODE_LEGACY);
     }
 
