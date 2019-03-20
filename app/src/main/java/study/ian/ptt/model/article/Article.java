@@ -1,7 +1,5 @@
 package study.ian.ptt.model.article;
 
-import android.support.v4.text.HtmlCompat;
-import android.text.Spanned;
 import android.util.Log;
 
 import org.jsoup.nodes.Document;
@@ -10,7 +8,6 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import study.ian.ptt.util.ContentConverter;
 
@@ -22,7 +19,7 @@ public class Article {
     private String board;
     private String title;
     private String articleTime;
-    private Spanned mainContent;
+    private String mainContent;
     private List<Push> pushList = new ArrayList<>();
     private int[] pushTagCount = {0, 0, 0}; // {推, →, 噓}
 
@@ -73,11 +70,22 @@ public class Article {
         doc.getElementsByClass("push").remove();
         doc.outputSettings(new Document.OutputSettings().prettyPrint(false));
 
+        Elements rElements = doc.getElementsByClass("richcontent");
+        Elements prevElements = rElements.prev();
+
+        rElements.tagName("img");
+        rElements.removeAttr("class");
+        rElements.empty();
+        for (int i = 0; i < rElements.size(); i++) {
+            String src = prevElements.get(i).attr("href");
+            rElements.get(i).attr("src", src);
+        }
+        rElements.append("</br></br>");
+
         Element mainElement = doc.getElementById("main-content");
-        String mainTemp = mainElement.toString();
-        mainTemp = ContentConverter.classToStyle(mainTemp);
-        mainTemp = ContentConverter.newLineToBr(mainTemp);
-        mainContent = HtmlCompat.fromHtml(mainTemp, HtmlCompat.FROM_HTML_MODE_LEGACY);
+        mainContent = mainElement.toString();
+        mainContent = ContentConverter.classToStyle(mainContent);
+        mainContent = ContentConverter.newLineToBr(mainContent);
     }
 
     public String getTAG() {
@@ -100,7 +108,7 @@ public class Article {
         return articleTime;
     }
 
-    public Spanned getMainContent() {
+    public String getMainContent() {
         return mainContent;
     }
 
