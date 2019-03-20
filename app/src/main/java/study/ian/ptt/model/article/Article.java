@@ -54,10 +54,11 @@ public class Article {
                     break;
                 case "噓":
                     pushTagCount[2]++;
+                    Log.d(TAG, "Article: e : test" + e);
                     pushList.add(new Push(
                             e.child(0).text(),
                             e.child(1).text().trim(),
-                            e.child(2).text().substring(2),
+                            e.child(2).text().substring(1).trim(),
                             e.child(3).text().trim(),
                             pushTagCount[2]
                     ));
