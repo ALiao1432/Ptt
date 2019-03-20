@@ -49,11 +49,12 @@ public class MainActivity extends AppCompatActivity {
 //                .subscribe();
 
         pttService
-                .getArticle(ServiceBuilder.COOKIE, "/bbs/NBA/M.1552791764.A.A82.html")
+//                .getArticle(ServiceBuilder.COOKIE, "/bbs/NBA/M.1552791764.A.A82.html")
 //                .getArticle(ServiceBuilder.COOKIE, "//bbs/Isayama/M.1552408321.A.CC0.html")
 //                .getArticle(ServiceBuilder.COOKIE, "/bbs/NARUTO/M.1552885525.A.F15.html")
 //                .getArticle(ServiceBuilder.COOKIE,"/bbs/NBA/M.1552702011.A.0B3.html")
 //                .getArticle(ServiceBuilder.COOKIE, "/bbs/beauty/M.1552897508.A.E34.html")
+                .getArticle(ServiceBuilder.COOKIE, "/bbs/Beauty/M.1552929594.A.5CE.html")
 //                .getArticle(ServiceBuilder.COOKIE, "/bbs/asciiart/M.1542412240.A.D0A.html")
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)

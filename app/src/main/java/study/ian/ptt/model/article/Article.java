@@ -37,7 +37,7 @@ public class Article {
                     pushList.add(new Push(
                             e.child(0).text(),
                             e.child(1).text().trim(),
-                            e.child(2).text().substring(2),
+                            e.child(2).text().substring(1).trim(),
                             e.child(3).text().trim(),
                             pushTagCount[0]
                     ));
@@ -47,7 +47,7 @@ public class Article {
                     pushList.add(new Push(
                             e.child(0).text(),
                             e.child(1).text().trim(),
-                            e.child(2).text().substring(2),
+                            e.child(2).text().substring(1).trim(),
                             e.child(3).text().trim(),
                             pushTagCount[1]
                     ));
