@@ -30,4 +30,9 @@ public interface PttService {
             @Query("q") String query,
             @Query("page") int page
     );
+
+    @GET("/cls/{sortPath}")
+    Observable<Response<Document>> getPttSort(
+            @Path("sortPath") String sortPath
+    );
 }

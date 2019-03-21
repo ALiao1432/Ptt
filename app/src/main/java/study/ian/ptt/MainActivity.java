@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import retrofit2.Response;
+import study.ian.ptt.model.PttSort.PttSort;
 import study.ian.ptt.model.article.Article;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
@@ -60,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
 //                .subscribe();
 
         pttService
-                .getArticle(ServiceBuilder.COOKIE, "/bbs/NBA/M.1552791764.A.A82.html")
+//                .getArticle(ServiceBuilder.COOKIE, "/bbs/NBA/M.1552791764.A.A82.html")
 //                .getArticle(ServiceBuilder.COOKIE, "//bbs/Isayama/M.1552408321.A.CC0.html")
 //                .getArticle(ServiceBuilder.COOKIE, "/bbs/NARUTO/M.1552885525.A.F15.html")
-//                .getArticle(ServiceBuilder.COOKIE,"/bbs/NBA/M.1552702011.A.0B3.html")
+                .getArticle(ServiceBuilder.COOKIE,"/bbs/NBA/M.1552702011.A.0B3.html")
 //                .getArticle(ServiceBuilder.COOKIE,"/bbs/Beauty/M.1549815861.A.ED4.html")
 //                .getArticle(ServiceBuilder.COOKIE,"/bbs/Gossiping/M.1553136592.A.41E.html")
 //                .getArticle(ServiceBuilder.COOKIE, "/bbs/beauty/M.1552897508.A.E34.html")
@@ -79,6 +80,17 @@ public class MainActivity extends AppCompatActivity {
                     Spannable spannable = SpanUtil.getSpanned(textView, article.getMainContent());
                     SpanUtil.setImageClickListener(spannable, imageSpan -> Log.d(TAG, "onImageClick: testt click : " + imageSpan.getSource()));
                     textView.setText(spannable);
+                })
+                .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
+                .subscribe();
+
+        pttService.getPttSort("1")
+                .compose(ObserverHelper.applyHelper())
+                .filter(r -> r.code() == 200)
+                .map(Response::body)
+                .doOnNext(doc -> {
+                    final PttSort pttSort = new PttSort(doc);
+                    Log.d(TAG, "onCreate: pttSort : " + pttSort);
                 })
                 .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
                 .subscribe();
