@@ -1,15 +1,15 @@
 package study.ian.ptt.util;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.util.Log;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
@@ -17,17 +17,19 @@ import com.bumptech.glide.request.transition.Transition;
 
 public class GlideImageGetter implements Html.ImageGetter {
 
+    private final String TAG = "GlideImageGetter";
     private TextView textView;
 
-    public GlideImageGetter(TextView textView) {
+    GlideImageGetter(TextView textView) {
         this.textView = textView;
     }
 
     @Override
     public Drawable getDrawable(String source) {
         BitmapDrawablePlaceHolder drawable = new BitmapDrawablePlaceHolder(textView);
-        Glide.with(textView)
+        GlideApp.with(textView)
                 .load(source)
+                .transition(new DrawableTransitionOptions().crossFade(250))
                 .into(drawable);
         return drawable;
     }
@@ -62,10 +64,15 @@ public class GlideImageGetter implements Html.ImageGetter {
         @Override
         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
             this.drawable = resource;
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            this.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+            float scaleFac = 1f;
+            if (drawable.getIntrinsicWidth() != textView.getWidth()) {
+                scaleFac = (float) textView.getWidth() / (float) drawable.getIntrinsicWidth();
+            }
+            Log.d(TAG, "onResourceReady: dra wid : " + drawable.getIntrinsicWidth() + ", scaF : " + scaleFac);
+            drawable.setBounds(0, 0, Math.round(drawable.getIntrinsicWidth() * scaleFac), Math.round(drawable.getIntrinsicHeight() * scaleFac));
+            this.setBounds(0, 0, Math.round(drawable.getIntrinsicWidth() * scaleFac), Math.round(drawable.getIntrinsicHeight() * scaleFac));
             textView.setText(textView.getText());
-            textView.postInvalidate();
         }
 
         @Override

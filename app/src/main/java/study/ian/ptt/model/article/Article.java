@@ -54,7 +54,6 @@ public class Article {
                     break;
                 case "噓":
                     pushTagCount[2]++;
-                    Log.d(TAG, "Article: e : test" + e);
                     pushList.add(new Push(
                             e.child(0).text(),
                             e.child(1).text().trim(),
@@ -87,10 +86,6 @@ public class Article {
         mainContent = mainElement.toString();
         mainContent = ContentConverter.classToStyle(mainContent);
         mainContent = ContentConverter.newLineToBr(mainContent);
-    }
-
-    public String getTAG() {
-        return TAG;
     }
 
     public String getAuthor() {
