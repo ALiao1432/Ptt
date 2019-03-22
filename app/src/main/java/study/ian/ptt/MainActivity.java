@@ -14,28 +14,35 @@ import study.ian.ptt.model.article.Article;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
+import study.ian.ptt.util.PreManager;
 import study.ian.ptt.util.SpanUtil;
 
-// TODO: 2019-03-20 fix space is not correct issue, 
-// TODO: 2019-03-20 improve color
-// TODO: 2019-03-21 when display some img will cause scroll not smooth issue
+// TODO: 2019-03-20 bug : fix space is not correct issue,
+// TODO: 2019-03-21 bug : when display some img will cause scroll not smooth issue
+
+// TODO: 2019-03-21 feature : set app theme color
+// TODO: 2019-03-21 feature : add user fav board
+
+// TODO: 2019-03-20 improve : text color
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
     private TextView textView;
+    private PreManager preManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        preManager = new PreManager(this);
+        preManager.setAppTheme(R.style.AppTheme_TrueDark, R.layout.activity_main);
 
         textView = findViewById(R.id.textView);
         textView.setTextIsSelectable(true);
         textView.setTextSize(14);
         textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setTextColor(Color.parseColor("#CCCCCC"));
         PttService pttService = ServiceBuilder.getService(PttService.class);
 
 //        pttService.getCategory(ServiceBuilder.COOKIE, "NBA")
