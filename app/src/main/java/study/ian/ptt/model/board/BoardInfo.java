@@ -1,6 +1,6 @@
-package study.ian.ptt.model.PttSort;
+package study.ian.ptt.model.board;
 
-public class SortInfo {
+public class BoardInfo {
 
     private static final int SORT_UNDEFINE = -1;
     private static final int SORT_BOARD = 0;
@@ -13,7 +13,7 @@ public class SortInfo {
     private String userCount;
     private int sort;
 
-    SortInfo(String href, String name, String boardClass, String boardTitle, String userCount) {
+    BoardInfo(String href, String name, String boardClass, String boardTitle, String userCount) {
         this.href = href;
         this.name = name;
         this.boardClass = boardClass;
@@ -55,7 +55,7 @@ public class SortInfo {
 
     @Override
     public String toString() {
-        return "SortInfo{" +
+        return "BoardInfo{" +
                 "href='" + href + '\'' +
                 ", name='" + name + '\'' +
                 ", boardClass='" + boardClass + '\'' +

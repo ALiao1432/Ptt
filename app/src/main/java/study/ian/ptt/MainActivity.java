@@ -1,21 +1,18 @@
 package study.ian.ptt;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.widget.TextView;
 
-import retrofit2.Response;
-import study.ian.ptt.model.PttSort.PttSort;
-import study.ian.ptt.model.article.Article;
-import study.ian.ptt.service.PttService;
-import study.ian.ptt.service.ServiceBuilder;
-import study.ian.ptt.util.ObserverHelper;
+import java.util.ArrayList;
+import java.util.List;
+
+import study.ian.ptt.adapter.GenAdapter;
+import study.ian.ptt.fragment.BoardFragment;
+import study.ian.ptt.fragment.TestFragment;
+import study.ian.ptt.transformer.SlideTransformer;
 import study.ian.ptt.util.PreManager;
-import study.ian.ptt.util.SpanUtil;
+import study.ian.ptt.view.OutViewPager;
 
 // TODO: 2019-03-20 bug : fix space is not correct issue,
 // TODO: 2019-03-21 bug : when display some img will cause scroll not smooth issue
@@ -29,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
-    private TextView textView;
     private PreManager preManager;
+    private OutViewPager outPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,67 +36,35 @@ public class MainActivity extends AppCompatActivity {
         preManager = new PreManager(this);
         preManager.setAppTheme(R.style.AppTheme_TrueDark, R.layout.activity_main);
 
-        textView = findViewById(R.id.textView);
-        textView.setTextIsSelectable(true);
-        textView.setTextSize(14);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        PttService pttService = ServiceBuilder.getService(PttService.class);
+        findViews();
+        setViews();
+    }
 
-//        pttService.getCategory(ServiceBuilder.COOKIE, "NBA")
-//                .compose(ObserverHelper.applyHelper())
-//                .filter(r -> r.code() == 200)
-//                .map(Response::body)
-//                .doOnNext(doc -> {
-//                    Category category = new Category(doc);
-//                    Log.d(TAG, "onCreate: category : " + category);
-//                })
-//                .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
-//                .subscribe();
+    private void findViews() {
+        outPager = findViewById(R.id.outPager);
+    }
 
-        //        pttService.getSearchResult(ServiceBuilder.COOKIE, "NBA", "kobe", 1)
-//                .compose(ObserverHelper.applyHelper())
-//                .filter(r -> r.code() == 200)
-//                .map(Response::body)
-//                .doOnNext(doc -> {
-//                    final Search search = new Search(doc);
-//                    Log.d(TAG, "onCreate: search : " + search.getArticleInfoList());
-//                })
-//                .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
-//                .subscribe();
+    private void setViews() {
+        List<Fragment> outFragList = new ArrayList<>();
 
-        pttService
-//                .getArticle(ServiceBuilder.COOKIE, "/bbs/NBA/M.1552791764.A.A82.html")
-//                .getArticle(ServiceBuilder.COOKIE, "//bbs/Isayama/M.1552408321.A.CC0.html")
-//                .getArticle(ServiceBuilder.COOKIE, "/bbs/NARUTO/M.1552885525.A.F15.html")
-                .getArticle(ServiceBuilder.COOKIE,"/bbs/NBA/M.1552702011.A.0B3.html")
-//                .getArticle(ServiceBuilder.COOKIE,"/bbs/Beauty/M.1549815861.A.ED4.html")
-//                .getArticle(ServiceBuilder.COOKIE,"/bbs/Gossiping/M.1553136592.A.41E.html")
-//                .getArticle(ServiceBuilder.COOKIE, "/bbs/beauty/M.1552897508.A.E34.html")
-//                .getArticle(ServiceBuilder.COOKIE, "/bbs/Beauty/M.1552929594.A.5CE.html")
-//                .getArticle(ServiceBuilder.COOKIE, "/bbs/asciiart/M.1542412240.A.D0A.html")
-                .compose(ObserverHelper.applyHelper())
-                .filter(r -> r.code() == 200)
-                .map(Response::body)
-                .doOnNext(doc -> {
-                    final Article article = new Article(doc);
-                    String tets = article.getMainContent();
-                    Log.d(TAG, "onCreate: article.getMainContent : " + tets);
-                    Spannable spannable = SpanUtil.getSpanned(textView, article.getMainContent());
-                    SpanUtil.setImageClickListener(spannable, imageSpan -> Log.d(TAG, "onImageClick: testt click : " + imageSpan.getSource()));
-                    textView.setText(spannable);
-                })
-                .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
-                .subscribe();
+        BoardFragment boardFragment = new BoardFragment();
+        TestFragment fragment1 = new TestFragment();
+        TestFragment fragment2 = new TestFragment();
+        TestFragment fragment3 = new TestFragment();
 
-        pttService.getPttSort("1")
-                .compose(ObserverHelper.applyHelper())
-                .filter(r -> r.code() == 200)
-                .map(Response::body)
-                .doOnNext(doc -> {
-                    final PttSort pttSort = new PttSort(doc);
-                    Log.d(TAG, "onCreate: pttSort : " + pttSort);
-                })
-                .doOnError(t -> Log.d(TAG, "onCreate: t : " + t))
-                .subscribe();
+        boardFragment.setOutPager(outPager);
+        fragment1.setString("1");
+        fragment2.setString("2");
+        fragment3.setString("3");
+
+        outFragList.add(boardFragment);
+        outFragList.add(fragment1);
+        outFragList.add(fragment2);
+        outFragList.add(fragment3);
+
+        GenAdapter oAdapter = new GenAdapter(getSupportFragmentManager(), outFragList);
+        outPager.setAdapter(oAdapter);
+        outPager.setOffscreenPageLimit(outFragList.size());
+        outPager.setPageTransformer(true, new SlideTransformer());
     }
 }

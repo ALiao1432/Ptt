@@ -31,8 +31,11 @@ public interface PttService {
             @Query("page") int page
     );
 
-    @GET("/cls/{sortPath}")
-    Observable<Response<Document>> getPttSort(
-            @Path("sortPath") String sortPath
+    @GET("/cls/{classPath}")
+    Observable<Response<Document>> getPttClass(
+            @Path("classPath") String classPath
     );
+
+    @GET("/bbs/hotboards.html")
+    Observable<Response<Document>> getHotBoard();
 }

@@ -1,4 +1,4 @@
-package study.ian.ptt.model.PttSort;
+package study.ian.ptt.model.board;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -6,16 +6,16 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PttSort {
+public class Board {
 
-    private final String TAG = "PttSort";
+    private final String TAG = "Board";
 
-    private List<SortInfo> infoList = new ArrayList<>();
+    private List<BoardInfo> infoList = new ArrayList<>();
 
-    public PttSort(Document doc) {
+    public Board(Document doc) {
         Elements bElements = doc.getElementsByClass("b-ent");
         bElements.forEach(e ->
-                infoList.add(new SortInfo(
+                infoList.add(new BoardInfo(
                         e.select("a").attr("href"),
                         e.select("div[class=board-name]").text(),
                         e.select("div[class=board-class]").text(),
@@ -25,13 +25,13 @@ public class PttSort {
         );
     }
 
-    public List<SortInfo> getInfoList() {
+    public List<BoardInfo> getInfoList() {
         return infoList;
     }
 
     @Override
     public String toString() {
-        return "PttSort{" +
+        return "Board{" +
                 "infoList=" + infoList +
                 '}';
     }

@@ -29,14 +29,14 @@ public class Category {
         Elements articleElements = doc.getElementsByClass("r-ent");
         articleElements.forEach(e ->
                 articleInfoList.add(new ArticleInfo(
-                        e.getElementsByClass("title").get(0).text(),
-                        e.getElementsByClass("title").get(0).getElementsByTag("a").attr("href"),
-                        e.getElementsByClass("author").get(0).text(),
-                        e.getElementsByClass("item").get(0).getElementsByTag("a").attr("href"),
-                        e.getElementsByClass("item").get(1).getElementsByTag("a").attr("href"),
-                        e.getElementsByClass("date").get(0).text(),
-                        e.getElementsByClass("mark").get(0).text(),
-                        e.getElementsByClass("nrec").get(0).text()
+                        e.select("div[class=title]").text(),
+                        e.select("div[class=title] > a").attr("href"),
+                        e.select("div[class=author]").text(),
+                        e.select("div[class=dropdown] > div[class=item]:nth-child(1) > a").attr("href"),
+                        e.select("div[class=dropdown] > div[class=item]:nth-child(2) > a").attr("href"),
+                        e.select("div[class=date]").text(),
+                        e.select("div[class=mark]").text(),
+                        e.select("div[class=nrec]").text()
                 ))
         );
     }
