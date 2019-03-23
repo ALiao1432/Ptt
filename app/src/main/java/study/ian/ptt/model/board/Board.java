@@ -20,7 +20,7 @@ public class Board {
                         e.select("div[class=board-name]").text(),
                         e.select("div[class=board-class]").text(),
                         e.select("div[class=board-title]").text(),
-                        e.select("div[class=board-nuser]").text()
+                        Integer.valueOf(e.select("div[class=board-nuser]").text())
                 ))
         );
     }

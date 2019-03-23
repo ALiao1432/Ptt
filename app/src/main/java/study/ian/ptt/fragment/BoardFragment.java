@@ -2,11 +2,11 @@ package study.ian.ptt.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import study.ian.ptt.R;
-import study.ian.ptt.adapter.GenAdapter;
+import study.ian.ptt.adapter.viewpager.GenAdapter;
 
 public class BoardFragment extends BaseFragment {
 

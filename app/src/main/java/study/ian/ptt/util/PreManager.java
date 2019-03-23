@@ -2,7 +2,12 @@ package study.ian.ptt.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class PreManager {
 
@@ -12,10 +17,21 @@ public class PreManager {
 
     private SharedPreferences sharedPreferences;
     private Context context;
+    private static Set<String> favSet = new HashSet<>();
 
     public PreManager(Context context) {
         this.context = context;
         sharedPreferences = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        initFavSet();
+    }
+
+    private void initFavSet() {
+        String boards = sharedPreferences.getString(FAV_BOARD, "");
+        StringTokenizer tokenizer = new StringTokenizer(boards);
+        while (tokenizer.hasMoreTokens()) {
+            favSet.add(tokenizer.nextToken());
+        }
     }
 
     public void setAppTheme(int styleId, int layoutId) {
@@ -23,11 +39,35 @@ public class PreManager {
         ((AppCompatActivity) context).setContentView(layoutId);
     }
 
+    public void toggleFavBoard(String board) {
+        if (isFavBoard(board)) {
+            // if it is fav board, then remove it
+            removeFavBoard(board);
+        } else {
+            // if it is not fav board, then add it
+            addFavBoard(board);
+        }
+    }
+
     public void addFavBoard(String board) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String temp = board + ";" + sharedPreferences.getString(FAV_BOARD, "");
+        String temp = board + " " + sharedPreferences.getString(FAV_BOARD, "");
         editor.putString(FAV_BOARD, temp);
         editor.apply();
+
+        favSet.add(board);
+    }
+
+    public void removeFavBoard(String board) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String temp = sharedPreferences.getString(FAV_BOARD, "");
+        if (temp != null && temp.contains(board)) {
+            temp = temp.replace(board, "").trim();
+            editor.putString(FAV_BOARD, temp);
+            editor.apply();
+        }
+
+        favSet.remove(board);
     }
 
     public String getFavBoard() {
@@ -36,12 +76,16 @@ public class PreManager {
 
     public void addBlackList(String black) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        String temp = black + ";" + sharedPreferences.getString(BLACK_LIST, "");
+        String temp = black + " " + sharedPreferences.getString(BLACK_LIST, "");
         editor.putString(BLACK_LIST, temp);
         editor.apply();
     }
 
     public String getBlackList() {
         return sharedPreferences.getString(BLACK_LIST, "");
+    }
+
+    public boolean isFavBoard(String targetBoard) {
+        return favSet.contains(targetBoard);
     }
 }

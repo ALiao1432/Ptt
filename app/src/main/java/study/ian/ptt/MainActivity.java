@@ -1,13 +1,13 @@
 package study.ian.ptt;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import study.ian.ptt.adapter.GenAdapter;
+import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.BoardFragment;
 import study.ian.ptt.fragment.TestFragment;
 import study.ian.ptt.transformer.SlideTransformer;
@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         preManager = new PreManager(this);
         preManager.setAppTheme(R.style.AppTheme_TrueDark, R.layout.activity_main);
+//        preManager.setAppTheme(R.style.AppTheme_Bright, R.layout.activity_main);
 
         findViews();
         setViews();

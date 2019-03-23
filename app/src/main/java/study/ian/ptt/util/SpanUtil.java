@@ -1,6 +1,6 @@
 package study.ian.ptt.util;
 
-import android.support.v4.text.HtmlCompat;
+import androidx.core.text.HtmlCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ClickableSpan;

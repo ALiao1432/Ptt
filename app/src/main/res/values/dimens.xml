@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- holder_board.xml -->
+    <dimen name="card_height">56dp</dimen>
+    <dimen name="user_num_text_size">12sp</dimen>
+    <dimen name="user_num_text_width">24dp</dimen>
+    <dimen name="user_num_text_margin_start_end">8dp</dimen>
+    <dimen name="board_name_text_size">20sp</dimen>
+    <dimen name="board_name_margin">6dp</dimen>
+    <dimen name="board_title_text_size">12sp</dimen>
+    <dimen name="fav_width_height">30dp</dimen>
+    <dimen name="fav_margin">10dp</dimen>
+
+</resources>

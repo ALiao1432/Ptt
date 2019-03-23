@@ -12,12 +12,12 @@
 
     <style name="AppTheme.Bright" parent="AppTheme">
         <item name="android:background">@color/themeBright</item>
-        <item name="android:textColor">@color/themeBrightText</item>
+        <item name="android:textColor">@color/themeBrightPrimaryText</item>
     </style>
 
     <style name="AppTheme.Dark" parent="AppTheme">
         <item name="android:background">@color/themeDark</item>
-        <item name="android:textColor">@color/themeDarkText</item>
+        <item name="android:textColor">@color/themeDarkPrimaryText</item>
     </style>
 
     <style name="AppTheme.TrueDark" parent="AppTheme.Dark">

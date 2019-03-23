@@ -4,10 +4,28 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#CCCCCC</color>
 
+    <color name="ripple">#3FFFFFFF</color>
+
     <color name="themeBright">#F5F5F5</color>
-    <color name="themeBrightText">#212121</color>
+    <color name="themeBrightPrimaryText">#212121</color>
     <color name="themeDark">#212121</color>
-    <color name="themeDarkText">#F5F5F5</color>
+    <color name="themeDarkPrimaryText">#CCCCCC</color>
+    <color name="themeDarkSecondaryText">#9E9E9E</color>
     <color name="themeTrueDark">#000000</color>
+
+    <color name="userNum_0">#00000000</color>
+    <color name="userNum_1_10">#BBBBBB</color>
+    <color name="userNum_11_49">#FFFF66</color>
+    <color name="userNum_50_99">#FF6666</color>
+    <color name="userNum_100_999">#FFFFFF</color>
+    <color name="userNum_1000_1999">#FFFFFF</color>
+    <color name="userNum_2000_4999">#FF6666</color>
+    <color name="userNum_5000_9999">#6666FF</color>
+    <color name="userNum_10000_29999">#66FFFF</color>
+    <color name="userNum_30000_59999">#66FF66</color>
+    <color name="userNum_60000_99999">#FFFF66</color>
+    <color name="userNum_100000">#FF66FF</color>
+
+    <color name="fav_view_color">#f44336</color>
 
 </resources>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/card_height"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/foreground_ripple"
+    tools:layout_height="@dimen/card_height">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/userNumText"
+            android:layout_width="@dimen/user_num_text_width"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/user_num_text_margin_start_end"
+            android:gravity="center"
+            android:textSize="@dimen/user_num_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="99" />
+
+        <TextView
+            android:id="@+id/boardNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/board_name_margin"
+            android:textSize="@dimen/board_name_text_size"
+            app:layout_constraintBottom_toTopOf="@+id/boardTitleText"
+            app:layout_constraintStart_toEndOf="@id/userNumText"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="NBA" />
+
+        <TextView
+            android:id="@+id/boardTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/themeDarkSecondaryText"
+            android:textSize="@dimen/board_title_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/boardNameText"
+            app:layout_constraintTop_toBottomOf="@+id/boardNameText"
+            tools:text="◎[NBA]           NBA" />
+
+        <study.ian.morphviewlib.MorphView
+            android:id="@+id/favView"
+            android:layout_width="@dimen/fav_width_height"
+            android:layout_height="@dimen/fav_width_height"
+            android:layout_marginEnd="@dimen/fav_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
