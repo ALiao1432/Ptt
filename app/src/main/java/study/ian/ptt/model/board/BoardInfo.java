@@ -2,9 +2,9 @@ package study.ian.ptt.model.board;
 
 public class BoardInfo {
 
-    private static final int SORT_UNDEFINE = -1;
-    private static final int SORT_BOARD = 0;
-    private static final int SORT_CLASS = 1;
+    public static final int SORT_UNDEFINE = -1;
+    public static final int SORT_BOARD = 0;
+    public static final int SORT_CLASS = 1;
 
     private String href;
     private String name;

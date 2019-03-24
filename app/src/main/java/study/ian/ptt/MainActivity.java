@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import study.ian.ptt.adapter.viewpager.GenAdapter;
+import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
 import study.ian.ptt.fragment.TestFragment;
+import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.transformer.SlideTransformer;
 import study.ian.ptt.util.PreManager;
 import study.ian.ptt.view.OutViewPager;
@@ -33,9 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ServiceBuilder.watchNetworkState(this);
+
         preManager = new PreManager(this);
         preManager.setAppTheme(R.style.AppTheme_TrueDark, R.layout.activity_main);
 //        preManager.setAppTheme(R.style.AppTheme_Bright, R.layout.activity_main);
+//        preManager.setAppTheme(R.style.AppTheme_Dark, R.layout.activity_main);
 
         findViews();
         setViews();
@@ -49,17 +54,17 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> outFragList = new ArrayList<>();
 
         BoardFragment boardFragment = new BoardFragment();
-        TestFragment fragment1 = new TestFragment();
+        ArticleListFragment articleListFragment = new ArticleListFragment();
         TestFragment fragment2 = new TestFragment();
         TestFragment fragment3 = new TestFragment();
 
         boardFragment.setOutPager(outPager);
-        fragment1.setString("1");
+        boardFragment.setOnBoardSelectedListener(articleListFragment);
         fragment2.setString("2");
         fragment3.setString("3");
 
         outFragList.add(boardFragment);
-        outFragList.add(fragment1);
+        outFragList.add(articleListFragment);
         outFragList.add(fragment2);
         outFragList.add(fragment3);
 

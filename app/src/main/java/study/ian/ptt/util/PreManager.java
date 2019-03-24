@@ -15,8 +15,8 @@ public class PreManager {
     private static final String FAV_BOARD = "favBoard";
     private static final String BLACK_LIST = "blackList";
 
-    private SharedPreferences sharedPreferences;
     private Context context;
+    private SharedPreferences sharedPreferences;
     private static Set<String> favSet = new HashSet<>();
 
     public PreManager(Context context) {

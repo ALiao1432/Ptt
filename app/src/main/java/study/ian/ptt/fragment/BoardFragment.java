@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class BoardFragment extends BaseFragment {
     private Context context;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
 
         this.context = context;
@@ -41,6 +43,10 @@ public class BoardFragment extends BaseFragment {
         PttClassFragment pttClassFragment = new PttClassFragment();
 
         favFragment.setOutPager(outPager);
+        hotFragment.setOutPager(outPager);
+        hotFragment.setOnBoardSelectedListener(onBoardSelectedListener);
+        pttClassFragment.setOutPager(outPager);
+        pttClassFragment.setOnBoardSelectedListener(onBoardSelectedListener);
 
         fragmentList.add(favFragment);
         fragmentList.add(hotFragment);

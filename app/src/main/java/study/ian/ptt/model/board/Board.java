@@ -14,15 +14,17 @@ public class Board {
 
     public Board(Document doc) {
         Elements bElements = doc.getElementsByClass("b-ent");
-        bElements.forEach(e ->
-                infoList.add(new BoardInfo(
-                        e.select("a").attr("href"),
-                        e.select("div[class=board-name]").text(),
-                        e.select("div[class=board-class]").text(),
-                        e.select("div[class=board-title]").text(),
-                        Integer.valueOf(e.select("div[class=board-nuser]").text())
-                ))
-        );
+        bElements.forEach(e -> {
+            String count = e.select("div[class=board-nuser]").text();
+
+            infoList.add(new BoardInfo(
+                    e.select("a").attr("href"),
+                    e.select("div[class=board-name]").text(),
+                    e.select("div[class=board-class]").text(),
+                    e.select("div[class=board-title]").text(),
+                    count.equals("") ? 0 : Integer.valueOf(count)
+            ));
+        });
     }
 
     public List<BoardInfo> getInfoList() {

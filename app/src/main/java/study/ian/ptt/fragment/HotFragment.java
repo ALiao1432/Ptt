@@ -26,9 +26,10 @@ import study.ian.ptt.util.ObserverHelper;
 public class HotFragment extends BaseFragment {
 
     private final String TAG = "HotFragment";
+
     private Context context;
     private SwipeRefreshLayout hotRefreshLayout;
-    private RecyclerView recyclerView;
+    private RecyclerView hotRecyclerView;
     private BoardAdapter boardAdapter;
 
     @Override
@@ -49,22 +50,26 @@ public class HotFragment extends BaseFragment {
     }
 
     private void findViews(View view) {
-        recyclerView = view.findViewById(R.id.recyclerViewHot);
+        hotRecyclerView = view.findViewById(R.id.recyclerViewHot);
         hotRefreshLayout = view.findViewById(R.id.refreshLayoutHot);
     }
 
     private void setViews() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
-        boardAdapter = new BoardAdapter(context);
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(boardAdapter);
+        boardAdapter = new BoardAdapter(context, outPager);
+        boardAdapter.setOnBoardSelectedListener(onBoardSelectedListener);
+
+        hotRecyclerView.setLayoutManager(layoutManager);
+        hotRecyclerView.setAdapter(boardAdapter);
 
         hotRefreshLayout.setOnRefreshListener(this::loadData);
         loadData();
     }
 
     private void loadData() {
+        hotRefreshLayout.setRefreshing(true);
+
         ServiceBuilder.getService(PttService.class)
                 .getHotBoard()
                 .compose(ObserverHelper.applyHelper())

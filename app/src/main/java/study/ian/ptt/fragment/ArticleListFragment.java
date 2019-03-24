@@ -9,24 +9,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import study.ian.ptt.R;
+import study.ian.ptt.util.OnBoardSelectedListener;
 
-public class TestFragment extends BaseFragment {
+public class ArticleListFragment extends BaseFragment implements OnBoardSelectedListener {
 
-    private final String TAG = "TestFragment";
-
-    private String string;
-
-    public void setString(String s) {
-        this.string = s;
-    }
+    private TextView textView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_fragment, container, false);
-        TextView textView = view.findViewById(R.id.textView);
-        textView.setText(string);
-        textView.setTextSize(400);
+        View view = inflater.inflate(R.layout.layout_article_list, container, false);
+        textView = view.findViewById(R.id.boardText);
+        textView.setTextSize(50);
         return view;
+    }
+
+    @Override
+    public void onBoardSelected(String board) {
+        textView.setText(board);
     }
 }
