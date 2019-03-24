@@ -15,9 +15,12 @@ public class PreManager {
     private static final String FAV_BOARD = "favBoard";
     private static final String BLACK_LIST = "blackList";
 
+    public static final int FAV_ACTION_ADD = 0;
+    public static final int FAV_ACTION_REMOVE = 1;
+
+    private static Set<String> favSet = new HashSet<>();
     private Context context;
     private SharedPreferences sharedPreferences;
-    private static Set<String> favSet = new HashSet<>();
 
     public PreManager(Context context) {
         this.context = context;
@@ -68,6 +71,10 @@ public class PreManager {
         }
 
         favSet.remove(board);
+    }
+
+    public Set<String> getFavBoardSet() {
+        return favSet;
     }
 
     public String getFavBoard() {

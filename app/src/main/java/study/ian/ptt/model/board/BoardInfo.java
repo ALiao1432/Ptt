@@ -13,7 +13,7 @@ public class BoardInfo {
     private int userCount;
     private int sort;
 
-    BoardInfo(String href, String name, String boardClass, String boardTitle, int userCount) {
+    public BoardInfo(String href, String name, String boardClass, String boardTitle, int userCount) {
         this.href = href;
         this.name = name;
         this.boardClass = boardClass;

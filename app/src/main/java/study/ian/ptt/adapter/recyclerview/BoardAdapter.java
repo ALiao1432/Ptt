@@ -46,6 +46,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         outPager = pager;
     }
 
+    public void setPreManager(PreManager preManager) {
+        this.preManager = preManager;
+    }
+
     public void setOnBoardSelectedListener(OnBoardSelectedListener listener) {
         onBoardSelectedListener = listener;
     }

@@ -2,25 +2,21 @@ package study.ian.ptt.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.jsoup.nodes.Document;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.BoardAdapter;
-import study.ian.ptt.model.board.Board;
-import study.ian.ptt.service.PttService;
-import study.ian.ptt.service.ServiceBuilder;
-import study.ian.ptt.util.ObserverHelper;
+import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.util.PreManager;
 
 public class FavFragment extends BaseFragment {
@@ -32,18 +28,20 @@ public class FavFragment extends BaseFragment {
     private SwipeRefreshLayout favRefreshLayout;
     private RecyclerView favRecyclerView;
     private BoardAdapter boardAdapter;
+    private List<BoardInfo> favList;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         this.context = context;
+        preManager = new PreManager(context);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.layout_hot, container, false);
+        View v = inflater.inflate(R.layout.layout_fav, container, false);
 
         findViews(v);
         setViews();
@@ -60,6 +58,7 @@ public class FavFragment extends BaseFragment {
 
         boardAdapter = new BoardAdapter(context, outPager);
         boardAdapter.setOnBoardSelectedListener(onBoardSelectedListener);
+        boardAdapter.setPreManager(preManager);
 
         favRecyclerView.setLayoutManager(layoutManager);
         favRecyclerView.setAdapter(boardAdapter);
@@ -71,12 +70,13 @@ public class FavFragment extends BaseFragment {
     private void loadData() {
         favRefreshLayout.setRefreshing(true);
 
+        favList = preManager.getFavBoardSet()
+                .stream()
+                .map(board -> new BoardInfo("/bbs/" + board + "/index.html", board, "", "", 0))
+                .sorted((info1, info2) -> info1.getName().charAt(0) - info2.getName().charAt(0))
+                .collect(Collectors.toList());
+        boardAdapter.setResults(favList);
 
-    }
-
-    private void configData(Document doc) {
-        Board board = new Board(doc);
-        boardAdapter.setResults(board.getInfoList());
         favRefreshLayout.setRefreshing(false);
     }
 }

@@ -21,7 +21,7 @@ public class SpanUtil {
         ));
     }
 
-    public static void setImageClickListener(Spannable spannable, ImageSpanClickListener listener) {
+    public static void setImageClickListener(Spannable spannable, OnImageSpanClickListener listener) {
         ImageSpan[] imageSpans = spannable.getSpans(0, spannable.length(), ImageSpan.class);
         for (ImageSpan imageSpan : imageSpans) {
             int start = spannable.getSpanStart(imageSpan);

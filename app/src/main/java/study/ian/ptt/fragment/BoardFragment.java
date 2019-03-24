@@ -43,8 +43,11 @@ public class BoardFragment extends BaseFragment {
         PttClassFragment pttClassFragment = new PttClassFragment();
 
         favFragment.setOutPager(outPager);
+        favFragment.setOnBoardSelectedListener(onBoardSelectedListener);
+
         hotFragment.setOutPager(outPager);
         hotFragment.setOnBoardSelectedListener(onBoardSelectedListener);
+
         pttClassFragment.setOutPager(outPager);
         pttClassFragment.setOnBoardSelectedListener(onBoardSelectedListener);
 
