@@ -1,12 +1,13 @@
 package study.ian.ptt;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
@@ -71,6 +72,6 @@ public class MainActivity extends AppCompatActivity {
         GenAdapter oAdapter = new GenAdapter(getSupportFragmentManager(), outFragList);
         outPager.setAdapter(oAdapter);
         outPager.setOffscreenPageLimit(outFragList.size());
-        outPager.setPageTransformer(true, new SlideTransformer());
+        outPager.setPageTransformer(false, new SlideTransformer());
     }
 }

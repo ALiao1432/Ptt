@@ -20,14 +20,11 @@ public class SlideTransformer implements ViewPager.PageTransformer {
             float startTranslation = -0.8f;
             view.setTranslationX((float) view.getWidth() * startTranslation * position);
             view.setAlpha(1 + position);
-            view.setElevation(0f);
         } else if (position == 0f) {
             view.setTranslationX(0f);
-            view.setElevation(1f);
             view.setAlpha(1f);
         } else if (position > 0 && position <= 1) {
             view.setAlpha(1f);
-            view.setElevation(1f);
         } else {
             view.setAlpha(0f);
         }

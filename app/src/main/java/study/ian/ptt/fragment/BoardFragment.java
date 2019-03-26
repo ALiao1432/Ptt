@@ -55,6 +55,7 @@ public class BoardFragment extends BaseFragment {
         fragmentList.add(hotFragment);
         fragmentList.add(pttClassFragment);
 
+        viewPager.setOffscreenPageLimit(fragmentList.size());
         viewPager.setAdapter(new GenAdapter(((FragmentActivity) context).getSupportFragmentManager(), fragmentList));
 
         return view;
