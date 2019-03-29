@@ -21,6 +21,7 @@ public class PreManager {
     private static Set<String> favSet = new HashSet<>();
     private Context context;
     private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     public PreManager(Context context) {
         this.context = context;
@@ -53,7 +54,7 @@ public class PreManager {
     }
 
     public void addFavBoard(String board) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor = sharedPreferences.edit();
         String temp = board + " " + sharedPreferences.getString(FAV_BOARD, "");
         editor.putString(FAV_BOARD, temp);
         editor.apply();
@@ -62,7 +63,7 @@ public class PreManager {
     }
 
     public void removeFavBoard(String board) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor = sharedPreferences.edit();
         String temp = sharedPreferences.getString(FAV_BOARD, "");
         if (temp != null && temp.contains(board)) {
             temp = temp.replace(board, "").trim();
@@ -82,7 +83,7 @@ public class PreManager {
     }
 
     public void addBlackList(String black) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor = sharedPreferences.edit();
         String temp = black + " " + sharedPreferences.getString(BLACK_LIST, "");
         editor.putString(BLACK_LIST, temp);
         editor.apply();
