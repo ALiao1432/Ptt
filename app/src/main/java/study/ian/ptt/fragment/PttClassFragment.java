@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import org.jsoup.nodes.Document;
 
+import java.util.stream.Collectors;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.BoardAdapter;
 import study.ian.ptt.model.board.Board;
+import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
@@ -98,14 +101,20 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         loadData(classPath);
     }
 
-    private void reloadData() {
-        pttClassRefreshLayout.setRefreshing(true);
-        boardAdapter.notifyDataSetChanged();
+    private void reloadData(int changeIndex) {
+        boardAdapter.notifyItemChanged(changeIndex);
         pttClassRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onFavAction(String b, int action) {
-        reloadData();
+        pttClassRefreshLayout.setRefreshing(true);
+        int id = board.getInfoList()
+                .stream()
+                .map(BoardInfo::getName)
+                .collect(Collectors.toList())
+                .indexOf(b);
+
+        reloadData(id);
     }
 }

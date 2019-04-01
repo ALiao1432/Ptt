@@ -59,11 +59,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         notifyDataSetChanged();
     }
 
-    public void clearResult() {
-        infoList.clear();
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public BoardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -98,31 +93,27 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         holder.boardTitleText.setText(info.getBoardTitle());
 
         if (info.getSort() == BoardInfo.SORT_BOARD) {
-            holder.favView.setCurrentId(R.drawable.vd_fav);
-            holder.favView.setPaintWidth(4);
-            holder.favView.setSize(300, 300);
-            holder.favView.setPaintColor(ResourcesCompat.getColor(resources, R.color.fav_view_color, null));
-
-            if (preManager.isFavBoard(info.getName())) {
-                holder.favView.setPaintStyle(Paint.Style.FILL);
-            } else {
-                holder.favView.setPaintStyle(Paint.Style.STROKE);
-            }
+            holder.favView.setVisibility(View.VISIBLE);
+            setFavViewPaint(info.getName(), holder.favView);
 
             RxView.clicks(holder.favView)
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
                     .doOnNext(unit -> {
                         preManager.toggleFavBoard(info.getName());
-                        if (preManager.isFavBoard(info.getName())) {
-                            holder.favView.setPaintStyle(Paint.Style.FILL);
-                            holder.favView.postInvalidate();
-                        } else {
-                            holder.favView.setPaintStyle(Paint.Style.STROKE);
-                            holder.favView.postInvalidate();
-                        }
+                        setFavViewPaint(info.getName(), holder.favView);
                     })
                     .doOnError(t -> Log.d(TAG, "onBindViewHolder: click fav error : " + t))
                     .subscribe();
+        } else if (info.getSort() == BoardInfo.SORT_CLASS) {
+            holder.favView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setFavViewPaint(String board, MorphView view) {
+        if (preManager.isFavBoard(board)) {
+            view.setPaintStyle(Paint.Style.FILL);
+        } else {
+            view.setPaintStyle(Paint.Style.STROKE);
         }
     }
 
@@ -186,6 +177,11 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
             boardNameText = v.findViewById(R.id.boardNameText);
             boardTitleText = v.findViewById(R.id.boardTitleText);
             favView = v.findViewById(R.id.favView);
+
+            favView.setCurrentId(R.drawable.vd_fav);
+            favView.setPaintWidth(4);
+            favView.setSize(300, 300);
+            favView.setPaintColor(ResourcesCompat.getColor(resources, R.color.fav_view_color, null));
         }
     }
 }
