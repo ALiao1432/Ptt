@@ -42,12 +42,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     public BoardAdapter(Context context, ViewPager pager) {
         resources = context.getResources();
-        preManager = new PreManager(context);
+        preManager = PreManager.getInstance();
         outPager = pager;
-    }
-
-    public void setPreManager(PreManager preManager) {
-        this.preManager = preManager;
     }
 
     public void setOnBoardSelectedListener(OnBoardSelectedListener listener) {
@@ -60,6 +56,11 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     public void setResults(List<BoardInfo> list) {
         infoList = list;
+        notifyDataSetChanged();
+    }
+
+    public void clearResult() {
+        infoList.clear();
         notifyDataSetChanged();
     }
 

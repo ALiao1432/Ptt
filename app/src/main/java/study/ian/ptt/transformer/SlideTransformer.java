@@ -11,7 +11,6 @@ public class SlideTransformer implements ViewPager.PageTransformer {
 
     @Override
     public void transformPage(@NonNull View view, float position) {
-        Log.d(TAG, "transformPage: position : " + position);
         if (position < -1) {
             view.setAlpha(0f);
         } else if (position == -1) {

@@ -1,9 +1,12 @@
 package study.ian.ptt.util;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -19,14 +22,22 @@ public class PreManager {
     public static final int FAV_ACTION_REMOVE = 1;
 
     private static Set<String> favSet = new HashSet<>();
-    private Context context;
+    private static PreManager preManager;
+    private static Context context;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
 
-    public PreManager(Context context) {
-        this.context = context;
-        sharedPreferences = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+    public interface OnFavActionListener {
+        void onFavAction(String b, int action);
+    }
 
+    public void setOnFavActionListener(OnFavActionListener listener) {
+        onFavActionListenerList.add(listener);
+    }
+
+    private PreManager(Context cxt) {
+        sharedPreferences = cxt.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         initFavSet();
     }
 
@@ -38,9 +49,15 @@ public class PreManager {
         }
     }
 
-    public void setAppTheme(int styleId, int layoutId) {
-        context.setTheme(styleId);
-        ((AppCompatActivity) context).setContentView(layoutId);
+    public static synchronized void initPreManager(Context cxt) {
+        if (preManager == null) {
+            preManager = new PreManager(cxt);
+            context = cxt;
+        }
+    }
+
+    public static synchronized PreManager getInstance() {
+        return preManager;
     }
 
     public void toggleFavBoard(String board) {
@@ -60,6 +77,7 @@ public class PreManager {
         editor.apply();
 
         favSet.add(board);
+        onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_ADD));
     }
 
     public void removeFavBoard(String board) {
@@ -72,6 +90,7 @@ public class PreManager {
         }
 
         favSet.remove(board);
+        onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_REMOVE));
     }
 
     public Set<String> getFavBoardSet() {

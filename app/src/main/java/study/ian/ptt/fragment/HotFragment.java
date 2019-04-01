@@ -21,8 +21,9 @@ import study.ian.ptt.model.board.Board;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
+import study.ian.ptt.util.PreManager;
 
-public class HotFragment extends BaseFragment {
+public class HotFragment extends BaseFragment implements PreManager.OnFavActionListener{
 
     private final String TAG = "HotFragment";
 
@@ -30,12 +31,15 @@ public class HotFragment extends BaseFragment {
     private SwipeRefreshLayout hotRefreshLayout;
     private RecyclerView hotRecyclerView;
     private BoardAdapter boardAdapter;
+    private Board board;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         this.context = context;
+        PreManager preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
@@ -80,9 +84,19 @@ public class HotFragment extends BaseFragment {
     }
 
     private void configData(Document doc) {
-        Board board = new Board(doc);
+        board = new Board(doc);
         boardAdapter.setResults(board.getInfoList());
         hotRefreshLayout.setRefreshing(false);
     }
 
+    private void reloadData() {
+        hotRefreshLayout.setRefreshing(true);
+        boardAdapter.notifyDataSetChanged();
+        hotRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onFavAction(String b, int action) {
+        reloadData();
+    }
 }

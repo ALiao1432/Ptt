@@ -9,6 +9,7 @@
     <color name="themeBright">#F5F5F5</color>
     <color name="themeBrightPrimaryText">#212121</color>
     <color name="themeDark">#212121</color>
+    <color name="themeDarkSecondary">#464646</color>
     <color name="themeDarkPrimaryText">#CCCCCC</color>
     <color name="themeDarkSecondaryText">#9E9E9E</color>
     <color name="themeTrueDark">#000000</color>

@@ -2,6 +2,7 @@ package study.ian.ptt.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import study.ian.ptt.adapter.recyclerview.BoardAdapter;
 import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.util.PreManager;
 
-public class FavFragment extends BaseFragment {
+public class FavFragment extends BaseFragment implements PreManager.OnFavActionListener{
 
     private final String TAG = "FavFragment";
 
@@ -35,7 +36,8 @@ public class FavFragment extends BaseFragment {
         super.onAttach(context);
 
         this.context = context;
-        preManager = new PreManager(context);
+        preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
@@ -58,7 +60,6 @@ public class FavFragment extends BaseFragment {
 
         boardAdapter = new BoardAdapter(context, outPager);
         boardAdapter.setOnBoardSelectedListener(onBoardSelectedListener);
-        boardAdapter.setPreManager(preManager);
 
         favRecyclerView.setLayoutManager(layoutManager);
         favRecyclerView.setAdapter(boardAdapter);
@@ -78,5 +79,14 @@ public class FavFragment extends BaseFragment {
         boardAdapter.setResults(favList);
 
         favRefreshLayout.setRefreshing(false);
+    }
+
+    private void reloadData() {
+        loadData();
+    }
+
+    @Override
+    public void onFavAction(String b, int action) {
+        reloadData();
     }
 }

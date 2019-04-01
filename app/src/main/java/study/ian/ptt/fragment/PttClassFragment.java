@@ -22,8 +22,9 @@ import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.OnPageReloadRequestListener;
+import study.ian.ptt.util.PreManager;
 
-public class PttClassFragment extends BaseFragment implements OnPageReloadRequestListener {
+public class PttClassFragment extends BaseFragment implements OnPageReloadRequestListener, PreManager.OnFavActionListener {
 
     private final String TAG = "PttClassFragment";
 
@@ -31,6 +32,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     private SwipeRefreshLayout pttClassRefreshLayout;
     private RecyclerView pttClassRecyclerView;
     private BoardAdapter boardAdapter;
+    private Board board;
     private String classPath = "1";
 
     @Override
@@ -38,6 +40,8 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         super.onAttach(context);
 
         this.context = context;
+        PreManager preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
@@ -83,7 +87,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     }
 
     private void configData(Document doc) {
-        Board board = new Board(doc);
+        board = new Board(doc);
         boardAdapter.setResults(board.getInfoList());
         pttClassRefreshLayout.setRefreshing(false);
     }
@@ -92,5 +96,16 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     public void onPageReloadRequest(String reloadPath) {
         classPath = reloadPath;
         loadData(classPath);
+    }
+
+    private void reloadData() {
+        pttClassRefreshLayout.setRefreshing(true);
+        boardAdapter.notifyDataSetChanged();
+        pttClassRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onFavAction(String b, int action) {
+        reloadData();
     }
 }

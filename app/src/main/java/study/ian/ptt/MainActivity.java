@@ -29,19 +29,17 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
-    private PreManager preManager;
     private OutViewPager outPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.AppTheme_TrueDark);
+        setContentView(R.layout.activity_main);
 
         ServiceBuilder.watchNetworkState(this);
 
-        preManager = new PreManager(this);
-        preManager.setAppTheme(R.style.AppTheme_TrueDark, R.layout.activity_main);
-//        preManager.setAppTheme(R.style.AppTheme_Bright, R.layout.activity_main);
-//        preManager.setAppTheme(R.style.AppTheme_Dark, R.layout.activity_main);
+        PreManager.initPreManager(getApplicationContext());
 
         findViews();
         setViews();
