@@ -3,7 +3,6 @@ package study.ian.ptt.fragment;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -77,8 +76,6 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     }
 
     private void setViews() {
-        final int LOAD_MORE_THRESHOLD = 60;
-
         categoryText.setTextSize(50);
 
         bottomAppBar.replaceMenu(R.menu.bottomappbar_menu);
@@ -90,9 +87,9 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         articleRecyclerView.setLayoutManager(layoutManager);
         articleRecyclerView.setAdapter(articleAdapter);
         articleRecyclerView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            final int LOAD_MORE_THRESHOLD = 60;
             int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             int totalItem = layoutManager.getItemCount();
-            Log.d(TAG, "setViews: lastVisibleItem : " + lastVisibleItem + ", totalItem : " + totalItem);
 
             if (!isLoading && (lastVisibleItem + LOAD_MORE_THRESHOLD) >= totalItem) {
                 if (category == null || category.hasPreviousPage()) {
@@ -134,7 +131,7 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         alphaAnimator.setInterpolator(new DecelerateInterpolator());
         alphaAnimator.addUpdateListener(animation -> categoryText.setAlpha((float) animation.getAnimatedValue()));
 
-        scaleAnimator = ValueAnimator.ofFloat(1, 1.25f);
+        scaleAnimator = ValueAnimator.ofFloat(1, .75f);
         scaleAnimator.setDuration(ANIM_DURATION);
         scaleAnimator.setInterpolator(new DecelerateInterpolator());
         scaleAnimator.addUpdateListener(animation -> {
@@ -179,8 +176,8 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         this.cate = cate;
         category = null;
         runAnimation = true;
-        restoreTextState(categoryText, cate);
         articleAdapter.clearResults();
+        restoreTextState(categoryText, cate);
         loadData();
     }
 }
