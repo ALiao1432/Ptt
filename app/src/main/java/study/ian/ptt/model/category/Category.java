@@ -29,6 +29,11 @@ public class Category {
         nextPage = pageElements.get(0).getElementsByTag("a").get(2).attr("href");
         newestPage = pageElements.get(0).getElementsByTag("a").get(3).attr("href");
 
+        lastPage = lastPage.equals("") ? "" : lastPage.substring(5);
+        prePage = prePage.equals("") ? "" : prePage.substring(5);
+        nextPage = nextPage.equals("") ? "" : nextPage.substring(5);
+        newestPage = newestPage.equals("") ? "" : newestPage.substring(5);
+
         Elements articleElements = doc.getElementsByClass("r-ent");
         for (int i = articleElements.size() - 1; i >= 0; i--) {
             Element e = articleElements.get(i);
@@ -44,6 +49,14 @@ public class Category {
                     e.select("div[class=nrec]").text()
             ));
         }
+    }
+
+    public boolean hasPreviousPage() {
+        return !prePage.equals("");
+    }
+
+    public boolean hasNextPage() {
+        return !nextPage.equals("");
     }
 
     public String getBoard() {

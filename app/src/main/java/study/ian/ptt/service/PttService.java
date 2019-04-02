@@ -11,10 +11,10 @@ import retrofit2.http.Query;
 
 public interface PttService {
 
-    @GET("{category}/index.html")
+    @GET("{categoryPath}")
     Observable<Response<Document>> getCategory(
             @Header("Cookie") String cookie,
-            @Path("category") String category
+            @Path("categoryPath") String categoryPath
     );
 
     @GET("/{articlePath}")

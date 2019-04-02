@@ -3,6 +3,7 @@ package study.ian.ptt.fragment;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,8 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     private ArticleAdapter articleAdapter;
     private Category category;
     private String cate;
+    private boolean isLoading = false;
+    private boolean runAnimation;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -74,6 +77,8 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     }
 
     private void setViews() {
+        final int LOAD_MORE_THRESHOLD = 60;
+
         categoryText.setTextSize(50);
 
         bottomAppBar.replaceMenu(R.menu.bottomappbar_menu);
@@ -84,11 +89,24 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         articleRecyclerView.setNestedScrollingEnabled(true);
         articleRecyclerView.setLayoutManager(layoutManager);
         articleRecyclerView.setAdapter(articleAdapter);
+        articleRecyclerView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+            int totalItem = layoutManager.getItemCount();
+            Log.d(TAG, "setViews: lastVisibleItem : " + lastVisibleItem + ", totalItem : " + totalItem);
+
+            if (!isLoading && (lastVisibleItem + LOAD_MORE_THRESHOLD) >= totalItem) {
+                if (category == null || category.hasPreviousPage()) {
+                    loadData();
+                }
+            }
+        });
     }
 
     private void loadData() {
+        isLoading = true;
+
         ServiceBuilder.getService(PttService.class)
-                .getCategory(ServiceBuilder.COOKIE, cate)
+                .getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage())
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
@@ -98,9 +116,15 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     }
 
     private void configData(Document document) {
+        isLoading = false;
+
         category = new Category(document);
-        alphaAnimator.start();
-        scaleAnimator.start();
+        if (runAnimation) {
+            alphaAnimator.start();
+            scaleAnimator.start();
+        } else {
+            articleAdapter.addResults(category.getArticleInfoList());
+        }
     }
 
     private void initAnimator() {
@@ -125,6 +149,7 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                runAnimation = false;
                 articleAdapter.addResults(category.getArticleInfoList());
                 categoryText.setVisibility(View.GONE);
             }
@@ -150,9 +175,11 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     }
 
     @Override
-    public void onCategorySelected(String category) {
-        this.cate = category;
-        restoreTextState(categoryText, category);
+    public void onCategorySelected(String cate) {
+        this.cate = cate;
+        category = null;
+        runAnimation = true;
+        restoreTextState(categoryText, cate);
         articleAdapter.clearResults();
         loadData();
     }
