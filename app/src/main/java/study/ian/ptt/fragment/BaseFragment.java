@@ -2,18 +2,18 @@ package study.ian.ptt.fragment;
 
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
-import study.ian.ptt.util.OnBoardSelectedListener;
+import study.ian.ptt.util.OnCategorySelectedListener;
 
 public class BaseFragment extends Fragment {
 
     ViewPager outPager;
-    OnBoardSelectedListener onBoardSelectedListener;
+    OnCategorySelectedListener onCategorySelectedListener;
 
     public void setOutPager(ViewPager pager) {
         outPager = pager;
     }
 
-    public void setOnBoardSelectedListener(OnBoardSelectedListener listener) {
-        onBoardSelectedListener = listener;
+    public void setOnCategorySelectedListener(OnCategorySelectedListener listener) {
+        onCategorySelectedListener = listener;
     }
 }

@@ -10,10 +10,10 @@ public class BoardInfo {
     private String name;
     private String boardClass;
     private String boardTitle;
-    private int userCount;
+    private String userCount;
     private int sort;
 
-    public BoardInfo(String href, String name, String boardClass, String boardTitle, int userCount) {
+    public BoardInfo(String href, String name, String boardClass, String boardTitle, String userCount) {
         this.href = href;
         this.name = name;
         this.boardClass = boardClass;
@@ -49,7 +49,7 @@ public class BoardInfo {
         return boardTitle;
     }
 
-    public int getUserCount() {
+    public String getUserCount() {
         return userCount;
     }
 

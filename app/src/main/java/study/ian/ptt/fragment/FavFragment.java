@@ -2,7 +2,6 @@ package study.ian.ptt.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +58,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
 
         boardAdapter = new BoardAdapter(context, outPager);
-        boardAdapter.setOnBoardSelectedListener(onBoardSelectedListener);
+        boardAdapter.setOnCategorySelectedListener(onCategorySelectedListener);
 
         favRecyclerView.setLayoutManager(layoutManager);
         favRecyclerView.setAdapter(boardAdapter);
@@ -73,7 +72,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
 
         favList = preManager.getFavBoardSet()
                 .stream()
-                .map(board -> new BoardInfo("/bbs/" + board + "/index.html", board, "", "", 0))
+                .map(board -> new BoardInfo("/bbs/" + board + "/index.html", board, "", "", ""))
                 .sorted((info1, info2) -> info1.getName().charAt(0) - info2.getName().charAt(0))
                 .collect(Collectors.toList());
         boardAdapter.setResults(favList);

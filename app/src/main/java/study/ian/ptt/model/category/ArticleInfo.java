@@ -7,8 +7,8 @@ public class ArticleInfo {
     private String sameTitleHref;
     private String sameAuthorHref;
     private String date;
-    private String count;
     private String mark;
+    private String count;
     private boolean isRead = false;
 
     public ArticleInfo(

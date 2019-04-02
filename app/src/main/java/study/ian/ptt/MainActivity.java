@@ -1,13 +1,13 @@
 package study.ian.ptt;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
@@ -21,7 +21,6 @@ import study.ian.ptt.view.OutViewPager;
 // TODO: 2019-03-21 bug : when display some img will cause scroll not smooth issue
 
 // TODO: 2019-03-21 feature : set app theme color
-// TODO: 2019-03-21 feature : add user fav board
 
 // TODO: 2019-03-20 improve : text color
 
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         TestFragment fragment3 = new TestFragment();
 
         boardFragment.setOutPager(outPager);
-        boardFragment.setOnBoardSelectedListener(articleListFragment);
+        boardFragment.setOnCategorySelectedListener(articleListFragment);
         fragment2.setString("2");
         fragment3.setString("3");
 
@@ -71,5 +70,21 @@ public class MainActivity extends AppCompatActivity {
         outPager.setAdapter(oAdapter);
         outPager.setOffscreenPageLimit(outFragList.size());
         outPager.setPageTransformer(false, new SlideTransformer());
+        outPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                OutViewPager.interceptTouch = position != 0;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 }

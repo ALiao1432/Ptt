@@ -5,8 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewArticle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <TextView
-        android:id="@+id/boardTitleText"
+        android:id="@+id/categoryInfoText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
@@ -17,10 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/themeDarkSecondary"
+        app:backgroundTint="@color/themeDarkSecondary"
         app:fabAlignmentMode="end"
+        app:fabCradleMargin="@dimen/bottom_app_bar_cradle_margin"
+        app:fabCradleVerticalOffset="@dimen/bottom_app_bar_cradle_v_offset"
         app:hideOnScroll="false"
-        app:fabCradleMargin="8dp"
         app:navigationIcon="@drawable/vd_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

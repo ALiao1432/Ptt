@@ -5,11 +5,23 @@
     <dimen name="card_height">56dp</dimen>
     <dimen name="user_num_text_size">12sp</dimen>
     <dimen name="user_num_text_width">28dp</dimen>
-    <dimen name="user_num_text_margin_start_end">8dp</dimen>
-    <dimen name="board_name_text_size">20sp</dimen>
+    <dimen name="user_num_text_margin_start_end">6dp</dimen>
+    <dimen name="board_name_text_size">18sp</dimen>
     <dimen name="board_name_margin">6dp</dimen>
     <dimen name="board_title_text_size">12sp</dimen>
     <dimen name="fav_width_height">30dp</dimen>
     <dimen name="fav_margin">10dp</dimen>
+
+    <!-- holder_article.xml -->
+    <dimen name="article_text_margin_start_end">6dp</dimen>
+    <dimen name="count_text_width">28dp</dimen>
+    <dimen name="count_text_size">12sp</dimen>
+    <dimen name="article_title_text_size">18sp</dimen>
+    <dimen name="article_author_text_size">12sp</dimen>
+    <dimen name="article_title_margin">6dp</dimen>
+
+    <!-- layout_article_list.xml -->
+    <dimen name="bottom_app_bar_cradle_margin">8dp</dimen>
+    <dimen name="bottom_app_bar_cradle_v_offset">8dp</dimen>
 
 </resources>
