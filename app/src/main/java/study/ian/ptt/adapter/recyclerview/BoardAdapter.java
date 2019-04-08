@@ -98,7 +98,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
             RxView.clicks(holder.favView)
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
                     .doOnNext(unit -> {
-                        preManager.toggleFavBoard(info.getName());
+                        preManager.toggleFavBoard(info.getName().trim());
                         setFavViewPaint(info.getName(), holder.favView);
                     })
                     .doOnError(t -> Log.d(TAG, "onBindViewHolder: click fav error : " + t))

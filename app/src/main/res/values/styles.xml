@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/themeDark</item>
         <item name="colorPrimaryDark">@color/themeTrueDark</item>
@@ -10,17 +10,12 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
-    <style name="AppTheme.Bright" parent="AppTheme">
-        <item name="android:background">@color/themeBright</item>
-        <item name="android:textColor">@color/themeBrightPrimaryText</item>
-    </style>
-
-    <style name="AppTheme.Dark" parent="AppTheme">
-        <item name="android:background">@color/themeDark</item>
+    <style name="AppTheme.TrueDark" parent="AppTheme">
         <item name="android:textColor">@color/themeDarkPrimaryText</item>
     </style>
 
-    <style name="AppTheme.TrueDark" parent="AppTheme.Dark">
-        <item name="android:background">@color/themeTrueDark</item>
+    <style name="AppTheme.HintText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/themeDarkSecondaryText</item>
     </style>
+
 </resources>

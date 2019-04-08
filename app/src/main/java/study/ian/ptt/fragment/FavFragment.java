@@ -28,15 +28,20 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     private SwipeRefreshLayout favRefreshLayout;
     private RecyclerView favRecyclerView;
     private BoardAdapter boardAdapter;
-    private List<BoardInfo> favList;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         this.context = context;
-        preManager = PreManager.getInstance();
-        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
@@ -70,7 +75,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     private void loadData() {
         favRefreshLayout.setRefreshing(true);
 
-        favList = preManager.getFavBoardSet()
+        List<BoardInfo> favList = preManager.getFavBoardSet()
                 .stream()
                 .map(board -> new BoardInfo("/bbs/" + board + "/index.html", board, "", "", ""))
                 .sorted((info1, info2) -> info1.getName().charAt(0) - info2.getName().charAt(0))

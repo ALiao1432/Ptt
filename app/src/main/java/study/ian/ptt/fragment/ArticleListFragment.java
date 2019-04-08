@@ -4,45 +4,70 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.jsoup.nodes.Document;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleAdapter;
+import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.model.category.Category;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
+import study.ian.ptt.util.OnArticleListLongClickListener;
 import study.ian.ptt.util.OnCategorySelectedListener;
+import study.ian.ptt.util.PreManager;
 
-public class ArticleListFragment extends BaseFragment implements OnCategorySelectedListener {
+public class ArticleListFragment extends BaseFragment
+        implements OnCategorySelectedListener, OnArticleListLongClickListener {
 
     private final String TAG = "ArticleListFragment";
 
     private Context context;
+    private PreManager preManager;
+    private PttService pttService;
     private TextView categoryText;
+    private ConstraintLayout keywordBlackListLayout;
+    private ConstraintLayout articleOptionLayout;
+    private TextInputEditText searchEdt;
+    private TextInputEditText blackListEdt;
+    private MaterialButton titleBtn;
+    private MaterialButton authorBtn;
+    private MaterialButton pushBtn;
+    private MaterialButton addBlackBtn;
+    private MaterialButton cancelBlackBtn;
+    private RecyclerView articleRecyclerView;
+    private BottomSheetBehavior keywordBlackListSheet;
+    private BottomSheetBehavior articleOptionSheet;
     private BottomAppBar bottomAppBar;
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
-    private RecyclerView articleRecyclerView;
     private ArticleAdapter articleAdapter;
     private Category category;
     private String cate;
+    private ArticleInfo selectInfo;
+    private BottomSheetManager sheetManager = new BottomSheetManager();
     private boolean isLoading = false;
     private boolean runAnimation;
 
@@ -50,6 +75,7 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        preManager = PreManager.getInstance();
     }
 
     @Nullable
@@ -60,50 +86,114 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         initAnimator();
         findViews(v);
         setViews();
-        return v;
-    }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        setHasOptionsMenu(true);
-        inflater.inflate(R.menu.bottomappbar_menu, menu);
+        return v;
     }
 
     private void findViews(View view) {
         articleRecyclerView = view.findViewById(R.id.recyclerViewArticle);
         categoryText = view.findViewById(R.id.categoryInfoText);
         bottomAppBar = view.findViewById(R.id.bottomBar);
+        keywordBlackListLayout = view.findViewById(R.id.keywordBlackListBottomSheet);
+        articleOptionLayout = view.findViewById(R.id.articleOptionBottomSheet);
+
+        searchEdt = keywordBlackListLayout.findViewById(R.id.searchEdt);
+        titleBtn = keywordBlackListLayout.findViewById(R.id.searchTitleBtn);
+        authorBtn = keywordBlackListLayout.findViewById(R.id.searchAuthorBtn);
+        pushBtn = keywordBlackListLayout.findViewById(R.id.searchPushBtn);
+        blackListEdt = keywordBlackListLayout.findViewById(R.id.blackListEdt);
+
+        addBlackBtn = articleOptionLayout.findViewById(R.id.addBlackBtn);
+        cancelBlackBtn = articleOptionLayout.findViewById(R.id.cancelBlackBtn);
     }
 
     private void setViews() {
+        keywordBlackListSheet = BottomSheetBehavior.from(keywordBlackListLayout);
+        articleOptionSheet = BottomSheetBehavior.from(articleOptionLayout);
+        sheetManager.addToSet(keywordBlackListSheet);
+        sheetManager.addToSet(articleOptionSheet);
+
         categoryText.setTextSize(50);
 
-        bottomAppBar.replaceMenu(R.menu.bottomappbar_menu);
+        bottomAppBar.setNavigationOnClickListener(v -> sheetManager.expandSheet(keywordBlackListSheet));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         articleAdapter = new ArticleAdapter(context);
+        articleAdapter.setOnArticleListLongClickListener(this);
 
         articleRecyclerView.setNestedScrollingEnabled(true);
         articleRecyclerView.setLayoutManager(layoutManager);
         articleRecyclerView.setAdapter(articleAdapter);
-        articleRecyclerView.setOnScrollChangeListener((v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            final int LOAD_MORE_THRESHOLD = 60;
-            int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-            int totalItem = layoutManager.getItemCount();
+        articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING ) {
+                    sheetManager.collapseSheet(keywordBlackListSheet);
+                    sheetManager.collapseSheet(articleOptionSheet);
+                }
+            }
 
-            if (!isLoading && (lastVisibleItem + LOAD_MORE_THRESHOLD) >= totalItem) {
-                if (category == null || category.hasPreviousPage()) {
-                    loadData();
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                final int LOAD_MORE_THRESHOLD = 60;
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                int totalItem = layoutManager.getItemCount();
+
+                if (!isLoading && (lastVisibleItem + LOAD_MORE_THRESHOLD) >= totalItem) {
+                    if (category == null || category.hasPreviousPage()) {
+                        loadData();
+                    }
                 }
             }
         });
+
+        View.OnClickListener searchClickListener = v -> {
+            Editable editable = searchEdt.getText();
+            String keyword = "";
+            if (editable != null) {
+                keyword = editable.toString();
+            }
+
+            // TODO: 2019-04-08 search function
+            switch (v.getId()) {
+                case R.id.searchTitleBtn:
+                    Log.d(TAG, "setViews: search TitleBtn : " + keyword);
+                    break;
+                case R.id.searchAuthorBtn:
+                    Log.d(TAG, "setViews: search AuthorBtn : " + keyword);
+                    break;
+                case R.id.searchPushBtn:
+                    Log.d(TAG, "setViews: search PushBtn : " + keyword);
+                    break;
+            }
+        };
+        titleBtn.setOnClickListener(searchClickListener);
+        authorBtn.setOnClickListener(searchClickListener);
+        pushBtn.setOnClickListener(searchClickListener);
+        blackListEdt.setText(preManager.getBlackList());
+
+        View.OnClickListener articleOptionClickListener = v -> {
+            switch (v.getId()) {
+                case R.id.addBlackBtn:
+                    preManager.addBlackList(selectInfo.getAuthor());
+                    blackListEdt.setText(preManager.getBlackList());
+                    break;
+                case R.id.cancelBlackBtn:
+                    break;
+            }
+            sheetManager.collapseSheet(articleOptionSheet);
+        };
+        addBlackBtn.setOnClickListener(articleOptionClickListener);
+        cancelBlackBtn.setOnClickListener(articleOptionClickListener);
     }
 
     private void loadData() {
         isLoading = true;
 
-        ServiceBuilder.getService(PttService.class)
-                .getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage())
+        if (pttService == null) {
+            pttService = ServiceBuilder.getService(PttService.class);
+        }
+        pttService.getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage())
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
@@ -179,5 +269,34 @@ public class ArticleListFragment extends BaseFragment implements OnCategorySelec
         articleAdapter.clearResults();
         restoreTextState(categoryText, cate);
         loadData();
+    }
+
+    @Override
+    public void OnArticleListLongClick(ArticleInfo info) {
+        selectInfo = info;
+        sheetManager.expandSheet(articleOptionSheet);
+    }
+
+    class BottomSheetManager {
+        Set<BottomSheetBehavior> behaviorSet = new HashSet<>();
+
+        void addToSet(BottomSheetBehavior behavior) {
+            behaviorSet.add(behavior);
+        }
+
+        void expandSheet(BottomSheetBehavior behavior) {
+            for (BottomSheetBehavior b : behaviorSet) {
+                if (b != behavior) {
+                    collapseSheet(b);
+                }
+            }
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+
+        void collapseSheet(BottomSheetBehavior behavior) {
+            if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        }
     }
 }

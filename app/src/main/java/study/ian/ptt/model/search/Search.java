@@ -26,7 +26,7 @@ public class Search {
             articleInfoList.add(new ArticleInfo(
                     e.select("div[class=title]").text(),
                     e.select("div[class=title] > a").attr("href"),
-                    e.select("div[class=author]").text(),
+                    e.select("div[class=author]").text().trim(),
                     e.select("div[class=dropdown] > div[class=item]:nth-child(1) > a").attr("href"),
                     e.select("div[class=dropdown] > div[class=item]:nth-child(2) > a").attr("href"),
                     e.select("div[class=date]").text(),

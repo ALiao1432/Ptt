@@ -2,10 +2,13 @@ package study.ian.ptt.adapter.recyclerview;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.jakewharton.rxbinding3.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import study.ian.ptt.R;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.util.CountTextConverter;
+import study.ian.ptt.util.OnArticleListLongClickListener;
 import study.ian.ptt.util.PreManager;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleHolder> {
@@ -25,6 +29,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleH
     private List<ArticleInfo> infoList = new ArrayList<>();
     private PreManager preManager;
     private Resources resources;
+    private OnArticleListLongClickListener longClickListener;
 
     public ArticleAdapter(Context context) {
         resources = context.getResources();
@@ -32,13 +37,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleH
     }
 
     public void addResults(List<ArticleInfo> list) {
+        int addPosition = infoList.size();
         infoList.addAll(list);
-        notifyDataSetChanged();
+        notifyItemInserted(addPosition);
     }
 
     public void clearResults() {
         infoList.clear();
         notifyDataSetChanged();
+    }
+
+    public void setOnArticleListLongClickListener(OnArticleListLongClickListener listener) {
+        longClickListener = listener;
     }
 
     @NonNull
@@ -51,6 +61,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleH
     @Override
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
         ArticleInfo info = infoList.get(position);
+
+        RxView.longClicks(holder.articleCard)
+                .doOnNext(unit -> longClickListener.OnArticleListLongClick(info))
+                .doOnError(t -> Log.d(TAG, "onBindViewHolder: long click article error : " + t))
+                .subscribe();
+
         holder.countText.setText(info.getCount());
         holder.countText.setTextColor(CountTextConverter.getPushCountColor(resources, info.getCount()));
         holder.titleText.setText(info.getTitle());

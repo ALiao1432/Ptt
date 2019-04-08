@@ -24,4 +24,9 @@
     <dimen name="bottom_app_bar_cradle_margin">8dp</dimen>
     <dimen name="bottom_app_bar_cradle_v_offset">8dp</dimen>
 
+    <!-- layout_article_bottom_sheet.xml -->
+    <dimen name="layout_margin">8dp</dimen>
+    <dimen name="divider_margin">16dp</dimen>
+    <dimen name="edittext_margin">12dp</dimen>
+
 </resources>

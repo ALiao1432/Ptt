@@ -1,6 +1,5 @@
 package study.ian.ptt.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -9,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class PreManager {
 
@@ -22,6 +19,7 @@ public class PreManager {
     private static final int FAV_ACTION_REMOVE = 1;
 
     private static Set<String> favSet = new HashSet<>();
+    private static Set<String> blackListSet;
     private static PreManager preManager;
     private static Context context;
     private SharedPreferences sharedPreferences;
@@ -39,13 +37,26 @@ public class PreManager {
     private PreManager(Context cxt) {
         sharedPreferences = cxt.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         initFavSet();
+        initBlackListSet();
     }
 
     private void initFavSet() {
+        favSet = new HashSet<>();
+
         String boards = sharedPreferences.getString(FAV_BOARD, "");
         StringTokenizer tokenizer = new StringTokenizer(boards);
         while (tokenizer.hasMoreTokens()) {
             favSet.add(tokenizer.nextToken());
+        }
+    }
+
+    private void initBlackListSet() {
+        blackListSet = new HashSet<>();
+
+        String blackList = sharedPreferences.getString(BLACK_LIST, "");
+        StringTokenizer tokenizer = new StringTokenizer(blackList);
+        while (tokenizer.hasMoreTokens()) {
+            blackListSet.add(tokenizer.nextToken());
         }
     }
 
@@ -103,9 +114,21 @@ public class PreManager {
 
     public void addBlackList(String black) {
         editor = sharedPreferences.edit();
-        String temp = black + " " + sharedPreferences.getString(BLACK_LIST, "");
-        editor.putString(BLACK_LIST, temp);
+        String b = sharedPreferences.getString(BLACK_LIST, "");
+        if (b != null && !b.contains(black)) {
+            editor.putString(BLACK_LIST, black + " " + b);
+
+            blackListSet.add(black);
+        }
         editor.apply();
+    }
+
+    public void updateBlackList(String blacks) {
+        editor = sharedPreferences.edit();
+        editor.putString(BLACK_LIST, blacks);
+        editor.apply();
+
+        initBlackListSet();
     }
 
     public String getBlackList() {
@@ -114,5 +137,9 @@ public class PreManager {
 
     public boolean isFavBoard(String targetBoard) {
         return favSet.contains(targetBoard);
+    }
+
+    public boolean isBlacklist(String black) {
+        return blackListSet.contains(black);
     }
 }

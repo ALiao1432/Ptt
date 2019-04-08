@@ -23,17 +23,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:backgroundTint="@color/themeDarkSecondary"
-        app:fabAlignmentMode="end"
-        app:fabCradleMargin="@dimen/bottom_app_bar_cradle_margin"
-        app:fabCradleVerticalOffset="@dimen/bottom_app_bar_cradle_v_offset"
-        app:hideOnScroll="false"
+        app:hideOnScroll="true"
         app:navigationIcon="@drawable/vd_menu" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/articleSearchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/vd_search"
-        app:layout_anchor="@id/bottomBar" />
+    <include
+        android:id="@+id/keywordBlackListBottomSheet"
+        layout="@layout/layout_bottom_sheet_search_blacklist" />
+
+    <include
+        android:id="@+id/articleOptionBottomSheet"
+        layout="@layout/layout_bottom_sheet_article_option" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

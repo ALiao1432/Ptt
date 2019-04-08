@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/themeDarkSecondary"
+    android:padding="@dimen/layout_margin"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:behavior_skipCollapsed="false"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchInputLayout"
+        style="@style/Base.Widget.MaterialComponents.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/article_search_option_hint"
+        app:boxStrokeColor="@color/themeDarkSecondaryText"
+        app:hintTextAppearance="@style/AppTheme.HintText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/edittext_margin"
+            android:paddingEnd="@dimen/edittext_margin"
+            android:textColor="@color/themeDarkPrimaryText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchTitleBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/article_search_option_title"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        app:layout_constraintStart_toStartOf="@id/searchInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/searchInputLayout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchAuthorBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:text="@string/article_search_option_author"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintStart_toEndOf="@id/searchTitleBtn"
+        app:layout_constraintTop_toTopOf="@id/searchTitleBtn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/searchPushBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:text="@string/article_search_option_push"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintStart_toEndOf="@id/searchAuthorBtn"
+        app:layout_constraintTop_toTopOf="@id/searchTitleBtn" />
+
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:background="@color/themeDarkSecondaryText"
+        app:layout_constraintTop_toBottomOf="@id/searchPushBtn" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/blackListInputLayout"
+        style="@style/Base.Widget.MaterialComponents.TextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:hint="@string/article_black_list_hint"
+        app:boxStrokeColor="@color/themeDarkSecondaryText"
+        app:hintTextAppearance="@style/AppTheme.HintText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dividerLine">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/blackListEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/edittext_margin"
+            android:paddingEnd="@dimen/edittext_margin"
+            android:textColor="@color/themeDarkPrimaryText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
