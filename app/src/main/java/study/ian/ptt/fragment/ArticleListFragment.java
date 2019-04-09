@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.Observable;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleAdapter;
@@ -43,10 +44,13 @@ public class ArticleListFragment extends BaseFragment
         implements OnCategorySelectedListener, OnArticleListLongClickListener {
 
     private final String TAG = "ArticleListFragment";
+    private final static int LOAD_NORMAL_ARTICLE = 0;
+    private final static int LOAD_SAME_TITLE = 1;
+    private final static int LOAD_SAME_AUTHOR = 2;
 
     private Context context;
     private PreManager preManager;
-    private PttService pttService;
+    private PttService pttService = ServiceBuilder.getService(PttService.class);
     private TextView categoryText;
     private ConstraintLayout keywordBlackListLayout;
     private ConstraintLayout articleOptionLayout;
@@ -70,6 +74,7 @@ public class ArticleListFragment extends BaseFragment
     private String cate;
     private ArticleInfo selectInfo;
     private BottomSheetManager sheetManager = new BottomSheetManager();
+    private int currentLoading = LOAD_NORMAL_ARTICLE;
     private boolean isLoading = false;
     private boolean runAnimation;
 
@@ -132,7 +137,7 @@ public class ArticleListFragment extends BaseFragment
         articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING ) {
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                     sheetManager.collapseSheet(keywordBlackListSheet);
                     sheetManager.collapseSheet(articleOptionSheet);
                 }
@@ -146,7 +151,17 @@ public class ArticleListFragment extends BaseFragment
 
                 if (!isLoading && (lastVisibleItem + LOAD_MORE_THRESHOLD) >= totalItem) {
                     if (category == null || category.hasPreviousPage()) {
-                        loadData();
+                        switch (currentLoading) {
+                            case LOAD_NORMAL_ARTICLE:
+                                loadData();
+                                break;
+                            case LOAD_SAME_TITLE:
+                                loadSameTitle();
+                                break;
+                            case LOAD_SAME_AUTHOR:
+                                loadSameAuthor();
+                                break;
+                        }
                     }
                 }
             }
@@ -186,10 +201,10 @@ public class ArticleListFragment extends BaseFragment
                 case R.id.cancelBlackBtn:
                     break;
                 case R.id.sameTitleBtn:
-                    Log.d(TAG, "setViews: loadSameTitleData");
-                    loadSameTitleData();
+                    loadSameTitle();
                     break;
                 case R.id.sameAuthorBtn:
+                    loadSameAuthor();
                     break;
             }
             sheetManager.collapseSheet(articleOptionSheet);
@@ -203,38 +218,50 @@ public class ArticleListFragment extends BaseFragment
     private void loadData() {
         isLoading = true;
 
-        if (pttService == null) {
-            pttService = ServiceBuilder.getService(PttService.class);
-        }
-        pttService.getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage())
-                .compose(ObserverHelper.applyHelper())
-                .filter(r -> r.code() == 200)
-                .map(Response::body)
-                .doOnNext(this::configData)
-                .doOnError(t -> Log.d(TAG, "setViews: get hot board error : " + t))
-                .subscribe();
+        Observable<Response<Document>> o = pttService.getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage());
+        processObservable(o);
     }
 
-    private void loadSameTitleData() {
-        articleAdapter.clearResults();
+    private void loadSameTitle() {
         isLoading = true;
 
-        if (pttService == null) {
-            pttService = ServiceBuilder.getService(PttService.class);
+        String href = currentLoading == LOAD_SAME_TITLE ? category.getPrePage() : selectInfo.getSameTitleHref();
+        if (currentLoading != LOAD_SAME_TITLE) {
+            articleAdapter.clearResults();
         }
-        pttService.getSearchResult(ServiceBuilder.API_BASE_URL + selectInfo.getSameTitleHref(), ServiceBuilder.COOKIE, 1)
-                .compose(ObserverHelper.applyHelper())
+        currentLoading = LOAD_SAME_TITLE;
+
+        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(observable);
+    }
+
+    private void loadSameAuthor() {
+        isLoading = true;
+
+        String href = currentLoading == LOAD_SAME_AUTHOR ? category.getPrePage() : selectInfo.getSameAuthorHref();
+        if (currentLoading != LOAD_SAME_AUTHOR) {
+            articleAdapter.clearResults();
+        }
+        currentLoading = LOAD_SAME_AUTHOR;
+
+        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(observable);
+    }
+
+    private void processObservable(Observable<Response<Document>> o) {
+        o.compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
                 .doOnNext(this::configData)
-                .doOnError(t -> Log.d(TAG, "setViews: get hot board error : " + t))
+                .doOnError(t -> Log.d(TAG, "setViews: load data error : " + t))
                 .subscribe();
     }
 
     private void configData(Document document) {
         isLoading = false;
 
-        category = new Category(document);
+        boolean reverseData = (currentLoading == LOAD_NORMAL_ARTICLE);
+        category = new Category(document, reverseData);
         if (runAnimation) {
             alphaAnimator.start();
             scaleAnimator.start();
@@ -295,6 +322,7 @@ public class ArticleListFragment extends BaseFragment
         this.cate = cate;
         category = null;
         runAnimation = true;
+        currentLoading = LOAD_NORMAL_ARTICLE;
         articleAdapter.clearResults();
         restoreTextState(categoryText, cate);
         loadData();

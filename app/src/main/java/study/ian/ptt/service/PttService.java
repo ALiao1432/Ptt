@@ -36,8 +36,7 @@ public interface PttService {
     @GET
     Observable<Response<Document>> getSearchResult(
             @Url String searchUrl,
-            @Header("Cookie") String cookie,
-            @Query("page") int page
+            @Header("Cookie") String cookie
     );
 
     @GET("/cls/{classPath}")
