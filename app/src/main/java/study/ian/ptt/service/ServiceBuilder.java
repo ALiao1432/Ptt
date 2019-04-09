@@ -22,6 +22,9 @@ public class ServiceBuilder {
 
     public final static String COOKIE = "over18=1";
     public final static String API_BASE_URL = "https://www.ptt.cc/bbs/";
+    public final static String SEARCH_TITLE = "thread:";
+    public final static String SEARCH_AUTHOR = "author:";
+    public final static String SEARCH_PUSH = "recommend:";
     private final static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API_BASE_URL)
             .addConverterFactory(JsoupConverter.FACTORY)

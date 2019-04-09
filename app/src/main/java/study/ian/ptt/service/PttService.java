@@ -25,14 +25,6 @@ public interface PttService {
             @Path("articlePath") String articlePath
     );
 
-    @GET("{category}/search")
-    Observable<Response<Document>> getSearchResult(
-            @Header("Cookie") String cookie,
-            @Path("category") String category,
-            @Query("q") String query,
-            @Query("page") int page
-    );
-
     @GET
     Observable<Response<Document>> getSearchResult(
             @Url String searchUrl,

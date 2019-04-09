@@ -47,6 +47,8 @@ public class ArticleListFragment extends BaseFragment
     private final static int LOAD_NORMAL_ARTICLE = 0;
     private final static int LOAD_SAME_TITLE = 1;
     private final static int LOAD_SAME_AUTHOR = 2;
+    private final static int LOAD_SEARCH_AUTHOR = 3;
+    private final static int LOAD_SEARCH_PUSH = 4;
 
     private Context context;
     private PreManager preManager;
@@ -56,7 +58,6 @@ public class ArticleListFragment extends BaseFragment
     private ConstraintLayout articleOptionLayout;
     private TextInputEditText searchEdt;
     private TextInputEditText blackListEdt;
-    private MaterialButton titleBtn;
     private MaterialButton authorBtn;
     private MaterialButton pushBtn;
     private MaterialButton updateBlackBtn;
@@ -73,6 +74,7 @@ public class ArticleListFragment extends BaseFragment
     private ArticleAdapter articleAdapter;
     private Category category;
     private String cate;
+    private String searchQuery;
     private ArticleInfo selectInfo;
     private BottomSheetManager sheetManager = new BottomSheetManager();
     private int currentLoading = LOAD_NORMAL_ARTICLE;
@@ -106,7 +108,6 @@ public class ArticleListFragment extends BaseFragment
         articleOptionLayout = view.findViewById(R.id.articleOptionBottomSheet);
 
         searchEdt = keywordBlackListLayout.findViewById(R.id.searchEdt);
-        titleBtn = keywordBlackListLayout.findViewById(R.id.searchTitleBtn);
         authorBtn = keywordBlackListLayout.findViewById(R.id.searchAuthorBtn);
         pushBtn = keywordBlackListLayout.findViewById(R.id.searchPushBtn);
         updateBlackBtn = keywordBlackListLayout.findViewById(R.id.updateBlackBtn);
@@ -163,6 +164,12 @@ public class ArticleListFragment extends BaseFragment
                             case LOAD_SAME_AUTHOR:
                                 loadSameAuthor();
                                 break;
+                            case LOAD_SEARCH_AUTHOR:
+                                loadSearchAuthor(searchQuery);
+                                break;
+                            case LOAD_SEARCH_PUSH:
+                                loadSearchPush(searchQuery);
+                                break;
                         }
                     }
                 }
@@ -182,16 +189,16 @@ public class ArticleListFragment extends BaseFragment
                 blacks = bEditable.toString();
             }
 
-            // TODO: 2019-04-08 search function
             switch (v.getId()) {
-                case R.id.searchTitleBtn:
-                    Log.d(TAG, "setViews: search TitleBtn : " + keyword);
-                    break;
                 case R.id.searchAuthorBtn:
-                    Log.d(TAG, "setViews: search AuthorBtn : " + keyword);
+                    searchEdt.setText("");
+                    searchQuery = ServiceBuilder.SEARCH_AUTHOR + keyword;
+                    loadSearchAuthor(searchQuery);
                     break;
                 case R.id.searchPushBtn:
-                    Log.d(TAG, "setViews: search PushBtn : " + keyword);
+                    searchEdt.setText("");
+                    searchQuery = ServiceBuilder.SEARCH_PUSH + keyword;
+                    loadSearchPush(searchQuery);
                     break;
                 case R.id.updateBlackBtn:
                     preManager.updateBlackList(blacks);
@@ -200,7 +207,6 @@ public class ArticleListFragment extends BaseFragment
             }
             sheetManager.collapseSheet(keywordBlackListSheet);
         };
-        titleBtn.setOnClickListener(searchClickListener);
         authorBtn.setOnClickListener(searchClickListener);
         pushBtn.setOnClickListener(searchClickListener);
         updateBlackBtn.setOnClickListener(searchClickListener);
@@ -258,6 +264,30 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SAME_AUTHOR;
 
+        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(observable);
+    }
+
+    private void loadSearchAuthor(String query) {
+        isLoading = true;
+
+        String href = currentLoading == LOAD_SEARCH_AUTHOR ? category.getPrePage() : cate + "/search?q=" + query;
+        if (currentLoading != LOAD_SEARCH_AUTHOR) {
+            articleAdapter.clearResults();
+        }
+        currentLoading = LOAD_SEARCH_AUTHOR;
+        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(observable);
+    }
+
+    private void loadSearchPush(String query) {
+        isLoading = true;
+
+        String href = currentLoading == LOAD_SEARCH_PUSH ? category.getPrePage() : cate + "/search?q=" + query;
+        if (currentLoading != LOAD_SEARCH_PUSH) {
+            articleAdapter.clearResults();
+        }
+        currentLoading = LOAD_SEARCH_PUSH;
         Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
         processObservable(observable);
     }
@@ -336,6 +366,7 @@ public class ArticleListFragment extends BaseFragment
         this.cate = cate;
         category = null;
         runAnimation = true;
+        searchEdt.setText("");
         currentLoading = LOAD_NORMAL_ARTICLE;
         articleAdapter.clearResults();
         restoreTextState(categoryText, cate);
