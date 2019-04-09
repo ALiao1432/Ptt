@@ -70,6 +70,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         boardAdapter.setOnPageReloadRequestListener(this);
 
         pttClassRecyclerView.setLayoutManager(layoutManager);
+        pttClassRecyclerView.setHasFixedSize(true);
         pttClassRecyclerView.setAdapter(boardAdapter);
 
         pttClassRefreshLayout.setOnRefreshListener(() -> loadData(classPath));

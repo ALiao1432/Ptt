@@ -12,5 +12,7 @@
     <string name="article_black_list_hint">Black List</string>
     <string name="add_blacklist">Add Blacklist</string>
     <string name="cancel_blacklist">Cancel</string>
+    <string name="same_title">Same Title</string>
+    <string name="same_author">Same Author</string>
 
 </resources>

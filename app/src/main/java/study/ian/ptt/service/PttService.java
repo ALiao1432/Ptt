@@ -5,9 +5,11 @@ import org.jsoup.nodes.Document;
 import io.reactivex.Observable;
 import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface PttService {
 
@@ -28,6 +30,13 @@ public interface PttService {
             @Header("Cookie") String cookie,
             @Path("category") String category,
             @Query("q") String query,
+            @Query("page") int page
+    );
+
+    @GET
+    Observable<Response<Document>> getSearchResult(
+            @Url String searchUrl,
+            @Header("Cookie") String cookie,
             @Query("page") int page
     );
 

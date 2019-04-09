@@ -21,7 +21,7 @@ import study.ian.ptt.util.JsoupConverter;
 public class ServiceBuilder {
 
     public final static String COOKIE = "over18=1";
-    private final static String API_BASE_URL = "https://www.ptt.cc/bbs/";
+    public final static String API_BASE_URL = "https://www.ptt.cc/bbs/";
     private final static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API_BASE_URL)
             .addConverterFactory(JsoupConverter.FACTORY)

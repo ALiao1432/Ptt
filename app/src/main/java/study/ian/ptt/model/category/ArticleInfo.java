@@ -1,6 +1,13 @@
 package study.ian.ptt.model.category;
 
+import android.util.Log;
+
+import study.ian.ptt.service.ServiceBuilder;
+
 public class ArticleInfo {
+
+    private final String TAG = "ArticleInfo";
+
     private String title;
     private String href;
     private String author;
@@ -28,6 +35,13 @@ public class ArticleInfo {
         this.date = date;
         this.mark = mark;
         this.count = count;
+
+        if (!this.sameTitleHref.equals("")) {
+            this.sameTitleHref = this.sameTitleHref.substring(5);
+        }
+        if (!this.sameAuthorHref.equals("")) {
+            this.sameAuthorHref = this.sameAuthorHref.substring(5);
+        }
     }
 
     public String getTitle() {

@@ -66,6 +66,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
         boardAdapter.setOnCategorySelectedListener(onCategorySelectedListener);
 
         favRecyclerView.setLayoutManager(layoutManager);
+        favRecyclerView.setHasFixedSize(true);
         favRecyclerView.setAdapter(boardAdapter);
 
         favRefreshLayout.setOnRefreshListener(this::loadData);

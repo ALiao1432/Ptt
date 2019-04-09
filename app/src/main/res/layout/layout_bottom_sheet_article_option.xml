@@ -18,7 +18,6 @@
         android:text="@string/add_blacklist"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
         android:textColor="@color/themeBrightPrimaryText"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,5 +32,36 @@
         app:layout_constraintBottom_toBottomOf="@id/addBlackBtn"
         app:layout_constraintStart_toEndOf="@id/addBlackBtn"
         app:layout_constraintTop_toTopOf="@id/addBlackBtn" />
+
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:background="@color/themeDarkSecondaryText"
+        app:layout_constraintTop_toBottomOf="@id/cancelBlackBtn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sameTitleBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:text="@string/same_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintStart_toStartOf="@id/addBlackBtn"
+        app:layout_constraintTop_toBottomOf="@+id/dividerLine" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sameAuthorBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:text="@string/same_author"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintStart_toEndOf="@id/sameTitleBtn"
+        app:layout_constraintTop_toBottomOf="@id/dividerLine" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,7 @@ public class Search {
                     e.select("div[class=author]").text().trim(),
                     e.select("div[class=dropdown] > div[class=item]:nth-child(1) > a").attr("href"),
                     e.select("div[class=dropdown] > div[class=item]:nth-child(2) > a").attr("href"),
-                    e.select("div[class=date]").text(),
+                    " +" + e.select("div[class=date]").text().trim(),
                     e.select("div[class=mark]").text(),
                     e.select("div[class=board-nuser]").text()
             ));
@@ -52,3 +52,10 @@ public class Search {
                 '}';
     }
 }
+
+
+
+
+
+
+

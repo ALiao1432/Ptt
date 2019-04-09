@@ -57,6 +57,8 @@ public class ArticleListFragment extends BaseFragment
     private MaterialButton pushBtn;
     private MaterialButton addBlackBtn;
     private MaterialButton cancelBlackBtn;
+    private MaterialButton sameTitleBtn;
+    private MaterialButton sameAuthorBtn;
     private RecyclerView articleRecyclerView;
     private BottomSheetBehavior keywordBlackListSheet;
     private BottomSheetBehavior articleOptionSheet;
@@ -105,6 +107,8 @@ public class ArticleListFragment extends BaseFragment
 
         addBlackBtn = articleOptionLayout.findViewById(R.id.addBlackBtn);
         cancelBlackBtn = articleOptionLayout.findViewById(R.id.cancelBlackBtn);
+        sameTitleBtn = articleOptionLayout.findViewById(R.id.sameTitleBtn);
+        sameAuthorBtn = articleOptionLayout.findViewById(R.id.sameAuthorBtn);
     }
 
     private void setViews() {
@@ -124,6 +128,7 @@ public class ArticleListFragment extends BaseFragment
         articleRecyclerView.setNestedScrollingEnabled(true);
         articleRecyclerView.setLayoutManager(layoutManager);
         articleRecyclerView.setAdapter(articleAdapter);
+        articleRecyclerView.setHasFixedSize(true);
         articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -180,11 +185,19 @@ public class ArticleListFragment extends BaseFragment
                     break;
                 case R.id.cancelBlackBtn:
                     break;
+                case R.id.sameTitleBtn:
+                    Log.d(TAG, "setViews: loadSameTitleData");
+                    loadSameTitleData();
+                    break;
+                case R.id.sameAuthorBtn:
+                    break;
             }
             sheetManager.collapseSheet(articleOptionSheet);
         };
         addBlackBtn.setOnClickListener(articleOptionClickListener);
         cancelBlackBtn.setOnClickListener(articleOptionClickListener);
+        sameTitleBtn.setOnClickListener(articleOptionClickListener);
+        sameAuthorBtn.setOnClickListener(articleOptionClickListener);
     }
 
     private void loadData() {
@@ -194,6 +207,22 @@ public class ArticleListFragment extends BaseFragment
             pttService = ServiceBuilder.getService(PttService.class);
         }
         pttService.getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage())
+                .compose(ObserverHelper.applyHelper())
+                .filter(r -> r.code() == 200)
+                .map(Response::body)
+                .doOnNext(this::configData)
+                .doOnError(t -> Log.d(TAG, "setViews: get hot board error : " + t))
+                .subscribe();
+    }
+
+    private void loadSameTitleData() {
+        articleAdapter.clearResults();
+        isLoading = true;
+
+        if (pttService == null) {
+            pttService = ServiceBuilder.getService(PttService.class);
+        }
+        pttService.getSearchResult(ServiceBuilder.API_BASE_URL + selectInfo.getSameTitleHref(), ServiceBuilder.COOKIE, 1)
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
