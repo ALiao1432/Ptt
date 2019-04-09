@@ -26,7 +26,7 @@
 
     <!-- layout_article_bottom_sheet.xml -->
     <dimen name="layout_margin">12dp</dimen>
-    <dimen name="divider_margin">16dp</dimen>
+    <dimen name="divider_margin">12dp</dimen>
     <dimen name="edittext_margin">12dp</dimen>
 
 </resources>

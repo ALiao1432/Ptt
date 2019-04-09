@@ -59,6 +59,7 @@ public class ArticleListFragment extends BaseFragment
     private MaterialButton titleBtn;
     private MaterialButton authorBtn;
     private MaterialButton pushBtn;
+    private MaterialButton updateBlackBtn;
     private MaterialButton addBlackBtn;
     private MaterialButton cancelBlackBtn;
     private MaterialButton sameTitleBtn;
@@ -108,6 +109,7 @@ public class ArticleListFragment extends BaseFragment
         titleBtn = keywordBlackListLayout.findViewById(R.id.searchTitleBtn);
         authorBtn = keywordBlackListLayout.findViewById(R.id.searchAuthorBtn);
         pushBtn = keywordBlackListLayout.findViewById(R.id.searchPushBtn);
+        updateBlackBtn = keywordBlackListLayout.findViewById(R.id.updateBlackBtn);
         blackListEdt = keywordBlackListLayout.findViewById(R.id.blackListEdt);
 
         addBlackBtn = articleOptionLayout.findViewById(R.id.addBlackBtn);
@@ -168,10 +170,16 @@ public class ArticleListFragment extends BaseFragment
         });
 
         View.OnClickListener searchClickListener = v -> {
-            Editable editable = searchEdt.getText();
+            Editable sEditable = searchEdt.getText();
             String keyword = "";
-            if (editable != null) {
-                keyword = editable.toString();
+            if (sEditable != null) {
+                keyword = sEditable.toString();
+            }
+
+            Editable bEditable = blackListEdt.getText();
+            String blacks = "";
+            if (bEditable != null) {
+                blacks = bEditable.toString();
             }
 
             // TODO: 2019-04-08 search function
@@ -185,11 +193,17 @@ public class ArticleListFragment extends BaseFragment
                 case R.id.searchPushBtn:
                     Log.d(TAG, "setViews: search PushBtn : " + keyword);
                     break;
+                case R.id.updateBlackBtn:
+                    preManager.updateBlackList(blacks);
+                    blackListEdt.setText(preManager.getBlackList());
+                    break;
             }
+            sheetManager.collapseSheet(keywordBlackListSheet);
         };
         titleBtn.setOnClickListener(searchClickListener);
         authorBtn.setOnClickListener(searchClickListener);
         pushBtn.setOnClickListener(searchClickListener);
+        updateBlackBtn.setOnClickListener(searchClickListener);
         blackListEdt.setText(preManager.getBlackList());
 
         View.OnClickListener articleOptionClickListener = v -> {

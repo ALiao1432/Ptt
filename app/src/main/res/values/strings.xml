@@ -14,5 +14,6 @@
     <string name="cancel_blacklist">Cancel</string>
     <string name="same_title">Same Title</string>
     <string name="same_author">Same Author</string>
+    <string name="update_black_list">Update</string>
 
 </resources>
