@@ -12,6 +12,7 @@ import com.jakewharton.rxbinding3.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -39,6 +40,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleH
     public void addResults(List<ArticleInfo> list) {
         int addPosition = infoList.size();
         infoList.addAll(list);
+        infoList = infoList.stream()
+                .filter(info -> !preManager.isBlacklist(info.getAuthor()))
+                .collect(Collectors.toList());
         notifyItemInserted(addPosition);
     }
 

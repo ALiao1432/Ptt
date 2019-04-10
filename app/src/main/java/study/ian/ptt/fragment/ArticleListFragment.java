@@ -17,6 +17,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.jakewharton.rxbinding3.view.RxView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import org.jsoup.nodes.Document;
 
@@ -144,7 +146,7 @@ public class ArticleListFragment extends BaseFragment
         articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                if (newState != RecyclerView.SCROLL_STATE_IDLE) {
                     sheetManager.collapseSheet(keywordBlackListSheet);
                     sheetManager.collapseSheet(articleOptionSheet);
                 }
@@ -187,12 +189,6 @@ public class ArticleListFragment extends BaseFragment
                 keyword = sEditable.toString();
             }
 
-            Editable bEditable = blackListEdt.getText();
-            String blacks = "";
-            if (bEditable != null) {
-                blacks = bEditable.toString();
-            }
-
             switch (v.getId()) {
                 case R.id.searchAuthorBtn:
                     searchEdt.setText("");
@@ -205,6 +201,12 @@ public class ArticleListFragment extends BaseFragment
                     loadSearchPush(searchQuery);
                     break;
                 case R.id.updateBlackBtn:
+                    Editable bEditable = blackListEdt.getText();
+                    String blacks = "";
+                    if (bEditable != null) {
+                        blacks = bEditable.toString();
+                    }
+
                     preManager.updateBlackList(blacks);
                     blackListEdt.setText(preManager.getBlackList());
                     Snackbar.make(articleListLayout, "Update Successfully", Snackbar.LENGTH_SHORT).show();
@@ -238,6 +240,20 @@ public class ArticleListFragment extends BaseFragment
         cancelBlackBtn.setOnClickListener(articleOptionClickListener);
         sameTitleBtn.setOnClickListener(articleOptionClickListener);
         sameAuthorBtn.setOnClickListener(articleOptionClickListener);
+
+        setSearchBtnEnable(false); // default disable for search button
+        final Observable<CharSequence> searchEdtObservable = RxTextView.textChanges(searchEdt).share();
+        searchEdtObservable.filter(c -> c.length() > 0)
+                .doOnNext(c -> setSearchBtnEnable(true))
+                .subscribe();
+        searchEdtObservable.filter(c -> c.length() == 0)
+                .doOnNext(c -> setSearchBtnEnable(false))
+                .subscribe();
+    }
+
+    private void setSearchBtnEnable(boolean enable) {
+            authorBtn.setEnabled(enable);
+            pushBtn.setEnabled(enable);
     }
 
     private void loadData() {
@@ -320,7 +336,7 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void initAnimator() {
-        long ANIM_DURATION = 400;
+        long ANIM_DURATION = 250;
         alphaAnimator = ValueAnimator.ofFloat(1, 0);
         alphaAnimator.setDuration(ANIM_DURATION);
         alphaAnimator.setInterpolator(new DecelerateInterpolator());

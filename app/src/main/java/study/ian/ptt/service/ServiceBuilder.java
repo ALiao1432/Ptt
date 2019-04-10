@@ -4,13 +4,8 @@ import android.content.Context;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-
 import io.reactivex.Observable;
 import io.reactivex.processors.PublishProcessor;
-import okhttp3.Interceptor;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import study.ian.networkstateutil.ConnectionType;
