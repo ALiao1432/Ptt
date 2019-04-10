@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.jsoup.nodes.Document;
@@ -25,6 +26,7 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
@@ -54,6 +56,7 @@ public class ArticleListFragment extends BaseFragment
     private PreManager preManager;
     private PttService pttService = ServiceBuilder.getService(PttService.class);
     private TextView categoryText;
+    private CoordinatorLayout articleListLayout;
     private ConstraintLayout keywordBlackListLayout;
     private ConstraintLayout articleOptionLayout;
     private TextInputEditText searchEdt;
@@ -101,6 +104,7 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void findViews(View view) {
+        articleListLayout = view.findViewById(R.id.articleListLayout);
         articleRecyclerView = view.findViewById(R.id.recyclerViewArticle);
         categoryText = view.findViewById(R.id.categoryInfoText);
         bottomAppBar = view.findViewById(R.id.bottomBar);
@@ -203,6 +207,7 @@ public class ArticleListFragment extends BaseFragment
                 case R.id.updateBlackBtn:
                     preManager.updateBlackList(blacks);
                     blackListEdt.setText(preManager.getBlackList());
+                    Snackbar.make(articleListLayout, "Update Successfully", Snackbar.LENGTH_SHORT).show();
                     break;
             }
             sheetManager.collapseSheet(keywordBlackListSheet);
