@@ -12,12 +12,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchInputLayout"
-        style="@style/Base.Widget.MaterialComponents.TextInputLayout"
+        style="@style/AppTheme.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/article_search_option_hint"
-        app:boxStrokeColor="@color/themeDarkSecondaryText"
-        app:hintTextAppearance="@style/AppTheme.HintText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -63,13 +61,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/blackListInputLayout"
-        style="@style/Base.Widget.MaterialComponents.TextInputLayout"
+        style="@style/AppTheme.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/divider_margin"
         android:hint="@string/article_black_list_hint"
-        app:boxStrokeColor="@color/themeDarkSecondaryText"
-        app:hintTextAppearance="@style/AppTheme.HintText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerLine">

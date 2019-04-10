@@ -9,7 +9,7 @@
     <string name="article_search_option_title">Title</string>
     <string name="article_search_option_author">Author</string>
     <string name="article_search_option_push">Push</string>
-    <string name="article_black_list_hint">Black List</string>
+    <string name="article_black_list_hint">Blacklist</string>
     <string name="add_blacklist">Add Blacklist</string>
     <string name="cancel_blacklist">Cancel</string>
     <string name="same_title">Same Title</string>

@@ -10,12 +10,23 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/vd_launcher_ptt</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    
     <style name="AppTheme.TrueDark" parent="AppTheme">
         <item name="android:textColor">@color/themeDarkPrimaryText</item>
     </style>
 
     <style name="AppTheme.HintText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/themeDarkSecondaryText</item>
+        <item name="android:textColor">@color/themeDarkPrimaryText</item>
+    </style>
+
+    <style name="AppTheme.EditText" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:textColorHint">@color/themeDarkSecondaryText</item>
+        <item name="boxBackgroundColor">@color/themeDark</item>
+        <item name="hintTextAppearance">@style/AppTheme.HintText</item>
     </style>
 
 </resources>
