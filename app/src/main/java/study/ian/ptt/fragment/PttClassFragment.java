@@ -80,7 +80,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     private void loadData(String classPath) {
         pttClassRefreshLayout.setRefreshing(true);
 
-        ServiceBuilder.getService(PttService.class)
+        ServiceBuilder.getPttService()
                 .getPttClass(classPath)
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)

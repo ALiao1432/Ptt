@@ -26,6 +26,7 @@ public class ServiceBuilder {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build();
     private final static PublishProcessor<ConnectionType> connectionTypeProcessor = PublishProcessor.create();
+    private static PttService pttService = null;
 
     public static void watchNetworkState(Context context) {
         new NetworkStateUtil(context, new NetworkStateChangeListener() {
@@ -44,6 +45,13 @@ public class ServiceBuilder {
     @NotNull
     public static <T> T getService(Class<T> tClass) {
         return retrofit.create(tClass);
+    }
+
+    public static PttService getPttService() {
+        if (pttService == null) {
+            pttService = retrofit.create(PttService.class);
+        }
+        return pttService;
     }
 
     public static Observable<ConnectionType> getConnectStateObservable() {

@@ -77,7 +77,7 @@ public class HotFragment extends BaseFragment implements PreManager.OnFavActionL
     private void loadData() {
         hotRefreshLayout.setRefreshing(true);
 
-        ServiceBuilder.getService(PttService.class)
+        ServiceBuilder.getPttService()
                 .getHotBoard()
                 .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)

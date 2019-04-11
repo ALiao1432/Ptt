@@ -55,7 +55,7 @@ public class ArticleListFragment extends BaseFragment
 
     private Context context;
     private PreManager preManager;
-    private PttService pttService = ServiceBuilder.getService(PttService.class);
+    private PttService pttService = ServiceBuilder.getPttService();
     private TextView categoryText;
     private CoordinatorLayout articleListLayout;
     private ConstraintLayout keywordBlackListLayout;
