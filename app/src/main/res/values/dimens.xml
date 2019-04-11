@@ -30,6 +30,6 @@
     <dimen name="edittext_margin">12dp</dimen>
 
     <!-- holder_article_push.xml -->
-    <dimen name="push_content_text_size">18sp</dimen>
+    <dimen name="push_content_text_size">16sp</dimen>
 
 </resources>

@@ -1,17 +1,21 @@
 package study.ian.ptt.adapter.recyclerview;
 
+import android.animation.ValueAnimator;
+import android.text.Spannable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import study.ian.ptt.R;
+import study.ian.ptt.model.article.Article;
 import study.ian.ptt.model.article.Push;
+import study.ian.ptt.util.SpanUtil;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -20,14 +24,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final static int VIEW_TYPE_CONTENT = 1;
     private final static int VIEW_TYPE_PUSH = 2;
 
-    private List<Push> pushList = new ArrayList<>();
+    private Article article;
+    private List<Push> pushList;
 
     public ArticleAdapter() {
 
     }
 
-    public void addResults(List<Push> pushList) {
-        this.pushList = pushList;
+    public void addResults(Article article) {
+        this.article = article;
+        pushList = article.getPushList();
+        notifyDataSetChanged();
+    }
+
+    public void clearResults() {
+        if (article != null) {
+            article = null;
+            pushList.clear();
+            notifyDataSetChanged();
+        }
     }
 
     @NonNull
@@ -51,29 +66,43 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ArticleHeaderHolder) {
-            configHeaderHolder((ArticleHeaderHolder) holder, position);
+            configHeaderHolder((ArticleHeaderHolder) holder);
         } else if (holder instanceof ArticleContentHolder) {
-            configContentHolder((ArticleContentHolder) holder, position);
+            configContentHolder((ArticleContentHolder) holder);
         } else if (holder instanceof ArticlePushHolder) {
             configPushHolder((ArticlePushHolder) holder, position);
         }
     }
 
-    private void configHeaderHolder(ArticleHeaderHolder holder, int position) {
-
+    private void configHeaderHolder(ArticleHeaderHolder holder) {
+        holder.articleTitleText.setText(article.getTitle());
+        holder.articleAuthorText.setText(article.getAuthor());
+        holder.articleBoardText.setText(article.getBoard());
+        holder.articleTimeText.setText(article.getArticleTime());
     }
 
-    private void configContentHolder(ArticleContentHolder holder, int position) {
-
+    private void configContentHolder(ArticleContentHolder holder) {
+        Spannable spannable = SpanUtil.getSpanned(holder.articleContentText, article.getMainContent().trim());
+        SpanUtil.setImageClickListener(spannable, imageSpan -> Log.d(TAG, "configContentHolder: span : " + spannable + ", imageSpan : " + imageSpan));
+        holder.articleContentText.setText(spannable);
     }
 
     private void configPushHolder(ArticlePushHolder holder, int position) {
         int posInList = position - 2;
+        Push push = pushList.get(posInList);
+        String pushTagCount = String.valueOf(push.getPushTagCount()+ push.getPushTag());
 
+        holder.pushTagText.setText(pushTagCount);
+        holder.pushAuthorText.setText(push.getAuthor());
+        holder.pushContentText.setText(push.getContent());
+        holder.pushTimeText.setText(push.getTime());
     }
 
     @Override
     public int getItemCount() {
+        if (article == null) {
+            return 0;
+        }
         return pushList.size() + 2;
     }
 
@@ -94,15 +123,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private TextView articleTitleText;
         private TextView articleBoardText;
         private TextView articleAuthorText;
-        private TextView articleDateText;
+        private TextView articleTimeText;
 
         ArticleHeaderHolder(@NonNull View itemView) {
             super(itemView);
-
             articleTitleText = itemView.findViewById(R.id.articleTitleText);
             articleBoardText = itemView.findViewById(R.id.articleBoardText);
             articleAuthorText = itemView.findViewById(R.id.articleAuthorText);
-            articleDateText = itemView.findViewById(R.id.articleDateText);
+            articleTimeText = itemView.findViewById(R.id.articleTimeText);
         }
     }
 
@@ -112,7 +140,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         ArticleContentHolder(@NonNull View itemView) {
             super(itemView);
-
             articleContentText = itemView.findViewById(R.id.articleContentText);
         }
     }
@@ -121,16 +148,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         private TextView pushTagText;
         private TextView pushAuthorText;
-        private TextView pushTagCountText;
         private TextView pushTimeText;
         private TextView pushContentText;
 
         ArticlePushHolder(@NonNull View itemView) {
             super(itemView);
-
             pushTagText = itemView.findViewById(R.id.pushTagText);
             pushAuthorText = itemView.findViewById(R.id.pushAuthorText);
-            pushTagCountText = itemView.findViewById(R.id.pushTagCountText);
             pushTimeText = itemView.findViewById(R.id.pushTimeText);
             pushContentText = itemView.findViewById(R.id.pushContentText);
         }

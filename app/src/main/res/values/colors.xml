@@ -35,7 +35,7 @@
 
     <color name="pushContent">#999900</color>
     <color name="pushAuthor">#FFFF66</color>
-    <color name="pushTime">#FFFF66</color>
+    <color name="pushTime">#BBBBBB</color>
     <color name="push">#FFFFFF</color>
     <color name="arrow">#FF6666</color>
     <color name="shush">#FF0000</color>

@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/themeDarkSecondary"
+    android:background="@color/themeDark"
     android:padding="@dimen/layout_margin">
 
     <TextView
         android:id="@+id/articleTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/article_title_text_size"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="[情報] 湖人記者Bill Oram：年輕球員不信任LBJ　湖人非KD等球星首選" />
 
@@ -31,12 +32,12 @@
         tools:text="summerrain" />
 
     <TextView
-        android:id="@+id/articleDateText"
+        android:id="@+id/articleTimeText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/layout_margin"
         android:textColor="@color/themeDarkSecondaryText"
-        app:layout_constraintStart_toEndOf="@id/articleAuthorText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/articleBoardText"
         tools:text="4/10" />
 

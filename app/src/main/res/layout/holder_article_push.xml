@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/themeTrueDark"
-    android:padding="@dimen/layout_margin">
+    android:paddingStart="@dimen/layout_margin"
+    android:paddingBottom="@dimen/layout_margin"
+    android:paddingEnd="@dimen/layout_margin">
 
     <TextView
         android:id="@+id/pushTagText"
@@ -26,15 +28,6 @@
         tools:text="apple365789" />
 
     <TextView
-        android:id="@+id/pushTagCountText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_margin"
-        app:layout_constraintStart_toEndOf="@id/pushAuthorText"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="14樓" />
-
-    <TextView
         android:id="@+id/pushTimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/pushContent"
-        android:textStyle="bold"
         android:textSize="@dimen/push_content_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pushTagText"

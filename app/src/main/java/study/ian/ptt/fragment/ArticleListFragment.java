@@ -272,8 +272,8 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SAME_TITLE;
 
-        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(observable);
+        Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(o);
     }
 
     private void loadSameAuthor() {
@@ -285,8 +285,8 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SAME_AUTHOR;
 
-        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(observable);
+        Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(o);
     }
 
     private void loadSearchAuthor(String query) {
@@ -297,8 +297,8 @@ public class ArticleListFragment extends BaseFragment
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_AUTHOR;
-        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(observable);
+        Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(o);
     }
 
     private void loadSearchPush(String query) {
@@ -309,8 +309,8 @@ public class ArticleListFragment extends BaseFragment
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_PUSH;
-        Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(observable);
+        Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
+        processObservable(o);
     }
 
     private void processObservable(Observable<Response<Document>> o) {
@@ -374,14 +374,6 @@ public class ArticleListFragment extends BaseFragment
         });
     }
 
-    private void restoreTextState(TextView textView, String text) {
-        textView.setVisibility(View.VISIBLE);
-        textView.setText(text);
-        textView.setAlpha(1f);
-        textView.setScaleX(1f);
-        textView.setScaleY(1f);
-    }
-
     @Override
     public void onCategoryClicked(String cate) {
         this.cate = cate;
@@ -392,6 +384,14 @@ public class ArticleListFragment extends BaseFragment
         articleListAdapter.clearResults();
         restoreTextState(categoryText, cate);
         loadData();
+    }
+
+    private void restoreTextState(TextView textView, String text) {
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(text);
+        textView.setAlpha(1f);
+        textView.setScaleX(1f);
+        textView.setScaleY(1f);
     }
 
     @Override
