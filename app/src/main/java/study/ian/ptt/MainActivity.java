@@ -1,7 +1,6 @@
 package study.ian.ptt;
 
 import android.os.Bundle;
-import android.view.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import study.ian.ptt.adapter.viewpager.GenAdapter;
+import study.ian.ptt.fragment.ArticleFragment;
 import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
 import study.ian.ptt.fragment.TestFragment;
@@ -54,17 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
         BoardFragment boardFragment = new BoardFragment();
         ArticleListFragment articleListFragment = new ArticleListFragment();
-        TestFragment fragment2 = new TestFragment();
+        ArticleFragment articleFragment = new ArticleFragment();
         TestFragment fragment3 = new TestFragment();
 
         boardFragment.setOutPager(outPager);
-        boardFragment.setOnCategorySelectedListener(articleListFragment);
-        fragment2.setString("2");
+        boardFragment.setOnCategoryClickedListener(articleListFragment);
+
+        articleListFragment.setOutPager(outPager);
+        articleListFragment.setOnArticleListClickedListener(articleFragment);
+
         fragment3.setString("3");
 
         outFragList.add(boardFragment);
         outFragList.add(articleListFragment);
-        outFragList.add(fragment2);
+        outFragList.add(articleFragment);
         outFragList.add(fragment3);
 
         GenAdapter oAdapter = new GenAdapter(getSupportFragmentManager(), outFragList);

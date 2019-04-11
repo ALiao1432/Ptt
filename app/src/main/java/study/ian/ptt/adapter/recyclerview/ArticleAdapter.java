@@ -1,107 +1,138 @@
 package study.ian.ptt.adapter.recyclerview;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import study.ian.ptt.R;
-import study.ian.ptt.model.category.ArticleInfo;
-import study.ian.ptt.util.CountTextConverter;
-import study.ian.ptt.util.OnArticleListLongClickListener;
-import study.ian.ptt.util.PreManager;
+import study.ian.ptt.model.article.Push;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final String TAG = "ArticleAdapter";
+    private final static int VIEW_TYPE_HEADER = 0;
+    private final static int VIEW_TYPE_CONTENT = 1;
+    private final static int VIEW_TYPE_PUSH = 2;
 
-    private List<ArticleInfo> infoList = new ArrayList<>();
-    private PreManager preManager;
-    private Resources resources;
-    private OnArticleListLongClickListener longClickListener;
+    private List<Push> pushList = new ArrayList<>();
 
-    public ArticleAdapter(Context context) {
-        resources = context.getResources();
-        preManager = PreManager.getInstance();
+    public ArticleAdapter() {
+
     }
 
-    public void addResults(List<ArticleInfo> list) {
-        int addPosition = infoList.size();
-        infoList.addAll(list);
-        infoList = infoList.stream()
-                .filter(info -> !preManager.isBlacklist(info.getAuthor()))
-                .collect(Collectors.toList());
-        notifyItemInserted(addPosition);
-    }
-
-    public void clearResults() {
-        infoList.clear();
-        notifyDataSetChanged();
-    }
-
-    public void setOnArticleListLongClickListener(OnArticleListLongClickListener listener) {
-        longClickListener = listener;
+    public void addResults(List<Push> pushList) {
+        this.pushList = pushList;
     }
 
     @NonNull
     @Override
-    public ArticleHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.holder_article, parent, false);
-        return new ArticleHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        switch (viewType) {
+            case VIEW_TYPE_HEADER:
+                View headerView = inflater.inflate(R.layout.holder_article_header, parent, false);
+                return new ArticleHeaderHolder(headerView);
+            case VIEW_TYPE_CONTENT:
+                View contentView = inflater.inflate(R.layout.holder_article_content, parent, false);
+                return new ArticleContentHolder(contentView);
+            case VIEW_TYPE_PUSH:
+            default:
+                View pushView = inflater.inflate(R.layout.holder_article_push, parent, false);
+                return new ArticlePushHolder(pushView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
-        ArticleInfo info = infoList.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ArticleHeaderHolder) {
+            configHeaderHolder((ArticleHeaderHolder) holder, position);
+        } else if (holder instanceof ArticleContentHolder) {
+            configContentHolder((ArticleContentHolder) holder, position);
+        } else if (holder instanceof ArticlePushHolder) {
+            configPushHolder((ArticlePushHolder) holder, position);
+        }
+    }
 
-        RxView.longClicks(holder.articleCard)
-                .doOnNext(unit -> longClickListener.OnArticleListLongClick(info))
-                .doOnError(t -> Log.d(TAG, "onBindViewHolder: long click article error : " + t))
-                .subscribe();
+    private void configHeaderHolder(ArticleHeaderHolder holder, int position) {
 
-        holder.countText.setText(info.getCount());
-        holder.countText.setTextColor(CountTextConverter.getPushCountColor(resources, info.getCount()));
-        holder.titleText.setText(info.getTitle());
-        holder.authorText.setText(info.getAuthor());
-        holder.markText.setText(info.getMark());
-        holder.dateText.setText(info.getDate());
+    }
+
+    private void configContentHolder(ArticleContentHolder holder, int position) {
+
+    }
+
+    private void configPushHolder(ArticlePushHolder holder, int position) {
+        int posInList = position - 2;
+
     }
 
     @Override
     public int getItemCount() {
-        return infoList.size();
+        return pushList.size() + 2;
     }
 
-    class ArticleHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemViewType(int position) {
+        switch (position) {
+            case 0:
+                return VIEW_TYPE_HEADER;
+            case 1:
+                return VIEW_TYPE_CONTENT;
+            default:
+                return VIEW_TYPE_PUSH;
+        }
+    }
 
-        private CardView articleCard;
-        private TextView countText;
-        private TextView titleText;
-        private TextView authorText;
-        private TextView markText;
-        private TextView dateText;
+    class ArticleHeaderHolder extends RecyclerView.ViewHolder {
 
-        ArticleHolder(@NonNull View v) {
-            super(v);
+        private TextView articleTitleText;
+        private TextView articleBoardText;
+        private TextView articleAuthorText;
+        private TextView articleDateText;
 
-            articleCard = v.findViewById(R.id.articleCard);
-            countText = v.findViewById(R.id.countText);
-            titleText = v.findViewById(R.id.titleText);
-            authorText = v.findViewById(R.id.authorText);
-            markText = v.findViewById(R.id.markText);
-            dateText = v.findViewById(R.id.dateText);
+        ArticleHeaderHolder(@NonNull View itemView) {
+            super(itemView);
+
+            articleTitleText = itemView.findViewById(R.id.articleTitleText);
+            articleBoardText = itemView.findViewById(R.id.articleBoardText);
+            articleAuthorText = itemView.findViewById(R.id.articleAuthorText);
+            articleDateText = itemView.findViewById(R.id.articleDateText);
+        }
+    }
+
+    class ArticleContentHolder extends RecyclerView.ViewHolder {
+
+        private TextView articleContentText;
+
+        ArticleContentHolder(@NonNull View itemView) {
+            super(itemView);
+
+            articleContentText = itemView.findViewById(R.id.articleContentText);
+        }
+    }
+
+    class ArticlePushHolder extends RecyclerView.ViewHolder {
+
+        private TextView pushTagText;
+        private TextView pushAuthorText;
+        private TextView pushTagCountText;
+        private TextView pushTimeText;
+        private TextView pushContentText;
+
+        ArticlePushHolder(@NonNull View itemView) {
+            super(itemView);
+
+            pushTagText = itemView.findViewById(R.id.pushTagText);
+            pushAuthorText = itemView.findViewById(R.id.pushAuthorText);
+            pushTagCountText = itemView.findViewById(R.id.pushTagCountText);
+            pushTimeText = itemView.findViewById(R.id.pushTimeText);
+            pushContentText = itemView.findViewById(R.id.pushContentText);
         }
     }
 }

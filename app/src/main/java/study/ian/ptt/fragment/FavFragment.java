@@ -63,7 +63,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
 
         boardAdapter = new BoardAdapter(context, outPager);
-        boardAdapter.setOnCategorySelectedListener(onCategorySelectedListener);
+        boardAdapter.setOnCategoryClickedListener(onCategoryClickedListener);
 
         favRecyclerView.setLayoutManager(layoutManager);
         favRecyclerView.setHasFixedSize(true);

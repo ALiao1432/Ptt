@@ -64,7 +64,7 @@ public class HotFragment extends BaseFragment implements PreManager.OnFavActionL
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
 
         boardAdapter = new BoardAdapter(context, outPager);
-        boardAdapter.setOnCategorySelectedListener(onCategorySelectedListener);
+        boardAdapter.setOnCategoryClickedListener(onCategoryClickedListener);
 
         hotRecyclerView.setLayoutManager(layoutManager);
         hotRecyclerView.setHasFixedSize(true);

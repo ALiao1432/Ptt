@@ -66,7 +66,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
 
         boardAdapter = new BoardAdapter(context, outPager);
-        boardAdapter.setOnCategorySelectedListener(onCategorySelectedListener);
+        boardAdapter.setOnCategoryClickedListener(onCategoryClickedListener);
         boardAdapter.setOnPageReloadRequestListener(this);
 
         pttClassRecyclerView.setLayoutManager(layoutManager);

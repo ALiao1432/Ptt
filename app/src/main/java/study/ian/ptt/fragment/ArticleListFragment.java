@@ -17,7 +17,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.jakewharton.rxbinding3.view.RxView;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import org.jsoup.nodes.Document;
@@ -34,18 +33,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
 import retrofit2.Response;
 import study.ian.ptt.R;
-import study.ian.ptt.adapter.recyclerview.ArticleAdapter;
+import study.ian.ptt.adapter.recyclerview.ArticleListAdapter;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.model.category.Category;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
-import study.ian.ptt.util.OnArticleListLongClickListener;
-import study.ian.ptt.util.OnCategorySelectedListener;
+import study.ian.ptt.util.OnArticleListLongClickedListener;
+import study.ian.ptt.util.OnCategoryClickedListener;
 import study.ian.ptt.util.PreManager;
 
 public class ArticleListFragment extends BaseFragment
-        implements OnCategorySelectedListener, OnArticleListLongClickListener {
+        implements OnCategoryClickedListener, OnArticleListLongClickedListener {
 
     private final String TAG = "ArticleListFragment";
     private final static int LOAD_NORMAL_ARTICLE = 0;
@@ -70,13 +69,13 @@ public class ArticleListFragment extends BaseFragment
     private MaterialButton cancelBlackBtn;
     private MaterialButton sameTitleBtn;
     private MaterialButton sameAuthorBtn;
-    private RecyclerView articleRecyclerView;
+    private RecyclerView articleListRecyclerView;
     private BottomSheetBehavior keywordBlackListSheet;
     private BottomSheetBehavior articleOptionSheet;
     private BottomAppBar bottomAppBar;
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
-    private ArticleAdapter articleAdapter;
+    private ArticleListAdapter articleListAdapter;
     private Category category;
     private String cate;
     private String searchQuery;
@@ -105,13 +104,13 @@ public class ArticleListFragment extends BaseFragment
         return v;
     }
 
-    private void findViews(View view) {
-        articleListLayout = view.findViewById(R.id.articleListLayout);
-        articleRecyclerView = view.findViewById(R.id.recyclerViewArticle);
-        categoryText = view.findViewById(R.id.categoryInfoText);
-        bottomAppBar = view.findViewById(R.id.bottomBar);
-        keywordBlackListLayout = view.findViewById(R.id.keywordBlackListBottomSheet);
-        articleOptionLayout = view.findViewById(R.id.articleOptionBottomSheet);
+    private void findViews(View v) {
+        articleListLayout = v.findViewById(R.id.articleListLayout);
+        articleListRecyclerView = v.findViewById(R.id.recyclerViewArticle);
+        categoryText = v.findViewById(R.id.categoryInfoText);
+        bottomAppBar = v.findViewById(R.id.bottomBar);
+        keywordBlackListLayout = v.findViewById(R.id.keywordBlackListBottomSheet);
+        articleOptionLayout = v.findViewById(R.id.articleOptionBottomSheet);
 
         searchEdt = keywordBlackListLayout.findViewById(R.id.searchEdt);
         authorBtn = keywordBlackListLayout.findViewById(R.id.searchAuthorBtn);
@@ -136,14 +135,15 @@ public class ArticleListFragment extends BaseFragment
         bottomAppBar.setNavigationOnClickListener(v -> sheetManager.expandSheet(keywordBlackListSheet));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        articleAdapter = new ArticleAdapter(context);
-        articleAdapter.setOnArticleListLongClickListener(this);
+        articleListAdapter = new ArticleListAdapter(context, outPager);
+        articleListAdapter.setOnArticleListLongClickedListener(this);
+        articleListAdapter.setOnArticleListClickedListener(onArticleListClickedListener);
 
-        articleRecyclerView.setNestedScrollingEnabled(true);
-        articleRecyclerView.setLayoutManager(layoutManager);
-        articleRecyclerView.setAdapter(articleAdapter);
-        articleRecyclerView.setHasFixedSize(true);
-        articleRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        articleListRecyclerView.setNestedScrollingEnabled(true);
+        articleListRecyclerView.setLayoutManager(layoutManager);
+        articleListRecyclerView.setAdapter(articleListAdapter);
+        articleListRecyclerView.setHasFixedSize(true);
+        articleListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) {
@@ -252,8 +252,8 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void setSearchBtnEnable(boolean enable) {
-            authorBtn.setEnabled(enable);
-            pushBtn.setEnabled(enable);
+        authorBtn.setEnabled(enable);
+        pushBtn.setEnabled(enable);
     }
 
     private void loadData() {
@@ -268,7 +268,7 @@ public class ArticleListFragment extends BaseFragment
 
         String href = currentLoading == LOAD_SAME_TITLE ? category.getPrePage() : selectInfo.getSameTitleHref();
         if (currentLoading != LOAD_SAME_TITLE) {
-            articleAdapter.clearResults();
+            articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SAME_TITLE;
 
@@ -281,7 +281,7 @@ public class ArticleListFragment extends BaseFragment
 
         String href = currentLoading == LOAD_SAME_AUTHOR ? category.getPrePage() : selectInfo.getSameAuthorHref();
         if (currentLoading != LOAD_SAME_AUTHOR) {
-            articleAdapter.clearResults();
+            articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SAME_AUTHOR;
 
@@ -294,7 +294,7 @@ public class ArticleListFragment extends BaseFragment
 
         String href = currentLoading == LOAD_SEARCH_AUTHOR ? category.getPrePage() : cate + "/search?q=" + query;
         if (currentLoading != LOAD_SEARCH_AUTHOR) {
-            articleAdapter.clearResults();
+            articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_AUTHOR;
         Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
@@ -306,7 +306,7 @@ public class ArticleListFragment extends BaseFragment
 
         String href = currentLoading == LOAD_SEARCH_PUSH ? category.getPrePage() : cate + "/search?q=" + query;
         if (currentLoading != LOAD_SEARCH_PUSH) {
-            articleAdapter.clearResults();
+            articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_PUSH;
         Observable<Response<Document>> observable = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
@@ -331,7 +331,7 @@ public class ArticleListFragment extends BaseFragment
             alphaAnimator.start();
             scaleAnimator.start();
         } else {
-            articleAdapter.addResults(category.getArticleInfoList());
+            articleListAdapter.addResults(category.getArticleInfoList());
         }
     }
 
@@ -358,7 +358,7 @@ public class ArticleListFragment extends BaseFragment
             @Override
             public void onAnimationEnd(Animator animation) {
                 runAnimation = false;
-                articleAdapter.addResults(category.getArticleInfoList());
+                articleListAdapter.addResults(category.getArticleInfoList());
                 categoryText.setVisibility(View.GONE);
             }
 
@@ -383,19 +383,19 @@ public class ArticleListFragment extends BaseFragment
     }
 
     @Override
-    public void onCategorySelected(String cate) {
+    public void onCategoryClicked(String cate) {
         this.cate = cate;
         category = null;
         runAnimation = true;
         searchEdt.setText("");
         currentLoading = LOAD_NORMAL_ARTICLE;
-        articleAdapter.clearResults();
+        articleListAdapter.clearResults();
         restoreTextState(categoryText, cate);
         loadData();
     }
 
     @Override
-    public void OnArticleListLongClick(ArticleInfo info) {
+    public void onArticleListLongClicked(ArticleInfo info) {
         selectInfo = info;
         sheetManager.expandSheet(articleOptionSheet);
     }

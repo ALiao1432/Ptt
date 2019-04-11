@@ -43,13 +43,13 @@ public class BoardFragment extends BaseFragment {
         PttClassFragment pttClassFragment = new PttClassFragment();
 
         favFragment.setOutPager(outPager);
-        favFragment.setOnCategorySelectedListener(onCategorySelectedListener);
+        favFragment.setOnCategoryClickedListener(onCategoryClickedListener);
 
         hotFragment.setOutPager(outPager);
-        hotFragment.setOnCategorySelectedListener(onCategorySelectedListener);
+        hotFragment.setOnCategoryClickedListener(onCategoryClickedListener);
 
         pttClassFragment.setOutPager(outPager);
-        pttClassFragment.setOnCategorySelectedListener(onCategorySelectedListener);
+        pttClassFragment.setOnCategoryClickedListener(onCategoryClickedListener);
 
         fragmentList.add(favFragment);
         fragmentList.add(hotFragment);

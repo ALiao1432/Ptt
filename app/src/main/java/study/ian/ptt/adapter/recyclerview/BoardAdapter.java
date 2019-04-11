@@ -24,7 +24,7 @@ import study.ian.morphviewlib.MorphView;
 import study.ian.ptt.R;
 import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.util.CountTextConverter;
-import study.ian.ptt.util.OnCategorySelectedListener;
+import study.ian.ptt.util.OnCategoryClickedListener;
 import study.ian.ptt.util.OnPageReloadRequestListener;
 import study.ian.ptt.util.PreManager;
 
@@ -33,7 +33,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
     private final String TAG = "BoardAdapter";
 
     private final ViewPager outPager;
-    private OnCategorySelectedListener onCategorySelectedListener;
+    private OnCategoryClickedListener onCategoryClickedListener;
     private OnPageReloadRequestListener onPageReloadRequestListener;
     private List<BoardInfo> infoList = new ArrayList<>();
     private Resources resources;
@@ -45,8 +45,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         outPager = pager;
     }
 
-    public void setOnCategorySelectedListener(OnCategorySelectedListener listener) {
-        onCategorySelectedListener = listener;
+    public void setOnCategoryClickedListener(OnCategoryClickedListener listener) {
+        onCategoryClickedListener = listener;
     }
 
     public void setOnPageReloadRequestListener(OnPageReloadRequestListener listener) {
@@ -73,8 +73,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .doOnNext(unit -> {
                     if (info.getSort() == BoardInfo.SORT_BOARD) {
-                        if (onCategorySelectedListener != null) {
-                            onCategorySelectedListener.onCategorySelected(info.getName());
+                        if (onCategoryClickedListener != null) {
+                            onCategoryClickedListener.onCategoryClicked(info.getName());
                         }
                         outPager.setCurrentItem(1);
                     } else if (info.getSort() == BoardInfo.SORT_CLASS) {

@@ -9,9 +9,9 @@
     <color name="themeBright">#F5F5F5</color>
     <color name="themeBrightPrimaryText">#212121</color>
     <color name="themeDark">#212121</color>
-    <color name="themeDarkSecondary">#363636</color>
+    <color name="themeDarkSecondary">#303030</color>
     <color name="themeDarkPrimaryText">#CCCCCC</color>
-    <color name="themeDarkSecondaryText">#747474</color>
+    <color name="themeDarkSecondaryText">#A0A0A0</color>
     <color name="themeTrueDark">#000000</color>
 
     <color name="userCount_0">#00000000</color>
@@ -32,6 +32,14 @@
     <color name="pushCount_10_99">#FFFF66</color>
     <color name="pushCount_100">#FF6666</color>
     <color name="pushCount_X">#666666</color>
+
+    <color name="pushContent">#999900</color>
+    <color name="pushAuthor">#FFFF66</color>
+    <color name="pushTime">#FFFF66</color>
+    <color name="push">#FFFFFF</color>
+    <color name="arrow">#FF6666</color>
+    <color name="shush">#FF0000</color>
+
 
     <color name="fav_view_color">#f44336</color>
 
