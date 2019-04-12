@@ -12,6 +12,7 @@
         android:id="@+id/articleContentText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="@dimen/article_content_text_size"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="說一個故事說一個故事說一個故事說一個故事說一個故事說一個故事說一個故事說一個故事說一個故事說一個故事" />
 

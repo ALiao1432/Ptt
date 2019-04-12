@@ -32,4 +32,7 @@
     <!-- holder_article_push.xml -->
     <dimen name="push_content_text_size">16sp</dimen>
 
+    <!-- holder_article_content.xml -->
+    <dimen name="article_content_text_size">16sp</dimen>
+
 </resources>

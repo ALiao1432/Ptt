@@ -35,10 +35,9 @@
         android:id="@+id/articleTimeText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/layout_margin"
         android:textColor="@color/themeDarkSecondaryText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/articleBoardText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/articleAuthorText"
         tools:text="4/10" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

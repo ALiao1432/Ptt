@@ -1,6 +1,6 @@
 package study.ian.ptt.adapter.recyclerview;
 
-import android.animation.ValueAnimator;
+import android.content.Context;
 import android.text.Spannable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,10 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding3.view.RxView;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.subjects.PublishSubject;
 import study.ian.ptt.R;
 import study.ian.ptt.model.article.Article;
 import study.ian.ptt.model.article.Push;
@@ -23,12 +28,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final static int VIEW_TYPE_HEADER = 0;
     private final static int VIEW_TYPE_CONTENT = 1;
     private final static int VIEW_TYPE_PUSH = 2;
+    private final static int TAG_STATE_NORMAL = 0;
+    private final static int TAG_STATE_FLOOR = 1;
+    private final PublishSubject<Integer> tagFloorSubject = PublishSubject.create();
+    private final PublishSubject<String> highlightAuthorSubject = PublishSubject.create();
 
     private Article article;
     private List<Push> pushList;
+    private String highLightAuthor = "";
+    private final int COLOR_PUSH;
+    private final int COLOR_ARROW;
+    private final int COLOR_SHUSH;
+    private final int COLOR_KNOWN;
+    private int tagState = TAG_STATE_NORMAL;
 
-    public ArticleAdapter() {
-
+    public ArticleAdapter(Context context) {
+        COLOR_PUSH = ResourcesCompat.getColor(context.getResources(), R.color.push, null);
+        COLOR_ARROW = ResourcesCompat.getColor(context.getResources(), R.color.arrow, null);
+        COLOR_SHUSH = ResourcesCompat.getColor(context.getResources(), R.color.shush, null);
+        COLOR_KNOWN = ResourcesCompat.getColor(context.getResources(), R.color.unknownTag, null);
     }
 
     public void addResults(Article article) {
@@ -38,6 +56,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void clearResults() {
+        highLightAuthor = "";
+
         if (article != null) {
             article = null;
             pushList.clear();
@@ -90,12 +110,66 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void configPushHolder(ArticlePushHolder holder, int position) {
         int posInList = position - 2;
         Push push = pushList.get(posInList);
-        String pushTagCount = String.valueOf(push.getPushTagCount()+ push.getPushTag());
+        String pushTagCount = String.valueOf(push.getPushTagCount() + push.getPushTag());
+        String floorCount = String.valueOf(position - 1) + "樓";
 
-        holder.pushTagText.setText(pushTagCount);
+        holder.pushTagText.setText(tagState == TAG_STATE_NORMAL ? pushTagCount : floorCount);
+        holder.pushTagText.setTextColor(getTagColor(push.getPushTag()));
         holder.pushAuthorText.setText(push.getAuthor());
         holder.pushContentText.setText(push.getContent());
         holder.pushTimeText.setText(push.getTime());
+
+        RxView.clicks(holder.pushTagText)
+                .doOnNext(u -> tagFloorSubject.onNext(toggleTagState()))
+                .doOnError(t -> Log.d(TAG, "configPushHolder: click pushTagText error : " + t))
+                .subscribe();
+
+        tagFloorSubject.doOnNext(state -> holder.pushTagText.setText(state == TAG_STATE_NORMAL ? pushTagCount : floorCount))
+                .doOnError(t -> Log.d(TAG, "configPushHolder: set tag text error : " + t))
+                .subscribe();
+
+        RxView.clicks(holder.pushAuthorText)
+                .doOnNext(u -> {
+                    highLightAuthor = (push.getAuthor().equals(highLightAuthor) ? "" : push.getAuthor());
+                    highlightAuthorSubject.onNext(push.getAuthor());
+                })
+                .doOnError(t -> Log.d(TAG, "configPushHolder: click push author error : " + t))
+                .subscribe();
+
+        highlightAuthorSubject.doOnNext(highlight -> toggleHighlightAuthor(holder.articlePushLayout, push.getAuthor()))
+                .doOnError(t -> Log.d(TAG, "configPushHolder: set highlight author error : " + t))
+                .subscribe();
+
+        toggleHighlightAuthor(holder.articlePushLayout, push.getAuthor());
+    }
+
+    private int getTagColor(String tag) {
+        switch (tag) {
+            case "推":
+                return COLOR_PUSH;
+            case "→":
+                return COLOR_ARROW;
+            case "噓":
+                return COLOR_SHUSH;
+        }
+        return COLOR_KNOWN;
+    }
+
+    private int toggleTagState() {
+        if (tagState == TAG_STATE_NORMAL) {
+            tagState = TAG_STATE_FLOOR;
+        } else {
+            tagState = TAG_STATE_NORMAL;
+        }
+        return tagState;
+    }
+
+    private void toggleHighlightAuthor(View view, String author) {
+        if (author.equals(highLightAuthor) || highLightAuthor.equals("")) {
+            view.setAlpha(1f);
+        } else {
+            view.setAlpha(.25f);
+        }
     }
 
     @Override
@@ -125,12 +199,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private TextView articleAuthorText;
         private TextView articleTimeText;
 
-        ArticleHeaderHolder(@NonNull View itemView) {
-            super(itemView);
-            articleTitleText = itemView.findViewById(R.id.articleTitleText);
-            articleBoardText = itemView.findViewById(R.id.articleBoardText);
-            articleAuthorText = itemView.findViewById(R.id.articleAuthorText);
-            articleTimeText = itemView.findViewById(R.id.articleTimeText);
+        ArticleHeaderHolder(@NonNull View v) {
+            super(v);
+            articleTitleText = v.findViewById(R.id.articleTitleText);
+            articleBoardText = v.findViewById(R.id.articleBoardText);
+            articleAuthorText = v.findViewById(R.id.articleAuthorText);
+            articleTimeText = v.findViewById(R.id.articleTimeText);
         }
     }
 
@@ -138,25 +212,27 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         private TextView articleContentText;
 
-        ArticleContentHolder(@NonNull View itemView) {
-            super(itemView);
-            articleContentText = itemView.findViewById(R.id.articleContentText);
+        ArticleContentHolder(@NonNull View v) {
+            super(v);
+            articleContentText = v.findViewById(R.id.articleContentText);
         }
     }
 
     class ArticlePushHolder extends RecyclerView.ViewHolder {
 
+        private ConstraintLayout articlePushLayout;
         private TextView pushTagText;
         private TextView pushAuthorText;
         private TextView pushTimeText;
         private TextView pushContentText;
 
-        ArticlePushHolder(@NonNull View itemView) {
-            super(itemView);
-            pushTagText = itemView.findViewById(R.id.pushTagText);
-            pushAuthorText = itemView.findViewById(R.id.pushAuthorText);
-            pushTimeText = itemView.findViewById(R.id.pushTimeText);
-            pushContentText = itemView.findViewById(R.id.pushContentText);
+        ArticlePushHolder(@NonNull View v) {
+            super(v);
+            articlePushLayout = v.findViewById(R.id.articlePushLayout);
+            pushTagText = v.findViewById(R.id.pushTagText);
+            pushAuthorText = v.findViewById(R.id.pushAuthorText);
+            pushTimeText = v.findViewById(R.id.pushTimeText);
+            pushContentText = v.findViewById(R.id.pushContentText);
         }
     }
 }

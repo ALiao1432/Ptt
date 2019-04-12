@@ -209,7 +209,7 @@ public class ArticleListFragment extends BaseFragment
 
                     preManager.updateBlackList(blacks);
                     blackListEdt.setText(preManager.getBlackList());
-                    Snackbar.make(articleListLayout, "Update Successfully", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(articleListLayout, getResources().getString(R.string.update_blacklist_success), Snackbar.LENGTH_SHORT).show();
                     break;
             }
             sheetManager.collapseSheet(keywordBlackListSheet);
@@ -397,7 +397,11 @@ public class ArticleListFragment extends BaseFragment
     @Override
     public void onArticleListLongClicked(ArticleInfo info) {
         selectInfo = info;
-        sheetManager.expandSheet(articleOptionSheet);
+        if (selectInfo.getHref().length() > 0) {
+            sheetManager.expandSheet(articleOptionSheet);
+        } else {
+            sheetManager.collapseSheet(articleOptionSheet);
+        }
     }
 
     class BottomSheetManager {

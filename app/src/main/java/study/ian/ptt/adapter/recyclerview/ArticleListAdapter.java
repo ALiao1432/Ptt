@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import io.reactivex.processors.PublishProcessor;
+import io.reactivex.subjects.PublishSubject;
 import study.ian.ptt.R;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.util.CountTextConverter;
@@ -83,6 +85,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
         RxView.clicks(holder.articleCard)
                 .throttleFirst(1500, TimeUnit.MILLISECONDS)
+                .filter(unit -> info.getHref().length() > 0)
                 .doOnNext(unit -> {
                     clickedListener.onArticleListClicked(info);
                     outPager.setCurrentItem(2);

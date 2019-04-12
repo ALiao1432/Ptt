@@ -2,18 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/articlePushLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/themeTrueDark"
     android:paddingStart="@dimen/layout_margin"
-    android:paddingBottom="@dimen/layout_margin"
-    android:paddingEnd="@dimen/layout_margin">
+    android:paddingEnd="@dimen/layout_margin"
+    android:paddingBottom="@dimen/layout_margin">
 
     <TextView
         android:id="@+id/pushTagText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/layout_margin"
+        app:layout_constraintStart_toEndOf="@id/pushAuthorText"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="推" />
 
@@ -21,9 +23,8 @@
         android:id="@+id/pushAuthorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_margin"
         android:textColor="@color/pushAuthor"
-        app:layout_constraintStart_toEndOf="@id/pushTagText"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="apple365789" />
 

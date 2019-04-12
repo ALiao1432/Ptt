@@ -2,6 +2,7 @@ package study.ian.ptt.fragment;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
 
     private final String TAG = "ArticleFragment";
 
+    private Context context;
     private RecyclerView articleRecyclerView;
     private TextView articleInfoText;
     private ArticleAdapter articleAdapter;
@@ -39,8 +41,13 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
     private PttService pttService = ServiceBuilder.getPttService();
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
-    private ValueAnimator transAnimator;
     private boolean runAnimation;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
     @Nullable
     @Override
@@ -62,7 +69,7 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
     private void setViews() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-        articleAdapter = new ArticleAdapter();
+        articleAdapter = new ArticleAdapter(context);
 
         articleRecyclerView.setAdapter(articleAdapter);
         articleRecyclerView.setLayoutManager(layoutManager);

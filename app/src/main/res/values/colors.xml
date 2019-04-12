@@ -33,13 +33,13 @@
     <color name="pushCount_100">#FF6666</color>
     <color name="pushCount_X">#666666</color>
 
-    <color name="pushContent">#999900</color>
-    <color name="pushAuthor">#FFFF66</color>
+    <color name="pushContent">#FFFF66</color>
+    <color name="pushAuthor">#FFFFFF</color>
     <color name="pushTime">#BBBBBB</color>
-    <color name="push">#FFFFFF</color>
-    <color name="arrow">#FF6666</color>
+    <color name="push">#009900</color>
+    <color name="arrow">#BBBBBB</color>
     <color name="shush">#FF0000</color>
-
+    <color name="unknownTag">#0000FF</color>
 
     <color name="fav_view_color">#f44336</color>
 

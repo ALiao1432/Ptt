@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/divider_margin"
-        android:hint="@string/article_black_list_hint"
+        android:hint="@string/article_blacklist_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerLine">
@@ -85,7 +85,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/update_black_list"
+        android:text="@string/update_blacklist"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         app:layout_constraintStart_toStartOf="@id/blackListInputLayout"
         app:layout_constraintTop_toBottomOf="@id/blackListInputLayout" />

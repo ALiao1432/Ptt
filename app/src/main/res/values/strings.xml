@@ -2,18 +2,20 @@
     <string name="app_name">Ptt</string>
 
     <string name="ip_hint">※ 發信站: 批踢踢實業坊(ptt.cc), 來自: </string>
-    <string name="action_black_list">Black List</string>
+    <string name="unselected_article_hint">Select an article first…</string>
+    <string name="action_blacklist">Blacklist</string>
 
     <string name="article_search_option">Search By</string>
     <string name="article_search_option_hint">Keyword</string>
     <string name="article_search_option_title">Title</string>
     <string name="article_search_option_author">Author</string>
     <string name="article_search_option_push">Push</string>
-    <string name="article_black_list_hint">Blacklist</string>
+    <string name="article_blacklist_hint">Blacklist</string>
     <string name="add_blacklist">Add Blacklist</string>
+    <string name="update_blacklist_success">Update Successfully</string>
     <string name="cancel_blacklist">Cancel</string>
     <string name="same_title">Same Title</string>
     <string name="same_author">Same Author</string>
-    <string name="update_black_list">Update</string>
+    <string name="update_blacklist">Update</string>
 
 </resources>
