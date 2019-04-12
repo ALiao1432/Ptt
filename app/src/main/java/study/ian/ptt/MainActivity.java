@@ -12,7 +12,6 @@ import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleFragment;
 import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
-import study.ian.ptt.fragment.TestFragment;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.transformer.SlideTransformer;
 import study.ian.ptt.util.PreManager;
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         BoardFragment boardFragment = new BoardFragment();
         ArticleListFragment articleListFragment = new ArticleListFragment();
         ArticleFragment articleFragment = new ArticleFragment();
-        TestFragment fragment3 = new TestFragment();
 
         boardFragment.setOutPager(outPager);
         boardFragment.setOnCategoryClickedListener(articleListFragment);
@@ -63,12 +61,10 @@ public class MainActivity extends AppCompatActivity {
         articleListFragment.setOutPager(outPager);
         articleListFragment.setOnArticleListClickedListener(articleFragment);
 
-        fragment3.setString("3");
 
         outFragList.add(boardFragment);
         outFragList.add(articleListFragment);
         outFragList.add(articleFragment);
-        outFragList.add(fragment3);
 
         GenAdapter oAdapter = new GenAdapter(getSupportFragmentManager(), outFragList);
         outPager.setAdapter(oAdapter);
