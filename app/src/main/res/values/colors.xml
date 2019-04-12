@@ -6,7 +6,6 @@
 
     <color name="ripple">#3FFFFFFF</color>
 
-    <color name="themeBright">#F5F5F5</color>
     <color name="themeBrightPrimaryText">#212121</color>
     <color name="themeDark">#212121</color>
     <color name="themeDarkSecondary">#303030</color>

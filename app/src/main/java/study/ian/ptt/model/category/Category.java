@@ -1,7 +1,6 @@
 package study.ian.ptt.model.category;
 
-import android.util.Log;
-
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -12,12 +11,12 @@ import java.util.List;
 public class Category {
 
     private final String TAG = "Category";
-    private String board;
+    private final String board;
     private String lastPage;
     private String newestPage;
     private String nextPage;
     private String prePage;
-    private List<ArticleInfo> articleInfoList = new ArrayList<>();
+    private final List<ArticleInfo> articleInfoList = new ArrayList<>();
 
     public Category(Document doc, boolean reverseData) {
         doc.getElementsByClass("board-label").remove(); // remove "看板"
@@ -100,6 +99,7 @@ public class Category {
         return articleInfoList;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Category{" +

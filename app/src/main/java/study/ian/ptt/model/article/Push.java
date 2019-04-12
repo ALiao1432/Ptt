@@ -1,12 +1,14 @@
 package study.ian.ptt.model.article;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Push {
 
-    private String pushTag;
-    private String author;
-    private String content;
-    private String time;
-    private int pushTagCount;
+    private final String pushTag;
+    private final String author;
+    private final String content;
+    private final String time;
+    private final int pushTagCount;
 
     public Push(String pushTag, String author, String content, String time, int pushTagCount) {
         this.pushTag = pushTag;
@@ -36,6 +38,7 @@ public class Push {
         return pushTagCount;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Push{" +

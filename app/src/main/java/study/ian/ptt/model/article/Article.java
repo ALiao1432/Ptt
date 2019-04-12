@@ -1,7 +1,6 @@
 package study.ian.ptt.model.article;
 
-import android.util.Log;
-
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,13 +14,13 @@ public class Article {
 
     private final String TAG = "Article";
 
-    private String author;
-    private String board;
-    private String title;
-    private String articleTime;
+    private final String author;
+    private final String board;
+    private final String title;
+    private final String articleTime;
     private String mainContent;
-    private List<Push> pushList = new ArrayList<>();
-    private int[] pushTagCount = {0, 0, 0}; // {推, →, 噓}
+    private final List<Push> pushList = new ArrayList<>();
+    private final int[] pushTagCount = {0, 0, 0}; // {推, →, 噓}
 
     public Article(Document doc) {
         author = doc.select("#main-content > div:nth-child(1) > span.article-meta-value").text();
@@ -112,6 +111,7 @@ public class Article {
         return pushList;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Article{" +

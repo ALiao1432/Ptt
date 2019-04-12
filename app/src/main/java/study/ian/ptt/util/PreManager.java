@@ -21,10 +21,9 @@ public class PreManager {
     private static Set<String> favSet = new HashSet<>();
     private static Set<String> blackListSet;
     private static PreManager preManager;
-    private static Context context;
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
+    private final List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
 
     public interface OnFavActionListener {
         void onFavAction(String b, int action);
@@ -63,7 +62,6 @@ public class PreManager {
     public static synchronized void initPreManager(Context cxt) {
         if (preManager == null) {
             preManager = new PreManager(cxt);
-            context = cxt;
         }
     }
 
@@ -81,7 +79,7 @@ public class PreManager {
         }
     }
 
-    public void addFavBoard(String board) {
+    private void addFavBoard(String board) {
         editor = sharedPreferences.edit();
         String temp = board + " " + sharedPreferences.getString(FAV_BOARD, "");
         editor.putString(FAV_BOARD, temp);
@@ -91,7 +89,7 @@ public class PreManager {
         onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_ADD));
     }
 
-    public void removeFavBoard(String board) {
+    private void removeFavBoard(String board) {
         editor = sharedPreferences.edit();
         String temp = sharedPreferences.getString(FAV_BOARD, "");
         if (temp != null && temp.contains(board)) {

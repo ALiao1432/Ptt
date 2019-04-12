@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         articleListFragment.setOutPager(outPager);
         articleListFragment.setOnArticleListClickedListener(articleFragment);
 
-
         outFragList.add(boardFragment);
         outFragList.add(articleListFragment);
         outFragList.add(articleFragment);

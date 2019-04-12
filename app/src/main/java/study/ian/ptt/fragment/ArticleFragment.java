@@ -32,13 +32,13 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
 
     private final String TAG = "ArticleFragment";
 
+    private final PttService pttService = ServiceBuilder.getPttService();
     private Context context;
     private RecyclerView articleRecyclerView;
     private TextView articleInfoText;
     private ArticleAdapter articleAdapter;
     private Article article;
     private ArticleInfo articleInfo;
-    private PttService pttService = ServiceBuilder.getPttService();
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
     private boolean runAnimation;

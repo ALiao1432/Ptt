@@ -36,8 +36,8 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
     private OnCategoryClickedListener onCategoryClickedListener;
     private OnPageReloadRequestListener onPageReloadRequestListener;
     private List<BoardInfo> infoList = new ArrayList<>();
-    private Resources resources;
-    private PreManager preManager;
+    private final Resources resources;
+    private final PreManager preManager;
 
     public BoardAdapter(Context context, ViewPager pager) {
         resources = context.getResources();
@@ -123,11 +123,11 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     class BoardHolder extends RecyclerView.ViewHolder {
 
-        private CardView boardCard;
-        private TextView userNumText;
-        private TextView categoryNameText;
-        private TextView categoryTitleText;
-        private MorphView favView;
+        private final CardView boardCard;
+        private final TextView userNumText;
+        private final TextView categoryNameText;
+        private final TextView categoryTitleText;
+        private final MorphView favView;
 
         BoardHolder(@NonNull View v) {
             super(v);

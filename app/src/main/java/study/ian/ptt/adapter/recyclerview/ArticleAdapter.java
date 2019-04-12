@@ -194,10 +194,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class ArticleHeaderHolder extends RecyclerView.ViewHolder {
 
-        private TextView articleTitleText;
-        private TextView articleBoardText;
-        private TextView articleAuthorText;
-        private TextView articleTimeText;
+        private final TextView articleTitleText;
+        private final TextView articleBoardText;
+        private final TextView articleAuthorText;
+        private final TextView articleTimeText;
 
         ArticleHeaderHolder(@NonNull View v) {
             super(v);
@@ -210,7 +210,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class ArticleContentHolder extends RecyclerView.ViewHolder {
 
-        private TextView articleContentText;
+        private final TextView articleContentText;
 
         ArticleContentHolder(@NonNull View v) {
             super(v);
@@ -220,11 +220,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     class ArticlePushHolder extends RecyclerView.ViewHolder {
 
-        private ConstraintLayout articlePushLayout;
-        private TextView pushTagText;
-        private TextView pushAuthorText;
-        private TextView pushTimeText;
-        private TextView pushContentText;
+        private final ConstraintLayout articlePushLayout;
+        private final TextView pushTagText;
+        private final TextView pushAuthorText;
+        private final TextView pushTimeText;
+        private final TextView pushContentText;
 
         ArticlePushHolder(@NonNull View v) {
             super(v);

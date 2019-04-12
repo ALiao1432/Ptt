@@ -1,5 +1,7 @@
 package study.ian.ptt.adapter.viewpager;
 
+import org.jetbrains.annotations.NotNull;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class GenAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> fragmentList;
+    private final List<Fragment> fragmentList;
 
     public GenAdapter(FragmentManager fm, List<Fragment> fragmentList) {
         super(fm);
@@ -16,6 +18,7 @@ public class GenAdapter extends FragmentPagerAdapter {
         this.fragmentList = fragmentList;
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int i) {
         return fragmentList.get(i);

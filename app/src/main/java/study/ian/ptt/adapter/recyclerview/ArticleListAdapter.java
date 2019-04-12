@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import io.reactivex.processors.PublishProcessor;
-import io.reactivex.subjects.PublishSubject;
 import study.ian.ptt.R;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.util.CountTextConverter;
@@ -34,8 +32,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     private final ViewPager outPager;
     private List<ArticleInfo> infoList = new ArrayList<>();
-    private PreManager preManager;
-    private Resources resources;
+    private final PreManager preManager;
+    private final Resources resources;
     private OnArticleListLongClickedListener longClickListener;
     private OnArticleListClickedListener clickedListener;
 
@@ -108,12 +106,12 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     class ArticleHolder extends RecyclerView.ViewHolder {
 
-        private CardView articleCard;
-        private TextView countText;
-        private TextView titleText;
-        private TextView authorText;
-        private TextView markText;
-        private TextView dateText;
+        private final CardView articleCard;
+        private final TextView countText;
+        private final TextView titleText;
+        private final TextView authorText;
+        private final TextView markText;
+        private final TextView dateText;
 
         ArticleHolder(@NonNull View v) {
             super(v);

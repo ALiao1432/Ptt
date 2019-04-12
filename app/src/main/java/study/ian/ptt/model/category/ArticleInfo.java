@@ -1,21 +1,19 @@
 package study.ian.ptt.model.category;
 
-import android.util.Log;
-
-import study.ian.ptt.service.ServiceBuilder;
+import org.jetbrains.annotations.NotNull;
 
 public class ArticleInfo {
 
     private final String TAG = "ArticleInfo";
 
-    private String title;
-    private String href;
-    private String author;
+    private final String title;
+    private final String href;
+    private final String author;
     private String sameTitleHref;
     private String sameAuthorHref;
-    private String date;
-    private String mark;
-    private String count;
+    private final String date;
+    private final String mark;
+    private final String count;
     private boolean isRead = false;
 
     public ArticleInfo(
@@ -84,6 +82,7 @@ public class ArticleInfo {
         isRead = read;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "ArticleInfo{" +

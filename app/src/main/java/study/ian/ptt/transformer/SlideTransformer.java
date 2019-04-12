@@ -1,9 +1,9 @@
 package study.ian.ptt.transformer;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
-import android.util.Log;
-import android.view.View;
 
 public class SlideTransformer implements ViewPager.PageTransformer {
 

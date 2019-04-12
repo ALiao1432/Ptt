@@ -1,17 +1,19 @@
 package study.ian.ptt.model.board;
 
+import org.jetbrains.annotations.NotNull;
+
 public class BoardInfo {
 
     public static final int SORT_UNDEFINE = -1;
     public static final int SORT_BOARD = 0;
     public static final int SORT_CLASS = 1;
 
-    private String href;
-    private String name;
-    private String boardClass;
-    private String boardTitle;
-    private String userCount;
-    private int sort;
+    private final String href;
+    private final String name;
+    private final String boardClass;
+    private final String boardTitle;
+    private final String userCount;
+    private final int sort;
 
     public BoardInfo(String href, String name, String boardClass, String boardTitle, String userCount) {
         this.href = href;
@@ -53,6 +55,7 @@ public class BoardInfo {
         return userCount;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "BoardInfo{" +

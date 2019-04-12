@@ -1,5 +1,6 @@
 package study.ian.ptt.model.board;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -10,7 +11,7 @@ public class Board {
 
     private final String TAG = "Board";
 
-    private List<BoardInfo> infoList = new ArrayList<>();
+    private final List<BoardInfo> infoList = new ArrayList<>();
 
     public Board(Document doc) {
         Elements bElements = doc.getElementsByClass("b-ent");
@@ -29,6 +30,7 @@ public class Board {
         return infoList;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Board{" +

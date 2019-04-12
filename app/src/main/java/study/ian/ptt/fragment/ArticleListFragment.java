@@ -56,7 +56,7 @@ public class ArticleListFragment extends BaseFragment
 
     private Context context;
     private PreManager preManager;
-    private PttService pttService = ServiceBuilder.getPttService();
+    private final PttService pttService = ServiceBuilder.getPttService();
     private TextView categoryText;
     private CoordinatorLayout articleListLayout;
     private ConstraintLayout keywordBlackListLayout;
@@ -82,7 +82,7 @@ public class ArticleListFragment extends BaseFragment
     private String cate;
     private String searchQuery;
     private ArticleInfo selectInfo;
-    private BottomSheetManager sheetManager = new BottomSheetManager();
+    private final BottomSheetManager sheetManager = new BottomSheetManager();
     private int currentLoading = LOAD_NORMAL_ARTICLE;
     private boolean isLoading = false;
     private boolean runAnimation;
@@ -431,7 +431,7 @@ public class ArticleListFragment extends BaseFragment
     }
 
     class BottomSheetManager {
-        Set<BottomSheetBehavior> behaviorSet = new HashSet<>();
+        final Set<BottomSheetBehavior> behaviorSet = new HashSet<>();
 
         void addToSet(BottomSheetBehavior behavior) {
             behaviorSet.add(behavior);

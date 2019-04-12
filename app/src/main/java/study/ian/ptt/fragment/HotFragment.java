@@ -21,7 +21,6 @@ import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.BoardAdapter;
 import study.ian.ptt.model.board.Board;
 import study.ian.ptt.model.board.BoardInfo;
-import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.PreManager;

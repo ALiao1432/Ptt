@@ -1,6 +1,5 @@
 package study.ian.ptt.util;
 
-import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -9,8 +8,8 @@ import java.util.List;
 public class ContentConverter {
 
     private static final String TAG = "ContentConverter";
-    private static List<Pair<String, String>> replaceStyleList = new ArrayList<>();
-    private static Pair<String, String> brPair;
+    private static final List<Pair<String, String>> replaceStyleList = new ArrayList<>();
+    private static final Pair<String, String> brPair;
 
     static {
         replaceStyleList.add(new Pair<>("class=\"f0\"", "style=\"color:#000000\""));

@@ -18,9 +18,9 @@ import com.bumptech.glide.request.transition.Transition;
 public class GlideImageGetter implements Html.ImageGetter {
 
     private final String TAG = "GlideImageGetter";
-    private TextView textView;
+    private final TextView textView;
 
-    public GlideImageGetter(TextView textView) {
+    GlideImageGetter(TextView textView) {
         this.textView = textView;
     }
 
@@ -36,7 +36,7 @@ public class GlideImageGetter implements Html.ImageGetter {
 
     class BitmapDrawablePlaceHolder extends BitmapDrawable implements Target<Drawable> {
 
-        private TextView textView;
+        private final TextView textView;
         private Drawable drawable;
         private Request request;
 

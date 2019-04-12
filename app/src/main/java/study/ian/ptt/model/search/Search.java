@@ -1,5 +1,6 @@
 package study.ian.ptt.model.search;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -9,11 +10,11 @@ import java.util.List;
 
 import study.ian.ptt.model.category.ArticleInfo;
 
-public class Search {
+class Search {
 
     private final String TAG = "Search";
-    private String board;
-    private List<ArticleInfo> articleInfoList = new ArrayList<>();
+    private final String board;
+    private final List<ArticleInfo> articleInfoList = new ArrayList<>();
 
     public Search(Document doc) {
         doc.getElementsByClass("board-label").remove(); // remove "看板"
@@ -44,6 +45,7 @@ public class Search {
         return articleInfoList;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Search{" +
