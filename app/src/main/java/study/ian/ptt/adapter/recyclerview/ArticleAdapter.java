@@ -30,16 +30,16 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final static int VIEW_TYPE_PUSH = 2;
     private final static int TAG_STATE_NORMAL = 0;
     private final static int TAG_STATE_FLOOR = 1;
+    private final int COLOR_PUSH;
+    private final int COLOR_ARROW;
+    private final int COLOR_SHUSH;
+    private final int COLOR_KNOWN;
     private final PublishSubject<Integer> tagFloorSubject = PublishSubject.create();
     private final PublishSubject<String> highlightAuthorSubject = PublishSubject.create();
 
     private Article article;
     private List<Push> pushList;
     private String highLightAuthor = "";
-    private final int COLOR_PUSH;
-    private final int COLOR_ARROW;
-    private final int COLOR_SHUSH;
-    private final int COLOR_KNOWN;
     private int tagState = TAG_STATE_NORMAL;
 
     public ArticleAdapter(Context context) {
