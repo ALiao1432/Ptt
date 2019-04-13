@@ -2,7 +2,6 @@ package study.ian.ptt.adapter.recyclerview;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import study.ian.morphviewlib.MorphView;
@@ -67,6 +65,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     @Override
     public void onBindViewHolder(@NonNull BoardHolder holder, int position) {
+        long startTime = System.currentTimeMillis();
         BoardInfo info = infoList.get(position);
 
         RxView.clicks(holder.boardCard)
@@ -92,27 +91,29 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         holder.categoryTitleText.setText(info.getBoardTitle());
 
         if (info.getSort() == BoardInfo.SORT_BOARD) {
-            holder.favView.setVisibility(View.VISIBLE);
-            setFavViewPaint(info.getName(), holder.favView);
+            setFavView(info.getName(), holder.favView);
 
             RxView.clicks(holder.favView)
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
                     .doOnNext(unit -> {
                         preManager.toggleFavBoard(info.getName().trim());
-                        setFavViewPaint(info.getName(), holder.favView);
+                        setFavView(info.getName(), holder.favView);
                     })
                     .doOnError(t -> Log.d(TAG, "onBindViewHolder: click fav error : " + t))
                     .subscribe();
         } else if (info.getSort() == BoardInfo.SORT_CLASS) {
             holder.favView.setVisibility(View.INVISIBLE);
         }
+
+        long endTime = System.currentTimeMillis();
+        Log.d(TAG, "onBindViewHolder: bind view time : " + (endTime - startTime) + ",  " + info.getName() + ", " + position);
     }
 
-    private void setFavViewPaint(String board, MorphView view) {
+    private void setFavView(String board, MorphView view) {
         if (preManager.isFavBoard(board)) {
-            view.setPaintStyle(Paint.Style.FILL);
+            view.setImageResource(R.drawable.vd_fav_true);
         } else {
-            view.setPaintStyle(Paint.Style.STROKE);
+            view.setImageResource(R.drawable.vd_fav_false);
         }
     }
 
@@ -137,11 +138,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
             categoryNameText = v.findViewById(R.id.categoryNameText);
             categoryTitleText = v.findViewById(R.id.categoryInfoText);
             favView = v.findViewById(R.id.favView);
-
-            favView.setCurrentId(R.drawable.vd_fav);
-            favView.setPaintWidth(4);
-            favView.setSize(300, 300);
-            favView.setPaintColor(ResourcesCompat.getColor(resources, R.color.fav_view_color, null));
         }
     }
 }
