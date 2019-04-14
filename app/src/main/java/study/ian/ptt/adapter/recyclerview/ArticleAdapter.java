@@ -16,7 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
+import kotlin.Unit;
 import study.ian.ptt.R;
 import study.ian.ptt.model.article.Article;
 import study.ian.ptt.model.article.Push;
@@ -39,6 +41,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private Article article;
     private List<Push> pushList;
+    private Spannable spannable;
     private String highLightAuthor = "";
     private int tagState = TAG_STATE_NORMAL;
 
@@ -102,7 +105,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void configContentHolder(ArticleContentHolder holder) {
-        Spannable spannable = SpanUtil.getSpanned(holder.articleContentText, article.getMainContent().trim());
+        spannable = SpanUtil.getSpanned(holder.articleContentText, article.getMainContent().trim());
         SpanUtil.setImageClickListener(spannable, imageSpan -> Log.d(TAG, "configContentHolder: span : " + spannable + ", imageSpan : " + imageSpan));
         holder.articleContentText.setText(spannable);
     }
@@ -119,7 +122,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.pushContentText.setText(push.getContent());
         holder.pushTimeText.setText(push.getTime());
 
-        RxView.clicks(holder.pushTagText)
+        holder.pushTagObservable
                 .doOnNext(u -> tagFloorSubject.onNext(toggleTagState()))
                 .doOnError(t -> Log.d(TAG, "configPushHolder: click pushTagText error : " + t))
                 .subscribe();
@@ -128,7 +131,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .doOnError(t -> Log.d(TAG, "configPushHolder: set tag text error : " + t))
                 .subscribe();
 
-        RxView.clicks(holder.pushAuthorText)
+        holder.pushAuthorObservable
                 .doOnNext(u -> {
                     highLightAuthor = (push.getAuthor().equals(highLightAuthor) ? "" : push.getAuthor());
                     highlightAuthorSubject.onNext(push.getAuthor());
@@ -225,6 +228,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private final TextView pushAuthorText;
         private final TextView pushTimeText;
         private final TextView pushContentText;
+        private final Observable<Unit> pushTagObservable;
+        private final Observable<Unit> pushAuthorObservable;
 
         ArticlePushHolder(@NonNull View v) {
             super(v);
@@ -233,6 +238,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             pushAuthorText = v.findViewById(R.id.pushAuthorText);
             pushTimeText = v.findViewById(R.id.pushTimeText);
             pushContentText = v.findViewById(R.id.pushContentText);
+            pushTagObservable = RxView.clicks(pushTagText);
+            pushAuthorObservable = RxView.clicks(pushAuthorText);
         }
     }
 }

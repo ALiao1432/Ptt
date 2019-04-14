@@ -34,6 +34,7 @@ import io.reactivex.Observable;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleListAdapter;
+import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.model.category.Category;
 import study.ian.ptt.service.PttService;
@@ -58,6 +59,8 @@ public class ArticleListFragment extends BaseFragment
     private PreManager preManager;
     private final PttService pttService = ServiceBuilder.getPttService();
     private TextView categoryText;
+    private TextView boardNameText;
+    private TextView boardInfoText;
     private CoordinatorLayout articleListLayout;
     private ConstraintLayout keywordBlackListLayout;
     private ConstraintLayout articleOptionLayout;
@@ -110,6 +113,8 @@ public class ArticleListFragment extends BaseFragment
         articleListLayout = v.findViewById(R.id.articleListLayout);
         articleListRecyclerView = v.findViewById(R.id.recyclerViewArticle);
         categoryText = v.findViewById(R.id.categoryInfoText);
+        boardNameText = v.findViewById(R.id.boardNameText);
+        boardInfoText = v.findViewById(R.id.boardInfoText);
         bottomAppBar = v.findViewById(R.id.bottomBar);
         keywordBlackListLayout = v.findViewById(R.id.keywordBlackListBottomSheet);
         articleOptionLayout = v.findViewById(R.id.articleOptionBottomSheet);
@@ -168,19 +173,19 @@ public class ArticleListFragment extends BaseFragment
                                 loadData();
                                 break;
                             case LOAD_SAME_TITLE:
-                                loadSameTitle();
+                                loadSameTitle(false);
                                 break;
                             case LOAD_SAME_AUTHOR:
-                                loadSameAuthor();
+                                loadSameAuthor(false);
                                 break;
                             case LOAD_SEARCH_TITLE:
-                                loadSearchTitle(searchQuery);
+                                loadSearchTitle(false, searchQuery);
                                 break;
                             case LOAD_SEARCH_AUTHOR:
-                                loadSearchAuthor(searchQuery);
+                                loadSearchAuthor(false, searchQuery);
                                 break;
                             case LOAD_SEARCH_PUSH:
-                                loadSearchPush(searchQuery);
+                                loadSearchPush(false, searchQuery);
                                 break;
                         }
                     }
@@ -199,17 +204,17 @@ public class ArticleListFragment extends BaseFragment
                 case R.id.searchTitleBtn:
                     searchEdt.setText("");
                     searchQuery = keyword;
-                    loadSearchTitle(searchQuery);
+                    loadSearchTitle(true, searchQuery);
                     break;
                 case R.id.searchAuthorBtn:
                     searchEdt.setText("");
                     searchQuery = ServiceBuilder.SEARCH_AUTHOR + keyword;
-                    loadSearchAuthor(searchQuery);
+                    loadSearchAuthor(true, searchQuery);
                     break;
                 case R.id.searchPushBtn:
                     searchEdt.setText("");
                     searchQuery = ServiceBuilder.SEARCH_PUSH + keyword;
-                    loadSearchPush(searchQuery);
+                    loadSearchPush(true, searchQuery);
                     break;
                 case R.id.updateBlackBtn:
                     Editable bEditable = blackListEdt.getText();
@@ -240,10 +245,10 @@ public class ArticleListFragment extends BaseFragment
                 case R.id.cancelBlackBtn:
                     break;
                 case R.id.sameTitleBtn:
-                    loadSameTitle();
+                    loadSameTitle(true);
                     break;
                 case R.id.sameAuthorBtn:
-                    loadSameAuthor();
+                    loadSameAuthor(true);
                     break;
             }
             sheetManager.collapseSheet(articleOptionSheet);
@@ -276,11 +281,11 @@ public class ArticleListFragment extends BaseFragment
         processObservable(o);
     }
 
-    private void loadSameTitle() {
+    private void loadSameTitle(boolean newSearch) {
         isLoading = true;
 
-        String href = currentLoading == LOAD_SAME_TITLE ? category.getPrePage() : selectInfo.getSameTitleHref();
-        if (currentLoading != LOAD_SAME_TITLE) {
+        String href = (!newSearch && currentLoading == LOAD_SAME_TITLE ? category.getPrePage() : selectInfo.getSameTitleHref());
+        if (currentLoading != LOAD_SAME_TITLE || newSearch) {
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SAME_TITLE;
@@ -289,11 +294,11 @@ public class ArticleListFragment extends BaseFragment
         processObservable(o);
     }
 
-    private void loadSameAuthor() {
+    private void loadSameAuthor(boolean newSearch) {
         isLoading = true;
 
-        String href = currentLoading == LOAD_SAME_AUTHOR ? category.getPrePage() : selectInfo.getSameAuthorHref();
-        if (currentLoading != LOAD_SAME_AUTHOR) {
+        String href = (!newSearch && currentLoading == LOAD_SAME_AUTHOR ? category.getPrePage() : selectInfo.getSameAuthorHref());
+        if (currentLoading != LOAD_SAME_AUTHOR || newSearch) {
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SAME_AUTHOR;
@@ -302,11 +307,11 @@ public class ArticleListFragment extends BaseFragment
         processObservable(o);
     }
 
-    private void loadSearchTitle(String query) {
+    private void loadSearchTitle(boolean newSearch, String query) {
         isLoading = true;
 
-        String href = currentLoading == LOAD_SEARCH_TITLE ? category.getPrePage() : cate + "/search?q=" + query;
-        if (currentLoading != LOAD_SEARCH_TITLE) {
+        String href = (!newSearch && currentLoading == LOAD_SEARCH_TITLE ? category.getPrePage() : cate + "/search?q=" + query);
+        if (currentLoading != LOAD_SEARCH_TITLE || newSearch) {
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_TITLE;
@@ -315,11 +320,11 @@ public class ArticleListFragment extends BaseFragment
     }
 
 
-    private void loadSearchAuthor(String query) {
+    private void loadSearchAuthor(boolean newSearch, String query) {
         isLoading = true;
 
-        String href = currentLoading == LOAD_SEARCH_AUTHOR ? category.getPrePage() : cate + "/search?q=" + query;
-        if (currentLoading != LOAD_SEARCH_AUTHOR) {
+        String href = (!newSearch && currentLoading == LOAD_SEARCH_AUTHOR ? category.getPrePage() : cate + "/search?q=" + query);
+        if (currentLoading != LOAD_SEARCH_AUTHOR || newSearch) {
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_AUTHOR;
@@ -327,11 +332,11 @@ public class ArticleListFragment extends BaseFragment
         processObservable(o);
     }
 
-    private void loadSearchPush(String query) {
+    private void loadSearchPush(boolean newSearch, String query) {
         isLoading = true;
 
-        String href = currentLoading == LOAD_SEARCH_PUSH ? category.getPrePage() : cate + "/search?q=" + query;
-        if (currentLoading != LOAD_SEARCH_PUSH) {
+        String href = (!newSearch && currentLoading == LOAD_SEARCH_PUSH ? category.getPrePage() : cate + "/search?q=" + query);
+        if (currentLoading != LOAD_SEARCH_PUSH || newSearch) {
             articleListAdapter.clearResults();
         }
         currentLoading = LOAD_SEARCH_PUSH;
@@ -353,6 +358,7 @@ public class ArticleListFragment extends BaseFragment
 
         boolean reverseData = (currentLoading == LOAD_NORMAL_ARTICLE);
         category = new Category(document, reverseData);
+
         if (runAnimation) {
             alphaAnimator.start();
             scaleAnimator.start();
@@ -401,11 +407,13 @@ public class ArticleListFragment extends BaseFragment
     }
 
     @Override
-    public void onCategoryClicked(String cate) {
-        this.cate = cate;
+    public void onCategoryClicked(BoardInfo boardInfo) {
+        this.cate = boardInfo.getName();
         category = null;
         runAnimation = true;
         searchEdt.setText("");
+        boardNameText.setText(boardInfo.getName());
+        boardInfoText.setText(boardInfo.getBoardTitle());
         currentLoading = LOAD_NORMAL_ARTICLE;
         articleListAdapter.clearResults();
         restoreTextState(categoryText, cate);

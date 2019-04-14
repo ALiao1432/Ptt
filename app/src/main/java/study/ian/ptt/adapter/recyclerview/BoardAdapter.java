@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import io.reactivex.Observable;
+import kotlin.Unit;
 import study.ian.morphviewlib.MorphView;
 import study.ian.ptt.R;
 import study.ian.ptt.model.board.BoardInfo;
@@ -65,15 +67,14 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     @Override
     public void onBindViewHolder(@NonNull BoardHolder holder, int position) {
-        long startTime = System.currentTimeMillis();
         BoardInfo info = infoList.get(position);
 
-        RxView.clicks(holder.boardCard)
+        holder.boardClickObservable
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .doOnNext(unit -> {
                     if (info.getSort() == BoardInfo.SORT_BOARD) {
                         if (onCategoryClickedListener != null) {
-                            onCategoryClickedListener.onCategoryClicked(info.getName());
+                            onCategoryClickedListener.onCategoryClicked(info);
                         }
                         outPager.setCurrentItem(1);
                     } else if (info.getSort() == BoardInfo.SORT_CLASS) {
@@ -93,7 +94,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         if (info.getSort() == BoardInfo.SORT_BOARD) {
             setFavView(info.getName(), holder.favView);
 
-            RxView.clicks(holder.favView)
+            holder.favClickObservable
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
                     .doOnNext(unit -> {
                         preManager.toggleFavBoard(info.getName().trim());
@@ -104,9 +105,6 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         } else if (info.getSort() == BoardInfo.SORT_CLASS) {
             holder.favView.setVisibility(View.INVISIBLE);
         }
-
-        long endTime = System.currentTimeMillis();
-        Log.d(TAG, "onBindViewHolder: bind view time : " + (endTime - startTime) + ",  " + info.getName() + ", " + position);
     }
 
     private void setFavView(String board, MorphView view) {
@@ -124,20 +122,24 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     class BoardHolder extends RecyclerView.ViewHolder {
 
-        private final CardView boardCard;
+        private final ConstraintLayout boardLayout;
         private final TextView userNumText;
         private final TextView categoryNameText;
         private final TextView categoryTitleText;
         private final MorphView favView;
+        private final Observable<Unit> boardClickObservable;
+        private final Observable<Unit> favClickObservable;
 
         BoardHolder(@NonNull View v) {
             super(v);
 
-            boardCard = v.findViewById(R.id.boardCard);
+            boardLayout = v.findViewById(R.id.boardLayout);
             userNumText = v.findViewById(R.id.userNumText);
             categoryNameText = v.findViewById(R.id.categoryNameText);
             categoryTitleText = v.findViewById(R.id.categoryInfoText);
             favView = v.findViewById(R.id.favView);
+            boardClickObservable = RxView.clicks(boardLayout);
+            favClickObservable = RxView.clicks(favView);
         }
     }
 }

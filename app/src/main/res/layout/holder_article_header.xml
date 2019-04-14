@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/article_title_text_size"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="[情報] 湖人記者Bill Oram：年輕球員不信任LBJ　湖人非KD等球星首選" />
 

@@ -1,76 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/articleCard"
+    android:id="@+id/articleLayout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/card_height"
+    android:background="@color/themeTrueDark"
     android:clickable="true"
     android:focusable="true"
     android:foreground="@drawable/foreground_ripple">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/themeTrueDark">
+    <TextView
+        android:id="@+id/countText"
+        android:layout_width="@dimen/count_text_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/article_text_margin_start_end"
+        android:gravity="center"
+        android:textSize="@dimen/count_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="99" />
 
-        <TextView
-            android:id="@+id/countText"
-            android:layout_width="@dimen/count_text_width"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/article_text_margin_start_end"
-            android:gravity="center"
-            android:textSize="@dimen/count_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="99" />
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/article_title_margin"
+        android:maxLines="1"
+        android:textSize="@dimen/article_title_text_size"
+        app:layout_constraintBottom_toTopOf="@id/authorText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/countText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="[情報] SEASON Schedule 賽程 April 18–19" />
 
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/article_title_margin"
-            android:maxLines="1"
-            android:textSize="@dimen/article_title_text_size"
-            app:layout_constraintBottom_toTopOf="@id/authorText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/countText"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:text="[情報] SEASON Schedule 賽程 April 18–19" />
+    <TextView
+        android:id="@+id/authorText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/themeDarkSecondaryText"
+        android:textSize="@dimen/article_author_text_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/titleText"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
+        tools:text="JerroLi" />
 
-        <TextView
-            android:id="@+id/authorText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textColor="@color/themeDarkSecondaryText"
-            android:textSize="@dimen/article_author_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/titleText"
-            app:layout_constraintTop_toBottomOf="@id/titleText"
-            tools:text="JerroLi" />
+    <TextView
+        android:id="@+id/markText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/article_text_margin_start_end"
+        android:textColor="@color/themeDarkSecondaryText"
+        app:layout_constraintEnd_toStartOf="@id/dateText"
+        app:layout_constraintTop_toTopOf="@id/authorText"
+        tools:text="M" />
 
-        <TextView
-            android:id="@+id/markText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/article_text_margin_start_end"
-            android:textColor="@color/themeDarkSecondaryText"
-            app:layout_constraintEnd_toStartOf="@id/dateText"
-            app:layout_constraintTop_toTopOf="@id/authorText"
-            tools:text="M" />
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/article_text_margin_start_end"
+        android:textColor="@color/themeDarkSecondaryText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/authorText"
+        tools:text=" +4/01" />
 
-        <TextView
-            android:id="@+id/dateText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/article_text_margin_start_end"
-            android:textColor="@color/themeDarkSecondaryText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/authorText"
-            tools:text=" +4/01" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

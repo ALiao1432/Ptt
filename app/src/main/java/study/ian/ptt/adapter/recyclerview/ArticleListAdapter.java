@@ -16,9 +16,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+import io.reactivex.Observable;
+import kotlin.Unit;
 import study.ian.ptt.R;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.util.CountTextConverter;
@@ -31,9 +33,9 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private final String TAG = "ArticleListAdapter";
 
     private final ViewPager outPager;
-    private List<ArticleInfo> infoList = new ArrayList<>();
     private final PreManager preManager;
     private final Resources resources;
+    private List<ArticleInfo> infoList = new ArrayList<>();
     private OnArticleListLongClickedListener longClickListener;
     private OnArticleListClickedListener clickedListener;
 
@@ -76,12 +78,12 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     public void onBindViewHolder(@NonNull ArticleHolder holder, int position) {
         ArticleInfo info = infoList.get(position);
 
-        RxView.longClicks(holder.articleCard)
+        holder.articleLongClickObservable
                 .doOnNext(unit -> longClickListener.onArticleListLongClicked(info))
                 .doOnError(t -> Log.d(TAG, "onBindViewHolder: long click article error : " + t))
                 .subscribe();
 
-        RxView.clicks(holder.articleCard)
+        holder.articleClickObservable
                 .throttleFirst(1500, TimeUnit.MILLISECONDS)
                 .filter(unit -> info.getHref().length() > 0)
                 .doOnNext(unit -> {
@@ -106,22 +108,26 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     class ArticleHolder extends RecyclerView.ViewHolder {
 
-        private final CardView articleCard;
+        private final ConstraintLayout articleLayout;
         private final TextView countText;
         private final TextView titleText;
         private final TextView authorText;
         private final TextView markText;
         private final TextView dateText;
+        private final Observable<Unit> articleLongClickObservable;
+        private final Observable<Unit> articleClickObservable;
 
         ArticleHolder(@NonNull View v) {
             super(v);
 
-            articleCard = v.findViewById(R.id.articleCard);
+            articleLayout = v.findViewById(R.id.articleLayout);
             countText = v.findViewById(R.id.countText);
             titleText = v.findViewById(R.id.titleText);
             authorText = v.findViewById(R.id.authorText);
             markText = v.findViewById(R.id.markText);
             dateText = v.findViewById(R.id.dateText);
+            articleLongClickObservable = RxView.longClicks(articleLayout);
+            articleClickObservable = RxView.clicks(articleLayout);
         }
     }
 }

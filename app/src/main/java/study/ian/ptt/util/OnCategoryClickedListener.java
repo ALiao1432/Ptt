@@ -1,5 +1,7 @@
 package study.ian.ptt.util;
 
+import study.ian.ptt.model.board.BoardInfo;
+
 public interface OnCategoryClickedListener {
-    void onCategoryClicked(String category);
+    void onCategoryClicked(BoardInfo boardInfo);
 }

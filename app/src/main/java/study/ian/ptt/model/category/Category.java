@@ -1,5 +1,7 @@
 package study.ian.ptt.model.category;
 
+import android.util.Log;
+
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
