@@ -72,6 +72,7 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
         articleAdapter = new ArticleAdapter(context);
 
         articleRecyclerView.setAdapter(articleAdapter);
+        articleRecyclerView.setHasFixedSize(true);
         articleRecyclerView.setLayoutManager(layoutManager);
 
         articleInfoText.setTextSize(25);

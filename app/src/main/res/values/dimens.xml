@@ -2,29 +2,27 @@
 <resources>
 
     <dimen name="card_height">56dp</dimen>
-    <dimen name="user_num_text_size">12sp</dimen>
     <dimen name="user_num_text_width">28dp</dimen>
     <dimen name="user_num_text_margin_start_end">6dp</dimen>
-    <dimen name="board_name_text_size">18sp</dimen>
-    <dimen name="board_name_margin">6dp</dimen>
-    <dimen name="board_title_text_size">12sp</dimen>
     <dimen name="fav_width_height">30dp</dimen>
-    <dimen name="fav_margin">10dp</dimen>
-
     <dimen name="article_text_margin_start_end">6dp</dimen>
     <dimen name="count_text_width">28dp</dimen>
-    <dimen name="count_text_size">12sp</dimen>
-    <dimen name="article_title_text_size">18sp</dimen>
-    <dimen name="article_author_text_size">12sp</dimen>
-    <dimen name="article_title_margin">6dp</dimen>
 
+    <dimen name="fav_margin">10dp</dimen>
+    <dimen name="board_name_margin">6dp</dimen>
+    <dimen name="article_title_margin">6dp</dimen>
     <dimen name="layout_margin">12dp</dimen>
     <dimen name="divider_margin">12dp</dimen>
     <dimen name="edittext_margin">12dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="push_content_text_size">16sp</dimen>
-
+    <dimen name="article_title_text_size">18sp</dimen>
+    <dimen name="article_author_text_size">12sp</dimen>
     <dimen name="article_content_text_size">16sp</dimen>
+    <dimen name="push_content_text_size">16sp</dimen>
+    <dimen name="count_text_size">12sp</dimen>
+    <dimen name="board_name_text_size">18sp</dimen>
+    <dimen name="board_title_text_size">12sp</dimen>
+    <dimen name="user_num_text_size">12sp</dimen>
 
 </resources>

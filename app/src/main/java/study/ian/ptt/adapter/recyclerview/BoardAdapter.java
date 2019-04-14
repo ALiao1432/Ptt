@@ -92,6 +92,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         holder.categoryTitleText.setText(info.getBoardTitle());
 
         if (info.getSort() == BoardInfo.SORT_BOARD) {
+            holder.favView.setVisibility(View.VISIBLE);
             setFavView(info.getName(), holder.favView);
 
             holder.favClickObservable

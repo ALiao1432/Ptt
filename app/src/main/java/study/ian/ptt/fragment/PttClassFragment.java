@@ -86,6 +86,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         pttClassFab.hide();
         pttClassFab.setOnClickListener(v -> {
             if (!pageStack.isEmpty()) {
+                classPath = pageStack.peek();
                 loadData(pageStack.pop());
             }
         });
