@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.jsoup.nodes.Document;
 
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import io.reactivex.subjects.PublishSubject;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.BoardAdapter;
@@ -33,9 +37,13 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     private Context context;
     private SwipeRefreshLayout pttClassRefreshLayout;
     private RecyclerView pttClassRecyclerView;
+    private FloatingActionButton pttClassFab;
     private BoardAdapter boardAdapter;
     private Board board;
     private String classPath = "1";
+    private String currentPath;
+    private Stack<String> pageStack = new Stack<>();
+    private final PublishSubject<String> pageStackSubject = PublishSubject.create();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -56,9 +64,10 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         return v;
     }
 
-    private void findViews(View view) {
-        pttClassRecyclerView = view.findViewById(R.id.recyclerViewPttClass);
-        pttClassRefreshLayout = view.findViewById(R.id.refreshLayoutPttClass);
+    private void findViews(View v) {
+        pttClassRecyclerView = v.findViewById(R.id.recyclerViewPttClass);
+        pttClassRefreshLayout = v.findViewById(R.id.refreshLayoutPttClass);
+        pttClassFab = v.findViewById(R.id.pttClassFab);
     }
 
     private void setViews() {
@@ -73,11 +82,34 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         pttClassRecyclerView.setAdapter(boardAdapter);
 
         pttClassRefreshLayout.setOnRefreshListener(() -> loadData(classPath));
+
+        pttClassFab.hide();
+        pttClassFab.setOnClickListener(v -> {
+            if (!pageStack.isEmpty()) {
+                loadData(pageStack.pop());
+            }
+        });
+
+        pageStackSubject.doOnNext(path -> toggleFabState())
+                .doOnError(t -> Log.d(TAG, "setViews: toggle fab state error : " + t))
+                .subscribe();
+
+        currentPath = classPath;
         loadData(classPath);
+    }
+
+    private void toggleFabState() {
+        if (pageStack.size() == 0) {
+            pttClassFab.hide();
+        } else {
+            pttClassFab.show();
+        }
     }
 
     private void loadData(String classPath) {
         pttClassRefreshLayout.setRefreshing(true);
+        pageStackSubject.onNext(classPath);
+        currentPath = classPath;
 
         ServiceBuilder.getPttService()
                 .getPttClass(classPath)
@@ -98,10 +130,11 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     @Override
     public void onPageReloadRequest(String reloadPath) {
         classPath = reloadPath;
+        pageStack.push(currentPath);
         loadData(classPath);
     }
 
-    private void reloadData(int changeIndex) {
+    private void reloadItem(int changeIndex) {
         boardAdapter.notifyItemChanged(changeIndex);
         pttClassRefreshLayout.setRefreshing(false);
     }
@@ -115,6 +148,6 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
                 .collect(Collectors.toList())
                 .indexOf(b);
 
-        reloadData(id);
+        reloadItem(id);
     }
 }

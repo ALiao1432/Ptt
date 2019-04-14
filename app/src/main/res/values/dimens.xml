@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- holder_board.xml -->
     <dimen name="card_height">56dp</dimen>
     <dimen name="user_num_text_size">12sp</dimen>
     <dimen name="user_num_text_width">28dp</dimen>
@@ -12,7 +11,6 @@
     <dimen name="fav_width_height">30dp</dimen>
     <dimen name="fav_margin">10dp</dimen>
 
-    <!-- holder_article.xml -->
     <dimen name="article_text_margin_start_end">6dp</dimen>
     <dimen name="count_text_width">28dp</dimen>
     <dimen name="count_text_size">12sp</dimen>
@@ -20,15 +18,13 @@
     <dimen name="article_author_text_size">12sp</dimen>
     <dimen name="article_title_margin">6dp</dimen>
 
-    <!-- layout_article_bottom_sheet.xml -->
     <dimen name="layout_margin">12dp</dimen>
     <dimen name="divider_margin">12dp</dimen>
     <dimen name="edittext_margin">12dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
-    <!-- holder_article_push.xml -->
     <dimen name="push_content_text_size">16sp</dimen>
 
-    <!-- holder_article_content.xml -->
     <dimen name="article_content_text_size">16sp</dimen>
 
 </resources>
