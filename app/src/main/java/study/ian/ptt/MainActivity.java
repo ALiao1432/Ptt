@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         articleListFragment.setOutPager(outPager);
         articleListFragment.setOnArticleListClickedListener(articleFragment);
+        articleListFragment.setOnCategoryCLickedListener(articleFragment);
 
         outFragList.add(boardFragment);
         outFragList.add(articleListFragment);

@@ -85,6 +85,7 @@ public class ArticleListFragment extends BaseFragment
     private String cate;
     private String searchQuery;
     private ArticleInfo selectInfo;
+    private OnCategoryClickedListener categoryClickedListener;
     private final BottomSheetManager sheetManager = new BottomSheetManager();
     private int currentLoading = LOAD_NORMAL_ARTICLE;
     private boolean isLoading = false;
@@ -268,6 +269,10 @@ public class ArticleListFragment extends BaseFragment
                 .subscribe();
     }
 
+    public void setOnCategoryCLickedListener(OnCategoryClickedListener listener) {
+        categoryClickedListener = listener;
+    }
+
     private void setSearchBtnEnable(boolean enable) {
         titleBtn.setEnabled(enable);
         authorBtn.setEnabled(enable);
@@ -416,6 +421,7 @@ public class ArticleListFragment extends BaseFragment
         boardInfoText.setText(boardInfo.getBoardTitle());
         currentLoading = LOAD_NORMAL_ARTICLE;
         articleListAdapter.clearResults();
+        categoryClickedListener.onCategoryClicked(boardInfo);
         restoreTextState(categoryText, cate);
         loadData();
     }

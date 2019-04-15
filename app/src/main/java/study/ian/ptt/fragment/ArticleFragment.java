@@ -22,13 +22,15 @@ import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleAdapter;
 import study.ian.ptt.model.article.Article;
+import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.OnArticleListClickedListener;
+import study.ian.ptt.util.OnCategoryClickedListener;
 
-public class ArticleFragment extends BaseFragment implements OnArticleListClickedListener {
+public class ArticleFragment extends BaseFragment implements OnArticleListClickedListener, OnCategoryClickedListener {
 
     private final String TAG = "ArticleFragment";
 
@@ -150,6 +152,14 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
         textView.setScaleY(1f);
     }
 
+    private void restoreTextState(TextView textView, int text) {
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(text);
+        textView.setAlpha(1f);
+        textView.setScaleX(1f);
+        textView.setScaleY(1f);
+    }
+
     @Override
     public void onArticleListClicked(ArticleInfo info) {
         articleInfo = info;
@@ -157,5 +167,11 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
         runAnimation = true;
         restoreTextState(articleInfoText, info.getTitle());
         loadData();
+    }
+
+    @Override
+    public void onCategoryClicked(BoardInfo boardInfo) {
+        restoreTextState(articleInfoText, R.string.unselected_article_hint);
+        articleAdapter.clearResults();
     }
 }
