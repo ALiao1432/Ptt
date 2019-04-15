@@ -4,6 +4,10 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,7 +156,7 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
         textView.setScaleY(1f);
     }
 
-    private void restoreTextState(TextView textView, int text) {
+    private void restoreTextState(TextView textView, SpannableString text) {
         textView.setVisibility(View.VISIBLE);
         textView.setText(text);
         textView.setAlpha(1f);
@@ -171,7 +175,12 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
 
     @Override
     public void onCategoryClicked(BoardInfo boardInfo) {
-        restoreTextState(articleInfoText, R.string.unselected_article_hint);
+        String hint = context.getResources().getString(R.string.unselected_article_hint);
+        String s = hint + "\n" + boardInfo.getName();
+        SpannableString spannableString = new SpannableString(s);
+        spannableString.setSpan(new RelativeSizeSpan(2.0f), hint.length(), s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.themeDarkPrimaryText, null)), hint.length(), s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        restoreTextState(articleInfoText, spannableString);
         articleAdapter.clearResults();
     }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Ptt</string>
 
-    <string name="unselected_article_hint">Select an article first…</string>
+    <string name="unselected_article_hint">Select an article from</string>
 
     <string name="article_search_option_hint">Keyword</string>
     <string name="article_search_option_title">Title</string>
