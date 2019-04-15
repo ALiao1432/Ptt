@@ -422,6 +422,8 @@ public class ArticleListFragment extends BaseFragment
         currentLoading = LOAD_NORMAL_ARTICLE;
         articleListAdapter.clearResults();
         categoryClickedListener.onCategoryClicked(boardInfo);
+        sheetManager.collapseSheet(articleOptionSheet);
+        sheetManager.collapseSheet(keywordBlackListSheet);
         restoreTextState(categoryText, cate);
         loadData();
     }

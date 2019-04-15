@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:text="@string/article_search_option_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:icon="@drawable/vd_title"
         app:layout_constraintStart_toStartOf="@id/searchInputLayout"
         app:layout_constraintTop_toBottomOf="@id/searchInputLayout" />
 
@@ -48,6 +49,7 @@
         android:layout_marginStart="@dimen/layout_margin"
         android:text="@string/article_search_option_author"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:icon="@drawable/vd_author"
         app:layout_constraintStart_toEndOf="@id/searchTitleBtn"
         app:layout_constraintTop_toBottomOf="@id/searchInputLayout" />
 
@@ -59,6 +61,7 @@
         android:layout_marginStart="@dimen/layout_margin"
         android:text="@string/article_search_option_push"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:icon="@drawable/vd_push"
         app:layout_constraintStart_toEndOf="@id/searchAuthorBtn"
         app:layout_constraintTop_toTopOf="@id/searchAuthorBtn" />
 
@@ -98,6 +101,7 @@
         android:layout_height="wrap_content"
         android:text="@string/update_blacklist"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:icon="@drawable/vd_update"
         app:layout_constraintStart_toStartOf="@id/blackListInputLayout"
         app:layout_constraintTop_toBottomOf="@id/blackListInputLayout" />
 
