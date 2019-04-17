@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pollBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:layout_marginEnd="@dimen/layout_margin"
+        android:backgroundTint="@color/themeDarkSecondary"
+        android:text="@string/load_new_push"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
+        android:textColor="@color/themeDarkPrimaryText"
+        app:icon="@drawable/vd_load_new_push"
+        app:iconGravity="textStart"
+        app:iconTint="@color/themeDarkPrimaryText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

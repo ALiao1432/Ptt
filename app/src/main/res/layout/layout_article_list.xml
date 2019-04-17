@@ -19,8 +19,6 @@
         tools:text="boardText" />
 
     <com.google.android.material.bottomappbar.BottomAppBar xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="@android:dimen/app_icon_size"
@@ -47,8 +45,8 @@
                 android:id="@+id/boardInfoText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:layout_marginStart="@dimen/layout_margin"
+                android:maxLines="1"
                 android:textColor="@color/themeDarkSecondaryText"
                 tools:text="Thank you!!!Thank you!!!Thank you!!!Thank you!!" />
 

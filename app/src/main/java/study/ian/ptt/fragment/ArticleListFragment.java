@@ -21,9 +21,6 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import org.jsoup.nodes.Document;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -39,6 +36,7 @@ import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.model.category.Category;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
+import study.ian.ptt.util.BottomSheetManager;
 import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.OnArticleListLongClickedListener;
 import study.ian.ptt.util.OnCategoryClickedListener;
@@ -443,29 +441,6 @@ public class ArticleListFragment extends BaseFragment
             sheetManager.expandSheet(articleOptionSheet);
         } else {
             sheetManager.collapseSheet(articleOptionSheet);
-        }
-    }
-
-    class BottomSheetManager {
-        final Set<BottomSheetBehavior> behaviorSet = new HashSet<>();
-
-        void addToSet(BottomSheetBehavior behavior) {
-            behaviorSet.add(behavior);
-        }
-
-        void expandSheet(BottomSheetBehavior behavior) {
-            for (BottomSheetBehavior b : behaviorSet) {
-                if (b != behavior) {
-                    collapseSheet(b);
-                }
-            }
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-        }
-
-        void collapseSheet(BottomSheetBehavior behavior) {
-            if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
         }
     }
 }

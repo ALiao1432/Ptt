@@ -1,6 +1,8 @@
 package study.ian.ptt;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
 
         findViews();
         setViews();
+
+//        Uri uri = Uri.parse("/Poll/NBA/M.1555466403.A.944.html?cacheKey=2100-949885996&offset=5413&offset-sig=24886a161fecdd6e142fb31d429f74f9764f515a");
+//        Log.d(TAG, "onCreate: parse uri : " + uri.getPath() + ", cacheKey : " + uri.getQueryParameter("cacheKey"));
     }
 
     private void findViews() {

@@ -8,9 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.jakewharton.rxbinding3.view.RxView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,6 +24,8 @@ import kotlin.Unit;
 import study.ian.ptt.R;
 import study.ian.ptt.model.article.Article;
 import study.ian.ptt.model.article.Push;
+import study.ian.ptt.util.OnPollClickedListener;
+import study.ian.ptt.util.OnPollLongClickedListener;
 import study.ian.ptt.util.SpanUtil;
 
 public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -30,6 +34,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final static int VIEW_TYPE_HEADER = 0;
     private final static int VIEW_TYPE_CONTENT = 1;
     private final static int VIEW_TYPE_PUSH = 2;
+    private final static int VIEW_TYPE_POLL = 3;
     private final static int TAG_STATE_NORMAL = 0;
     private final static int TAG_STATE_FLOOR = 1;
     private final int COLOR_PUSH;
@@ -39,6 +44,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final PublishSubject<Integer> tagFloorSubject = PublishSubject.create();
     private final PublishSubject<String> highlightAuthorSubject = PublishSubject.create();
 
+    private OnPollClickedListener pollClickedListener;
+    private OnPollLongClickedListener pollLongClickedListener;
     private Article article;
     private List<Push> pushList;
     private Spannable spannable;
@@ -68,21 +75,35 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    public void setOnPollClickedListener(OnPollClickedListener listener) {
+        pollClickedListener = listener;
+    }
+
+    public void setOnPollLongClickedListener(OnPollLongClickedListener listener) {
+        pollLongClickedListener = listener;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View v;
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                View headerView = inflater.inflate(R.layout.holder_article_header, parent, false);
-                return new ArticleHeaderHolder(headerView);
+                v = inflater.inflate(R.layout.holder_article_header, parent, false);
+                return new ArticleHeaderHolder(v);
             case VIEW_TYPE_CONTENT:
-                View contentView = inflater.inflate(R.layout.holder_article_content, parent, false);
-                return new ArticleContentHolder(contentView);
+                v = inflater.inflate(R.layout.holder_article_content, parent, false);
+                return new ArticleContentHolder(v);
             case VIEW_TYPE_PUSH:
+                v = inflater.inflate(R.layout.holder_article_push, parent, false);
+                return new ArticlePushHolder(v);
+            case VIEW_TYPE_POLL:
+                v = inflater.inflate(R.layout.holder_article_poll, parent, false);
+                return new ArticlePollHolder(v);
             default:
-                View pushView = inflater.inflate(R.layout.holder_article_push, parent, false);
-                return new ArticlePushHolder(pushView);
+                v = inflater.inflate(R.layout.holder_article_push, parent, false);
+                return new ArticlePushHolder(v);
         }
     }
 
@@ -94,6 +115,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             configContentHolder((ArticleContentHolder) holder);
         } else if (holder instanceof ArticlePushHolder) {
             configPushHolder((ArticlePushHolder) holder, position);
+        } else {
+            configPollHolder((ArticlePollHolder) holder);
         }
     }
 
@@ -122,7 +145,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.pushContentText.setText(push.getContent());
         holder.pushTimeText.setText(push.getTime());
 
-        holder.pushTagObservable
+        holder.pushTagClickObservable
                 .doOnNext(u -> tagFloorSubject.onNext(toggleTagState()))
                 .doOnError(t -> Log.d(TAG, "configPushHolder: click pushTagText error : " + t))
                 .subscribe();
@@ -131,8 +154,27 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .doOnError(t -> Log.d(TAG, "configPushHolder: set tag text error : " + t))
                 .subscribe();
 
-        holder.pushAuthorObservable
+        holder.pushAuthorClickObservable
                 .doOnNext(u -> {
+//                    Log.d(TAG, "configPushHolder: launch Poll");
+//                    PttService pttService = ServiceBuilder.getPttService();
+//                    pttService.getLongPoll(ServiceBuilder.API_POLL_URL + article.getLongPollUrl())
+//                            .compose(ObserverHelper.applyHelper())
+//                            .timeout(ServiceBuilder.LONG_POLL_TIMEOUT, TimeUnit.SECONDS)
+//                            .retry()
+//                            .filter(r -> r.code() == 200)
+//                            .map(Response::body)
+//                            .doOnNext(longPoll -> Log.d(TAG, "configPushHolder: Poll test : " + longPoll))
+////                            .flatMap(new Function<LongPoll, ObservableSource<?>>() {
+////                                @Override
+////                                public ObservableSource<?> apply(LongPoll longPoll) throws Exception {
+////                                    return pttService.getPoll(article.getPollUrl());
+////                                }
+////                            })
+//                            .doOnError(t -> Log.d(TAG, "configPushHolder: get hot board error : " + t))
+//                            .repeatWhen(objectObservable -> objectObservable.delay(ServiceBuilder.LONG_POLL_INTERVAL, TimeUnit.MILLISECONDS))
+//                            .subscribe();
+
                     highLightAuthor = (push.getAuthor().equals(highLightAuthor) ? "" : push.getAuthor());
                     highlightAuthorSubject.onNext(push.getAuthor());
                 })
@@ -144,6 +186,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .subscribe();
 
         toggleHighlightAuthor(holder.articlePushLayout, push.getAuthor());
+    }
+
+    private void configPollHolder(ArticlePollHolder holder) {
+        holder.pollClickObservable
+                .throttleFirst(1500, TimeUnit.MILLISECONDS)
+                .doOnNext(unit -> {
+                    pollClickedListener.onPollClicked();
+                    Log.d(TAG, "configPollHolder: poll click");
+                })
+                .doOnError(t -> Log.d(TAG, "configPollHolder: poll click error : " + t))
+                .subscribe();
+
+        holder.pollLongClickObservable
+                .doOnNext(unit -> {
+                    pollLongClickedListener.onPollLongClicked();
+                    Log.d(TAG, "configPollHolder: poll long click");
+                })
+                .doOnError(t -> Log.d(TAG, "configPollHolder: poll long click error : " + t))
+                .subscribe();
     }
 
     private int getTagColor(String tag) {
@@ -180,18 +241,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (article == null) {
             return 0;
         }
-        return pushList.size() + 2;
+        return pushList.size() + 3;
     }
 
     @Override
-    public int getItemViewType(int position) {
-        switch (position) {
-            case 0:
-                return VIEW_TYPE_HEADER;
-            case 1:
-                return VIEW_TYPE_CONTENT;
-            default:
-                return VIEW_TYPE_PUSH;
+    public int getItemViewType(int pos) {
+        if (pos == 0) {
+            return VIEW_TYPE_HEADER;
+        } else if (pos == 1) {
+            return VIEW_TYPE_CONTENT;
+        } else if (pos == pushList.size() + 2) {
+            return VIEW_TYPE_POLL;
+        } else {
+            return VIEW_TYPE_PUSH;
         }
     }
 
@@ -228,8 +290,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private final TextView pushAuthorText;
         private final TextView pushTimeText;
         private final TextView pushContentText;
-        private final Observable<Unit> pushTagObservable;
-        private final Observable<Unit> pushAuthorObservable;
+        private final Observable<Unit> pushTagClickObservable;
+        private final Observable<Unit> pushAuthorClickObservable;
 
         ArticlePushHolder(@NonNull View v) {
             super(v);
@@ -238,8 +300,22 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             pushAuthorText = v.findViewById(R.id.pushAuthorText);
             pushTimeText = v.findViewById(R.id.pushTimeText);
             pushContentText = v.findViewById(R.id.pushContentText);
-            pushTagObservable = RxView.clicks(pushTagText);
-            pushAuthorObservable = RxView.clicks(pushAuthorText);
+            pushTagClickObservable = RxView.clicks(pushTagText);
+            pushAuthorClickObservable = RxView.clicks(pushAuthorText);
+        }
+    }
+
+    class ArticlePollHolder extends RecyclerView.ViewHolder {
+
+        private final MaterialButton pollBtn;
+        private final Observable<Unit> pollClickObservable;
+        private final Observable<Unit> pollLongClickObservable;
+
+        ArticlePollHolder(@NonNull View v) {
+            super(v);
+            pollBtn = v.findViewById(R.id.pollBtn);
+            pollClickObservable = RxView.clicks(pollBtn);
+            pollLongClickObservable = RxView.longClicks(pollBtn);
         }
     }
 }

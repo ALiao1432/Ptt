@@ -16,16 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/article_search_option_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/edittext_margin"
-            android:paddingEnd="@dimen/edittext_margin"
             android:textColor="@color/themeDarkPrimaryText" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -80,16 +76,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/divider_margin"
         android:hint="@string/article_blacklist_hint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dividerLine">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/blackListEdt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/edittext_margin"
-            android:paddingEnd="@dimen/edittext_margin"
             android:textColor="@color/themeDarkPrimaryText" />
 
     </com.google.android.material.textfield.TextInputLayout>

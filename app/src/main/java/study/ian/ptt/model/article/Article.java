@@ -1,11 +1,13 @@
 package study.ian.ptt.model.article;
 
-import org.jetbrains.annotations.NotNull;
+import android.net.Uri;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import study.ian.ptt.util.ContentConverter;
@@ -18,6 +20,9 @@ public class Article {
     private final String board;
     private final String title;
     private final String articleTime;
+    private final Uri pollUrl;
+    private final Uri longPollUrl;
+    private final String pollOffset;
     private String mainContent;
     private final List<Push> pushList = new ArrayList<>();
     private final int[] pushTagCount = {0, 0, 0}; // {推, →, 噓}
@@ -27,6 +32,9 @@ public class Article {
         board = doc.select("#main-content > div.article-metaline-right > span.article-meta-value").text();
         title = doc.select("#main-content > div:nth-child(3) > span.article-meta-value").text();
         articleTime = doc.select("#main-content > div:nth-child(4) > span.article-meta-value").text();
+        pollUrl = Uri.parse(doc.select("#article-polling").attr("data-pollurl"));
+        longPollUrl = Uri.parse(doc.select("#article-polling").attr("data-longpollurl"));
+        pollOffset = doc.select("#article-polling").attr("data-offset");
 
         Elements pushElements = doc.getElementsByClass("push");
         pushElements.forEach(e -> {
@@ -111,7 +119,18 @@ public class Article {
         return pushList;
     }
 
-    @NotNull
+    public Uri getPollUrl() {
+        return pollUrl;
+    }
+
+    public Uri getLongPollUrl() {
+        return longPollUrl;
+    }
+
+    public String getPollOffset() {
+        return pollOffset;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -120,8 +139,12 @@ public class Article {
                 ", board='" + board + '\'' +
                 ", title='" + title + '\'' +
                 ", articleTime='" + articleTime + '\'' +
+                ", pollUrl='" + pollUrl + '\'' +
+                ", longPollUrl='" + longPollUrl + '\'' +
+                ", pollOffset='" + pollOffset + '\'' +
                 ", mainContent='" + mainContent + '\'' +
                 ", pushList=" + pushList +
+                ", pushTagCount=" + Arrays.toString(pushTagCount) +
                 '}';
     }
 }

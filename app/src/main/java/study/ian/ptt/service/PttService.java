@@ -7,7 +7,10 @@ import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
+import study.ian.ptt.model.poll.LongPoll;
+import study.ian.ptt.model.poll.Poll;
 
 public interface PttService {
 
@@ -36,4 +39,19 @@ public interface PttService {
 
     @GET("/bbs/hotboards.html")
     Observable<Response<Document>> getHotBoard();
+
+    @GET
+    Observable<Response<LongPoll>> getLongPoll(
+            @Url String longPollUrl
+    );
+
+    @GET
+    Observable<Response<Poll>> getPoll(
+            @Url String pollUri,
+            @Query("cacheKey") String cacheKey,
+            @Query("offset") String offset,
+            @Query("offset-sig") String offsetSig,
+            @Query("size") String size,
+            @Query("size-sig") String sizeSig
+    );
 }

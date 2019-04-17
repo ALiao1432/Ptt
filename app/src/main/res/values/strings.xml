@@ -8,11 +8,15 @@
     <string name="article_search_option_author">Author</string>
     <string name="article_search_option_push">Push</string>
     <string name="article_blacklist_hint">Blacklist</string>
-    <string name="add_blacklist">Add Blacklist</string>
+    <string name="poll_interval_hint">Poll Interval</string>
+    <string name="blacklist_add">Add Blacklist</string>
     <string name="update_blacklist_success">Update Successfully</string>
-    <string name="cancel_blacklist">Cancel</string>
+    <string name="blacklist_cancel">Cancel</string>
     <string name="same_title">Same Title</string>
     <string name="same_author">Same Author</string>
     <string name="update_blacklist">Update</string>
+    <string name="load_new_push">Load New Push</string>
+    <string name="poll_start">Start</string>
+    <string name="poll_cancel">Cancel</string>
 
 </resources>

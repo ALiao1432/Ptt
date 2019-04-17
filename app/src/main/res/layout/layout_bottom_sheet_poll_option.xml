@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/themeDarkSecondary"
+    android:padding="@dimen/layout_margin"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    app:behavior_skipCollapsed="false"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/pollIntervalLayout"
+        style="@style/AppTheme.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/poll_interval_hint"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/pollIntervalEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@color/themeDarkPrimaryText" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pollStartBtn"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/poll_start"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textColor="@color/themeBrightPrimaryText"
+        app:layout_constraintStart_toStartOf="@id/pollIntervalLayout"
+        app:layout_constraintTop_toBottomOf="@id/pollIntervalLayout" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pollCancelBtn"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_margin"
+        android:text="@string/poll_cancel"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        app:layout_constraintStart_toEndOf="@id/pollStartBtn"
+        app:layout_constraintTop_toBottomOf="@id/pollIntervalLayout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

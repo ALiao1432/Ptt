@@ -15,10 +15,15 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
 import org.jsoup.nodes.Document;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
@@ -30,11 +35,15 @@ import study.ian.ptt.model.board.BoardInfo;
 import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.service.PttService;
 import study.ian.ptt.service.ServiceBuilder;
+import study.ian.ptt.util.BottomSheetManager;
 import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.OnArticleListClickedListener;
 import study.ian.ptt.util.OnCategoryClickedListener;
+import study.ian.ptt.util.OnPollClickedListener;
+import study.ian.ptt.util.OnPollLongClickedListener;
 
-public class ArticleFragment extends BaseFragment implements OnArticleListClickedListener, OnCategoryClickedListener {
+public class ArticleFragment extends BaseFragment
+        implements OnArticleListClickedListener, OnCategoryClickedListener, OnPollClickedListener, OnPollLongClickedListener {
 
     private final String TAG = "ArticleFragment";
 
@@ -42,12 +51,19 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
     private Context context;
     private RecyclerView articleRecyclerView;
     private TextView articleInfoText;
+    private ConstraintLayout pollOptionLayout;
+    private TextInputEditText pollIntervalEdt;
+    private MaterialButton pollStartBtn;
+    private MaterialButton pollCancelBtn;
     private ArticleAdapter articleAdapter;
     private Article article;
     private ArticleInfo articleInfo;
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
+    private BottomSheetBehavior pollOptionSheet;
+    private BottomSheetManager sheetManager = new BottomSheetManager();
     private boolean runAnimation;
+    private boolean autoPolling = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -70,18 +86,44 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
     private void findViews(View v) {
         articleRecyclerView = v.findViewById(R.id.recyclerViewArticle);
         articleInfoText = v.findViewById(R.id.articleInfoText);
+        pollOptionLayout = v.findViewById(R.id.pollOptionBottomSheet);
+
+        pollIntervalEdt = pollOptionLayout.findViewById(R.id.pollIntervalEdt);
+        pollStartBtn = pollOptionLayout.findViewById(R.id.pollStartBtn);
+        pollCancelBtn = pollOptionLayout.findViewById(R.id.pollCancelBtn);
     }
 
     private void setViews() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
         articleAdapter = new ArticleAdapter(context);
+        articleAdapter.setOnPollClickedListener(this);
+        articleAdapter.setOnPollLongClickedListener(this);
 
         articleRecyclerView.setAdapter(articleAdapter);
         articleRecyclerView.setHasFixedSize(true);
         articleRecyclerView.setLayoutManager(layoutManager);
 
         articleInfoText.setTextSize(25);
+
+        pollOptionSheet = BottomSheetBehavior.from(pollOptionLayout);
+        sheetManager.addToSet(pollOptionSheet);
+
+        View.OnClickListener pollClickListener = v -> {
+            switch (v.getId()) {
+                case R.id.pollStartBtn:
+                    autoPolling = true;
+                    Log.d(TAG, "setViews: start polling");
+                    break;
+                case R.id.pollCancelBtn:
+                    autoPolling = false;
+                    Log.d(TAG, "setViews: cancel polling");
+                    break;
+            }
+            sheetManager.collapseSheet(pollOptionSheet);
+        };
+        pollStartBtn.setOnClickListener(pollClickListener);
+        pollCancelBtn.setOnClickListener(pollClickListener);
     }
 
     private void initAnimator() {
@@ -182,5 +224,16 @@ public class ArticleFragment extends BaseFragment implements OnArticleListClicke
         spannableString.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.themeDarkPrimaryText, null)), hint.length(), s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         restoreTextState(articleInfoText, spannableString);
         articleAdapter.clearResults();
+    }
+
+    @Override
+    public void onPollClicked() {
+        Log.d(TAG, "onPollClicked: ");
+    }
+
+    @Override
+    public void onPollLongClicked() {
+        sheetManager.expandSheet(pollOptionSheet);
+
     }
 }
