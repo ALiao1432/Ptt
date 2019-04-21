@@ -1,15 +1,19 @@
 package study.ian.ptt;
 
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleFragment;
 import study.ian.ptt.fragment.ArticleListFragment;
@@ -44,9 +48,6 @@ public class MainActivity extends AppCompatActivity {
 
         findViews();
         setViews();
-
-//        Uri uri = Uri.parse("/Poll/NBA/M.1555466403.A.944.html?cacheKey=2100-949885996&offset=5413&offset-sig=24886a161fecdd6e142fb31d429f74f9764f515a");
-//        Log.d(TAG, "onCreate: parse uri : " + uri.getPath() + ", cacheKey : " + uri.getQueryParameter("cacheKey"));
     }
 
     private void findViews() {
@@ -91,5 +92,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View v = getCurrentFocus();
+        if (isShouldHideInput(v, ev)) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v instanceof EditText) {
+            int[] leftTop = {0, 0};
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];
+            int top = leftTop[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            return !(event.getX() > left) || !(event.getX() < right)
+                    || !(event.getY() > top) || !(event.getY() < bottom);
+        }
+        return false;
     }
 }

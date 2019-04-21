@@ -11,7 +11,7 @@ public class LongPoll {
     private String filename;
 
     @SerializedName("size")
-    private int size;
+    private String size;
 
     @SerializedName("sig")
     private String sig;
@@ -27,7 +27,7 @@ public class LongPoll {
         return filename;
     }
 
-    public int getSize() {
+    public String getSize() {
         return size;
     }
 

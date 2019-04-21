@@ -42,12 +42,14 @@ public interface PttService {
 
     @GET
     Observable<Response<LongPoll>> getLongPoll(
-            @Url String longPollUrl
+            @Url String longPollUrl,
+            @Header("Cookie") String cookie
     );
 
     @GET
     Observable<Response<Poll>> getPoll(
             @Url String pollUri,
+            @Header("Cookie") String cookie,
             @Query("cacheKey") String cacheKey,
             @Query("offset") String offset,
             @Query("offset-sig") String offsetSig,

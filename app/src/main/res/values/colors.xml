@@ -32,7 +32,7 @@
     <color name="pushCount_100">#FF6666</color>
     <color name="pushCount_X">#666666</color>
 
-    <color name="pushContent">#FFFF66</color>
+    <color name="pushContent">#FFC600</color>
     <color name="pushAuthor">#FFFFFF</color>
     <color name="pushTime">#BBBBBB</color>
     <color name="push">#009900</color>

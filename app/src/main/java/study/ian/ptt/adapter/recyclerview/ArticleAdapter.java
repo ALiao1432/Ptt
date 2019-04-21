@@ -1,6 +1,7 @@
 package study.ian.ptt.adapter.recyclerview;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.Spannable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,10 +54,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private int tagState = TAG_STATE_NORMAL;
 
     public ArticleAdapter(Context context) {
-        COLOR_PUSH = ResourcesCompat.getColor(context.getResources(), R.color.push, null);
-        COLOR_ARROW = ResourcesCompat.getColor(context.getResources(), R.color.arrow, null);
-        COLOR_SHUSH = ResourcesCompat.getColor(context.getResources(), R.color.shush, null);
-        COLOR_KNOWN = ResourcesCompat.getColor(context.getResources(), R.color.unknownTag, null);
+        Resources resources = context.getResources();
+
+        COLOR_PUSH = ResourcesCompat.getColor(resources, R.color.push, null);
+        COLOR_ARROW = ResourcesCompat.getColor(resources, R.color.arrow, null);
+        COLOR_SHUSH = ResourcesCompat.getColor(resources, R.color.shush, null);
+        COLOR_KNOWN = ResourcesCompat.getColor(resources, R.color.unknownTag, null);
     }
 
     public void addResults(Article article) {
@@ -136,8 +139,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void configPushHolder(ArticlePushHolder holder, int position) {
         int posInList = position - 2;
         Push push = pushList.get(posInList);
-        String pushTagCount = String.valueOf(push.getPushTagCount() + push.getPushTag());
-        String floorCount = String.valueOf(position - 1) + "樓";
+        String pushTagCount = push.getPushTagCount() + push.getPushTag();
+        String floorCount = (position - 1) + "樓";
 
         holder.pushTagText.setText(tagState == TAG_STATE_NORMAL ? pushTagCount : floorCount);
         holder.pushTagText.setTextColor(getTagColor(push.getPushTag()));
@@ -156,25 +159,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         holder.pushAuthorClickObservable
                 .doOnNext(u -> {
-//                    Log.d(TAG, "configPushHolder: launch Poll");
-//                    PttService pttService = ServiceBuilder.getPttService();
-//                    pttService.getLongPoll(ServiceBuilder.API_POLL_URL + article.getLongPollUrl())
-//                            .compose(ObserverHelper.applyHelper())
-//                            .timeout(ServiceBuilder.LONG_POLL_TIMEOUT, TimeUnit.SECONDS)
-//                            .retry()
-//                            .filter(r -> r.code() == 200)
-//                            .map(Response::body)
-//                            .doOnNext(longPoll -> Log.d(TAG, "configPushHolder: Poll test : " + longPoll))
-////                            .flatMap(new Function<LongPoll, ObservableSource<?>>() {
-////                                @Override
-////                                public ObservableSource<?> apply(LongPoll longPoll) throws Exception {
-////                                    return pttService.getPoll(article.getPollUrl());
-////                                }
-////                            })
-//                            .doOnError(t -> Log.d(TAG, "configPushHolder: get hot board error : " + t))
-//                            .repeatWhen(objectObservable -> objectObservable.delay(ServiceBuilder.LONG_POLL_INTERVAL, TimeUnit.MILLISECONDS))
-//                            .subscribe();
-
                     highLightAuthor = (push.getAuthor().equals(highLightAuthor) ? "" : push.getAuthor());
                     highlightAuthorSubject.onNext(push.getAuthor());
                 })
@@ -191,18 +175,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void configPollHolder(ArticlePollHolder holder) {
         holder.pollClickObservable
                 .throttleFirst(1500, TimeUnit.MILLISECONDS)
-                .doOnNext(unit -> {
-                    pollClickedListener.onPollClicked();
-                    Log.d(TAG, "configPollHolder: poll click");
-                })
+                .doOnNext(unit -> pollClickedListener.onPollClicked())
                 .doOnError(t -> Log.d(TAG, "configPollHolder: poll click error : " + t))
                 .subscribe();
 
         holder.pollLongClickObservable
-                .doOnNext(unit -> {
-                    pollLongClickedListener.onPollLongClicked();
-                    Log.d(TAG, "configPollHolder: poll long click");
-                })
+                .doOnNext(unit -> pollLongClickedListener.onPollLongClicked())
                 .doOnError(t -> Log.d(TAG, "configPollHolder: poll long click error : " + t))
                 .subscribe();
     }

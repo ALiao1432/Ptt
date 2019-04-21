@@ -69,7 +69,6 @@ public class GlideImageGetter implements Html.ImageGetter {
             if (drawable.getIntrinsicWidth() != textView.getWidth()) {
                 scaleFac = (float) textView.getWidth() / (float) drawable.getIntrinsicWidth();
             }
-            Log.d(TAG, "onResourceReady: dra wid : " + drawable.getIntrinsicWidth() + ", scaF : " + scaleFac);
             drawable.setBounds(0, 0, Math.round(drawable.getIntrinsicWidth() * scaleFac), Math.round(drawable.getIntrinsicHeight() * scaleFac));
             this.setBounds(0, 0, Math.round(drawable.getIntrinsicWidth() * scaleFac), Math.round(drawable.getIntrinsicHeight() * scaleFac));
             textView.setText(textView.getText());

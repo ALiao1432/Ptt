@@ -52,7 +52,7 @@ public class Category {
                 ));
             }
         } else {
-            for (int i = 0; i < articleElements.size(); i++) {
+            for (int i = 0, size = articleElements.size(); i < size; i++) {
                 Element e = articleElements.get(i);
 
                 articleInfoList.add(new ArticleInfo(

@@ -8,16 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding3.view.RxView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.jakewharton.rxbinding3.view.RxView;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import kotlin.Unit;
 import study.ian.morphviewlib.MorphView;
@@ -35,7 +35,7 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
     private final ViewPager outPager;
     private OnCategoryClickedListener onCategoryClickedListener;
     private OnPageReloadRequestListener onPageReloadRequestListener;
-    private List<BoardInfo> infoList = new ArrayList<>();
+    private List<BoardInfo> infoList;
     private final Resources resources;
     private final PreManager preManager;
 
@@ -118,7 +118,10 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
 
     @Override
     public int getItemCount() {
-        return infoList.size();
+        if (infoList != null) {
+            return infoList.size();
+        }
+        return 0;
     }
 
     class BoardHolder extends RecyclerView.ViewHolder {

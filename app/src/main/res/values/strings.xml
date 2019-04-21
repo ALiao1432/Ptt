@@ -8,7 +8,7 @@
     <string name="article_search_option_author">Author</string>
     <string name="article_search_option_push">Push</string>
     <string name="article_blacklist_hint">Blacklist</string>
-    <string name="poll_interval_hint">Poll Interval</string>
+    <string name="poll_interval_hint">Poll Interval (sec)</string>
     <string name="blacklist_add">Add Blacklist</string>
     <string name="update_blacklist_success">Update Successfully</string>
     <string name="blacklist_cancel">Cancel</string>

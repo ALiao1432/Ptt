@@ -1,6 +1,7 @@
 package study.ian.ptt.model.article;
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -37,6 +38,58 @@ public class Article {
         pollOffset = doc.select("#article-polling").attr("data-offset");
 
         Elements pushElements = doc.getElementsByClass("push");
+        addPushList(pushElements);
+
+        doc.getElementsByClass("article-metaline").remove();
+        doc.getElementsByClass("article-metaline-right").remove();
+        doc.getElementsByClass("push").remove();
+        doc.outputSettings(new Document.OutputSettings().prettyPrint(false));
+
+        Elements rElements = doc.getElementsByClass("richcontent");
+        Elements prevElements = rElements.prev();
+
+        rElements.tagName("img");
+        rElements.removeAttr("class");
+        rElements.empty();
+
+        for (int i = 0; i < rElements.size(); i++) {
+            String src = prevElements.get(i).attr("href");
+            rElements.get(i).attr("src", src);
+        }
+
+        rElements.append("</br></br>");
+
+        Element mainElement = doc.getElementById("main-content");
+        mainContent = mainElement.toString();
+        mainContent = ContentConverter.classToStyle(mainContent);
+        mainContent = ContentConverter.newLineToBr(mainContent);
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getArticleTime() {
+        return articleTime;
+    }
+
+    public String getMainContent() {
+        return mainContent;
+    }
+
+    public List<Push> getPushList() {
+        return pushList;
+    }
+
+    public void addPushList(Elements pushElements) {
         pushElements.forEach(e -> {
             switch (e.child(0).text()) {
                 case "推":
@@ -71,52 +124,6 @@ public class Article {
                     break;
             }
         });
-
-        doc.getElementsByClass("article-metaline").remove();
-        doc.getElementsByClass("article-metaline-right").remove();
-        doc.getElementsByClass("push").remove();
-        doc.outputSettings(new Document.OutputSettings().prettyPrint(false));
-
-        Elements rElements = doc.getElementsByClass("richcontent");
-        Elements prevElements = rElements.prev();
-
-        rElements.tagName("img");
-        rElements.removeAttr("class");
-        rElements.empty();
-        for (int i = 0; i < rElements.size(); i++) {
-            String src = prevElements.get(i).attr("href");
-            rElements.get(i).attr("src", src);
-        }
-        rElements.append("</br></br>");
-
-        Element mainElement = doc.getElementById("main-content");
-        mainContent = mainElement.toString();
-        mainContent = ContentConverter.classToStyle(mainContent);
-        mainContent = ContentConverter.newLineToBr(mainContent);
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getBoard() {
-        return board;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getArticleTime() {
-        return articleTime;
-    }
-
-    public String getMainContent() {
-        return mainContent;
-    }
-
-    public List<Push> getPushList() {
-        return pushList;
     }
 
     public Uri getPollUrl() {

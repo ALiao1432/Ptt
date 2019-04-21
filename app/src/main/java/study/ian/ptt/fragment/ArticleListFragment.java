@@ -281,7 +281,7 @@ public class ArticleListFragment extends BaseFragment
         isLoading = true;
 
         Observable<Response<Document>> o = pttService.getCategory(ServiceBuilder.COOKIE, category == null ? cate + "/index.html" : category.getPrePage());
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
     private void loadSameTitle(boolean newSearch) {
@@ -294,7 +294,7 @@ public class ArticleListFragment extends BaseFragment
         currentLoading = LOAD_SAME_TITLE;
 
         Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
     private void loadSameAuthor(boolean newSearch) {
@@ -307,7 +307,7 @@ public class ArticleListFragment extends BaseFragment
         currentLoading = LOAD_SAME_AUTHOR;
 
         Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
     private void loadSearchTitle(boolean newSearch, String query) {
@@ -319,7 +319,7 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SEARCH_TITLE;
         Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
 
@@ -332,7 +332,7 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SEARCH_AUTHOR;
         Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
     private void loadSearchPush(boolean newSearch, String query) {
@@ -344,10 +344,10 @@ public class ArticleListFragment extends BaseFragment
         }
         currentLoading = LOAD_SEARCH_PUSH;
         Observable<Response<Document>> o = pttService.getSearchResult(ServiceBuilder.API_BASE_URL + href, ServiceBuilder.COOKIE);
-        processObservable(o);
+        processArticleListObservable(o);
     }
 
-    private void processObservable(Observable<Response<Document>> o) {
+    private void processArticleListObservable(Observable<Response<Document>> o) {
         o.compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
