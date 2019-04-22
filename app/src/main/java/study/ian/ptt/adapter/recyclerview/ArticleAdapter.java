@@ -9,22 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.material.button.MaterialButton;
-import com.jakewharton.rxbinding3.view.RxView;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.button.MaterialButton;
+import com.jakewharton.rxbinding3.view.RxView;
+
+import java.util.List;
+
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.subjects.PublishSubject;
 import kotlin.Unit;
 import study.ian.ptt.R;
 import study.ian.ptt.model.article.Article;
 import study.ian.ptt.model.article.Push;
+import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.util.OnPollClickedListener;
 import study.ian.ptt.util.OnPollLongClickedListener;
 import study.ian.ptt.util.SpanUtil;
@@ -45,6 +47,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final PublishSubject<Integer> tagFloorSubject = PublishSubject.create();
     private final PublishSubject<String> highlightAuthorSubject = PublishSubject.create();
 
+    private PublishSubject<Integer> pollStateSubject;
     private OnPollClickedListener pollClickedListener;
     private OnPollLongClickedListener pollLongClickedListener;
     private Article article;
@@ -66,6 +69,10 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.article = article;
         pushList = article.getPushList();
         notifyDataSetChanged();
+    }
+
+    public void setPollStateSubject(PublishSubject<Integer> subject) {
+        pollStateSubject = subject;
     }
 
     public void clearResults() {
@@ -174,7 +181,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private void configPollHolder(ArticlePollHolder holder) {
         holder.pollClickObservable
-                .throttleFirst(1500, TimeUnit.MILLISECONDS)
                 .doOnNext(unit -> pollClickedListener.onPollClicked())
                 .doOnError(t -> Log.d(TAG, "configPollHolder: poll click error : " + t))
                 .subscribe();
@@ -183,6 +189,32 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .doOnNext(unit -> pollLongClickedListener.onPollLongClicked())
                 .doOnError(t -> Log.d(TAG, "configPollHolder: poll long click error : " + t))
                 .subscribe();
+
+        final Observable<Integer> stateShare = pollStateSubject.observeOn(AndroidSchedulers.mainThread())
+                .share();
+        stateShare.filter(state -> state == ServiceBuilder.POLL_STATE_IDLE)
+                .doOnNext(state -> setPollButton(holder.pollBtn, state))
+                .doOnError(t -> Log.d(TAG, "configPollHolder: set pollBtn idle error : " + t))
+                .subscribe();
+
+        stateShare.filter(state -> state == ServiceBuilder.POLL_STATE_LOADING)
+                .doOnNext(state -> setPollButton(holder.pollBtn, state))
+                .doOnError(t -> Log.d(TAG, "configPollHolder: set pollBtn loading error : " + t))
+                .subscribe();
+    }
+
+    private void setPollButton(MaterialButton button, int state) {
+        switch (state) {
+            case ServiceBuilder.POLL_STATE_IDLE:
+                button.setText(R.string.load_new_push);
+                button.setIconResource(R.drawable.vd_load_new_push);
+                break;
+            case ServiceBuilder.POLL_STATE_LOADING:
+                button.setText(R.string.loading_new_push);
+                button.setIconResource(R.drawable.vd_loading_new_push);
+                break;
+        }
+        button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
     }
 
     private int getTagColor(String tag) {

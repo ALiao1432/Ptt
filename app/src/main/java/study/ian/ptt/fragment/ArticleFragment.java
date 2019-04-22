@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -37,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleAdapter;
@@ -52,8 +54,6 @@ import study.ian.ptt.util.OnArticleListClickedListener;
 import study.ian.ptt.util.OnCategoryClickedListener;
 import study.ian.ptt.util.OnPollClickedListener;
 import study.ian.ptt.util.OnPollLongClickedListener;
-
-// TODO: 2019-04-21 add cancel function for polling
 
 public class ArticleFragment extends BaseFragment
         implements OnArticleListClickedListener, OnCategoryClickedListener, OnPollClickedListener, OnPollLongClickedListener {
@@ -78,9 +78,11 @@ public class ArticleFragment extends BaseFragment
     private BottomSheetBehavior pollOptionSheet;
     private BottomSheetManager sheetManager = new BottomSheetManager();
     private CompositeDisposable pollDisposables = new CompositeDisposable();
+    private PublishSubject<Integer> pollStateSubject = PublishSubject.create();
     private String cacheKey = "";
     private String currentOffset = "";
     private String currentOffsetSig = "";
+    private int pollingState = ServiceBuilder.POLL_STATE_IDLE;
     private boolean runAnimation;
 
     @Override
@@ -101,7 +103,7 @@ public class ArticleFragment extends BaseFragment
         return v;
     }
 
-    private void findViews(View v) {
+    private void findViews(@NotNull View v) {
         articleRecyclerView = v.findViewById(R.id.recyclerViewArticle);
         articleInfoText = v.findViewById(R.id.articleInfoText);
         pollOptionLayout = v.findViewById(R.id.pollOptionBottomSheet);
@@ -133,6 +135,7 @@ public class ArticleFragment extends BaseFragment
         articleAdapter = new ArticleAdapter(context);
         articleAdapter.setOnPollClickedListener(this);
         articleAdapter.setOnPollLongClickedListener(this);
+        articleAdapter.setPollStateSubject(pollStateSubject);
 
         articleRecyclerView.setAdapter(articleAdapter);
         articleRecyclerView.setHasFixedSize(true);
@@ -209,7 +212,14 @@ public class ArticleFragment extends BaseFragment
                 .takeUntil(Observable.timer(ServiceBuilder.LONG_POLL_TIMEOUT, TimeUnit.SECONDS))
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
-                .filter(longPoll -> !currentOffset.equals(longPoll.getSize()) && !currentOffsetSig.equals(longPoll.getSig()))
+                .filter(longPoll -> {
+                    if (!currentOffset.equals(longPoll.getSize()) && !currentOffsetSig.equals(longPoll.getSig())) {
+                        return true;
+                    } else {
+                        setPollState(ServiceBuilder.POLL_STATE_IDLE);
+                        return false;
+                    }
+                })
                 .flatMap(longPoll -> {
                     final Observable<Response<Poll>> poll = pttService.getPoll(ServiceBuilder.API_POLL_URL + article.getPollUrl().getPath(), ServiceBuilder.COOKIE, cacheKey, currentOffset, currentOffsetSig, longPoll.getSize(), longPoll.getSig());
                     currentOffset = longPoll.getSize();
@@ -218,7 +228,7 @@ public class ArticleFragment extends BaseFragment
                 })
                 .compose(ObserverHelper.applyHelper())
                 .doOnNext(poll -> processPoll(poll.body()))
-                .doOnError(t -> Log.d(TAG, "configPushHolder: get hot board error : " + t));
+                .doOnError(t -> Log.d(TAG, "initPollObservable: get poll error : " + t));
     }
 
     private void loadPollData() {
@@ -228,6 +238,7 @@ public class ArticleFragment extends BaseFragment
 
     private void loadPollData(final int interval) {
         final Disposable disposable = initPollObservable()
+                .doOnEach(poll -> setPollState(ServiceBuilder.POLL_STATE_LOADING))
                 .repeatWhen(o -> o.delay(interval, TimeUnit.SECONDS))
                 .subscribe();
         pollDisposables.add(disposable);
@@ -243,9 +254,9 @@ public class ArticleFragment extends BaseFragment
                 articleAdapter.notifyDataSetChanged();
                 smoothScroller.setTargetPosition(article.getPushList().size() + 2);
                 layoutManager.startSmoothScroll(smoothScroller);
-//                layoutManager.scrollToPosition(article.getPushList().size() + 2);
             }
         }
+        setPollState(ServiceBuilder.POLL_STATE_IDLE);
     }
 
     private void loadData() {
@@ -253,7 +264,7 @@ public class ArticleFragment extends BaseFragment
         processArticle(o);
     }
 
-    private void processArticle(Observable<Response<Document>> o) {
+    private void processArticle(@NotNull Observable<Response<Document>> o) {
         o.compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
@@ -278,7 +289,7 @@ public class ArticleFragment extends BaseFragment
         }
     }
 
-    private void restoreTextState(TextView textView, String text) {
+    private void restoreTextState(@NotNull TextView textView, String text) {
         textView.setVisibility(View.VISIBLE);
         textView.setText(text);
         textView.setAlpha(1f);
@@ -286,7 +297,7 @@ public class ArticleFragment extends BaseFragment
         textView.setScaleY(1f);
     }
 
-    private void restoreTextState(TextView textView, SpannableString text) {
+    private void restoreTextState(@NotNull TextView textView, SpannableString text) {
         textView.setVisibility(View.VISIBLE);
         textView.setText(text);
         textView.setAlpha(1f);
@@ -301,6 +312,7 @@ public class ArticleFragment extends BaseFragment
         pollIntervalEdt.setText("");
         pollDisposables.clear();
         runAnimation = true;
+        setPollState(ServiceBuilder.POLL_STATE_IDLE);
         restoreTextState(articleInfoText, info.getTitle());
         loadData();
     }
@@ -321,13 +333,30 @@ public class ArticleFragment extends BaseFragment
         articleAdapter.clearResults();
     }
 
+    private void setPollState(int state) {
+        pollingState = state;
+        pollStateSubject.onNext(state);
+    }
+
     @Override
     public void onPollClicked() {
-        loadPollData();
+        if (pollingState == ServiceBuilder.POLL_STATE_IDLE) {
+            setPollState(ServiceBuilder.POLL_STATE_LOADING);
+            loadPollData();
+        } else {
+            setPollState(ServiceBuilder.POLL_STATE_IDLE);
+            pollDisposables.clear();
+        }
     }
 
     @Override
     public void onPollLongClicked() {
-        sheetManager.expandSheet(pollOptionSheet);
+        if (pollingState == ServiceBuilder.POLL_STATE_IDLE) {
+            setPollState(ServiceBuilder.POLL_STATE_LOADING);
+            sheetManager.expandSheet(pollOptionSheet);
+        } else {
+            setPollState(ServiceBuilder.POLL_STATE_IDLE);
+            pollDisposables.clear();
+        }
     }
 }

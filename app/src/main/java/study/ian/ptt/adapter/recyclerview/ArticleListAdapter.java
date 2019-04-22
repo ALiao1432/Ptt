@@ -19,6 +19,9 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import org.jetbrains.annotations.NotNull;
+
 import io.reactivex.Observable;
 import kotlin.Unit;
 import study.ian.ptt.R;
@@ -39,7 +42,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private OnArticleListLongClickedListener longClickListener;
     private OnArticleListClickedListener clickedListener;
 
-    public ArticleListAdapter(Context context, ViewPager pager) {
+    public ArticleListAdapter(@NotNull Context context, ViewPager pager) {
         resources = context.getResources();
         preManager = PreManager.getInstance();
         outPager = pager;

@@ -16,6 +16,7 @@
     <string name="same_author">Same Author</string>
     <string name="update_blacklist">Update</string>
     <string name="load_new_push">Load New Push</string>
+    <string name="loading_new_push">Loading…</string>
     <string name="poll_start">Start</string>
     <string name="poll_cancel">Cancel</string>
 

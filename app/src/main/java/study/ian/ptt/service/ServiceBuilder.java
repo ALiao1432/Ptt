@@ -21,8 +21,8 @@ public class ServiceBuilder {
     public final static String SEARCH_PUSH = "recommend:";
     public final static String COOKIE = "over18=1";
     public final static long LONG_POLL_TIMEOUT = 28L;
-    public final static int POLL_INFINITE = 0;
-    public final static int POLL_ONCE = 1;
+    public final static int POLL_STATE_LOADING = 0;
+    public final static int POLL_STATE_IDLE = 1;
     private final static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API_BASE_URL)
             .addConverterFactory(JsoupConverter.FACTORY)
