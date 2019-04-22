@@ -2,6 +2,8 @@ package study.ian.ptt.model.poll;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 public class LongPoll {
 
     @SerializedName("brdname")
@@ -39,6 +41,7 @@ public class LongPoll {
         return cacheKey;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "LongPoll {" +

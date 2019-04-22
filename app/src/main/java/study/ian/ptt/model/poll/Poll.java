@@ -2,6 +2,8 @@ package study.ian.ptt.model.poll;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Poll {
 
     @SerializedName("contentHtml")
@@ -25,6 +27,7 @@ public class Poll {
         return success;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Poll{" +

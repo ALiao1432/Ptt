@@ -61,6 +61,9 @@ public class ArticleFragment extends BaseFragment
     private final String TAG = "ArticleFragment";
 
     private final PttService pttService = ServiceBuilder.getPttService();
+    private final BottomSheetManager sheetManager = new BottomSheetManager();
+    private final CompositeDisposable pollDisposables = new CompositeDisposable();
+    private final PublishSubject<Integer> pollStateSubject = PublishSubject.create();
     private Context context;
     private RecyclerView articleRecyclerView;
     private LinearLayoutManager layoutManager;
@@ -76,9 +79,6 @@ public class ArticleFragment extends BaseFragment
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
     private BottomSheetBehavior pollOptionSheet;
-    private BottomSheetManager sheetManager = new BottomSheetManager();
-    private CompositeDisposable pollDisposables = new CompositeDisposable();
-    private PublishSubject<Integer> pollStateSubject = PublishSubject.create();
     private String cacheKey = "";
     private String currentOffset = "";
     private String currentOffsetSig = "";
@@ -128,7 +128,7 @@ public class ArticleFragment extends BaseFragment
 
             @Override
             protected int calculateTimeForScrolling(int dx) {
-                return 250;
+                return 200;
             }
         };
 
@@ -149,8 +149,11 @@ public class ArticleFragment extends BaseFragment
         View.OnClickListener pollClickListener = v -> {
             switch (v.getId()) {
                 case R.id.pollStartBtn:
+                    setPollState(ServiceBuilder.POLL_STATE_LOADING);
+
                     int interval;
                     Editable intervalEditable = pollIntervalEdt.getText();
+                    pollIntervalEdt.setText("");
                     if (intervalEditable != null && intervalEditable.length() != 0) {
                         interval = Integer.valueOf(intervalEditable.toString());
                     } else {
@@ -159,7 +162,6 @@ public class ArticleFragment extends BaseFragment
                     loadPollData(interval);
                     break;
                 case R.id.pollCancelBtn:
-                    sheetManager.collapseSheet(pollOptionSheet);
                     break;
             }
             sheetManager.collapseSheet(pollOptionSheet);
@@ -312,6 +314,7 @@ public class ArticleFragment extends BaseFragment
         pollIntervalEdt.setText("");
         pollDisposables.clear();
         runAnimation = true;
+        sheetManager.collapseSheet(pollOptionSheet);
         setPollState(ServiceBuilder.POLL_STATE_IDLE);
         restoreTextState(articleInfoText, info.getTitle());
         loadData();
@@ -352,7 +355,6 @@ public class ArticleFragment extends BaseFragment
     @Override
     public void onPollLongClicked() {
         if (pollingState == ServiceBuilder.POLL_STATE_IDLE) {
-            setPollState(ServiceBuilder.POLL_STATE_LOADING);
             sheetManager.expandSheet(pollOptionSheet);
         } else {
             setPollState(ServiceBuilder.POLL_STATE_IDLE);

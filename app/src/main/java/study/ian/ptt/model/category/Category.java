@@ -1,7 +1,5 @@
 package study.ian.ptt.model.category;
 
-import android.util.Log;
-
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -52,7 +50,7 @@ public class Category {
                 ));
             }
         } else {
-            for (int i = 0, size = articleElements.size(); i < size; i++) {
+            for (int i = 0; i < articleElements.size(); i++) {
                 Element e = articleElements.get(i);
 
                 articleInfoList.add(new ArticleInfo(

@@ -42,7 +42,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     private Board board;
     private String classPath = "1";
     private String currentPath;
-    private Stack<String> pageStack = new Stack<>();
+    private final Stack<String> pageStack = new Stack<>();
     private final PublishSubject<String> pageStackSubject = PublishSubject.create();
 
     @Override

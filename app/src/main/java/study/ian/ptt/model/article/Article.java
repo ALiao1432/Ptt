@@ -1,8 +1,8 @@
 package study.ian.ptt.model.article;
 
 import android.net.Uri;
-import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -138,6 +138,7 @@ public class Article {
         return pollOffset;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Article{" +
