@@ -2,18 +2,26 @@ package study.ian.ptt;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleFragment;
 import study.ian.ptt.fragment.ArticleListFragment;
@@ -34,7 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
+    private final int BACK_PRESS_CONFIRM_TIME = 2000;
+    private CoordinatorLayout mainLayout;
     private OutViewPager outPager;
+    private Disposable disposable;
+    private Snackbar snackbar;
+    private int currentOutPage;
+    private boolean doubleBackClickOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +64,22 @@ public class MainActivity extends AppCompatActivity {
         setViews();
     }
 
+    @Override
+    protected void onDestroy() {
+        disposable.dispose();
+        super.onDestroy();
+    }
+
     private void findViews() {
+        mainLayout = findViewById(R.id.mainLayout);
         outPager = findViewById(R.id.outPager);
     }
 
     private void setViews() {
+        snackbar = Snackbar.make(mainLayout, getResources().getString(R.string.back_exit_confirm), Snackbar.LENGTH_SHORT);
+        snackbar.setDuration(BACK_PRESS_CONFIRM_TIME);
+        snackbar.getView().setBackgroundColor(getResources().getColor(R.color.themeTrueDark, null));
+
         List<Fragment> outFragList = new ArrayList<>();
 
         BoardFragment boardFragment = new BoardFragment();
@@ -84,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+                currentOutPage = position;
                 OutViewPager.interceptTouch = position != 0;
             }
 
@@ -118,5 +144,21 @@ public class MainActivity extends AppCompatActivity {
                     || !(event.getY() > top) || !(event.getY() < bottom);
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentOutPage != 0) {
+            outPager.setCurrentItem(0);
+            return;
+        } else if (doubleBackClickOnce) {
+            super.onBackPressed();
+        }
+
+        snackbar.show();
+        doubleBackClickOnce = true;
+        disposable = Single.timer(BACK_PRESS_CONFIRM_TIME, TimeUnit.MILLISECONDS)
+                .doOnSuccess(l -> doubleBackClickOnce = false)
+                .subscribe();
     }
 }

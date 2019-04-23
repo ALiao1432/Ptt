@@ -20,12 +20,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.jetbrains.annotations.NotNull;
@@ -65,6 +67,7 @@ public class ArticleFragment extends BaseFragment
     private final CompositeDisposable pollDisposables = new CompositeDisposable();
     private final PublishSubject<Integer> pollStateSubject = PublishSubject.create();
     private Context context;
+    private CoordinatorLayout articleLayout;
     private RecyclerView articleRecyclerView;
     private LinearLayoutManager layoutManager;
     private RecyclerView.SmoothScroller smoothScroller;
@@ -104,6 +107,7 @@ public class ArticleFragment extends BaseFragment
     }
 
     private void findViews(@NotNull View v) {
+        articleLayout = v.findViewById(R.id.articleLayout);
         articleRecyclerView = v.findViewById(R.id.recyclerViewArticle);
         articleInfoText = v.findViewById(R.id.articleInfoText);
         pollOptionLayout = v.findViewById(R.id.pollOptionBottomSheet);
@@ -164,6 +168,7 @@ public class ArticleFragment extends BaseFragment
                         interval++;
                     }
 
+                    Snackbar.make(articleLayout, getResources().getString(R.string.poll_start_hint) + interval, Snackbar.LENGTH_LONG).show();
                     loadPollData(interval);
                     break;
                 case R.id.pollCancelBtn:

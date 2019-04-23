@@ -3,6 +3,7 @@
 
     <string name="unselected_article_hint">Select an article from</string>
 
+    <string name="back_exit_confirm">Back Again To Exit</string>
     <string name="article_search_option_hint">Keyword</string>
     <string name="article_search_option_title">Title</string>
     <string name="article_search_option_author">Author</string>
@@ -19,5 +20,6 @@
     <string name="loading_new_push">Loading…</string>
     <string name="poll_start">Start</string>
     <string name="poll_cancel">Cancel</string>
+    <string name="poll_start_hint">Poll Interval : </string>
 
 </resources>
