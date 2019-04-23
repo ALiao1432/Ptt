@@ -91,20 +91,21 @@ public class BoardAdapter extends RecyclerView.Adapter<BoardAdapter.BoardHolder>
         holder.categoryNameText.setText(info.getName());
         holder.categoryTitleText.setText(info.getBoardTitle());
 
+        MorphView favView = holder.favView;
         if (info.getSort() == BoardInfo.SORT_BOARD) {
-            holder.favView.setVisibility(View.VISIBLE);
-            setFavView(info.getName(), holder.favView);
+            favView.setVisibility(View.VISIBLE);
+            setFavView(info.getName(), favView);
 
             holder.favClickObservable
                     .throttleFirst(200, TimeUnit.MILLISECONDS)
                     .doOnNext(unit -> {
                         preManager.toggleFavBoard(info.getName().trim());
-                        setFavView(info.getName(), holder.favView);
+                        setFavView(info.getName(), favView);
                     })
                     .doOnError(t -> Log.d(TAG, "onBindViewHolder: click fav error : " + t))
                     .subscribe();
         } else if (info.getSort() == BoardInfo.SORT_CLASS) {
-            holder.favView.setVisibility(View.INVISIBLE);
+            favView.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -91,38 +91,27 @@ public class Article {
 
     public void addPushList(Elements pushElements) {
         pushElements.forEach(e -> {
+            int pushTagCategory = 0;
             switch (e.child(0).text()) {
                 case "推":
-                    pushTagCount[0]++;
-                    pushList.add(new Push(
-                            e.child(0).text(),
-                            e.child(1).text().trim(),
-                            e.child(2).text().substring(1).trim(),
-                            e.child(3).text().trim(),
-                            pushTagCount[0]
-                    ));
+                    pushTagCategory = 0;
                     break;
                 case "→":
-                    pushTagCount[1]++;
-                    pushList.add(new Push(
-                            e.child(0).text(),
-                            e.child(1).text().trim(),
-                            e.child(2).text().substring(1).trim(),
-                            e.child(3).text().trim(),
-                            pushTagCount[1]
-                    ));
+                    pushTagCategory = 1;
                     break;
                 case "噓":
-                    pushTagCount[2]++;
-                    pushList.add(new Push(
-                            e.child(0).text(),
-                            e.child(1).text().trim(),
-                            e.child(2).text().substring(1).trim(),
-                            e.child(3).text().trim(),
-                            pushTagCount[2]
-                    ));
+                    pushTagCategory = 2;
                     break;
             }
+
+            pushTagCount[pushTagCategory]++;
+            pushList.add(new Push(
+                    e.child(0).text(),
+                    e.child(1).text().trim(),
+                    e.child(2).text().substring(1).trim(),
+                    e.child(3).text().trim(),
+                    pushTagCount[pushTagCategory]
+            ));
         });
     }
 

@@ -156,8 +156,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         String pushTagCount = push.getPushTagCount() + push.getPushTag();
         String floorCount = (position - 1) + "樓";
 
-        holder.pushTagText.setText(tagState == TAG_STATE_NORMAL ? pushTagCount : floorCount);
-        holder.pushTagText.setTextColor(getTagColor(push.getPushTag()));
+        TextView pushTagText = holder.pushTagText;
+        pushTagText.setText(tagState == TAG_STATE_NORMAL ? pushTagCount : floorCount);
+        pushTagText.setTextColor(getTagColor(push.getPushTag()));
         holder.pushAuthorText.setText(push.getAuthor());
         holder.pushContentText.setText(push.getContent());
         holder.pushTimeText.setText(push.getTime());
@@ -167,7 +168,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .doOnError(t -> Log.d(TAG, "configPushHolder: click pushTagText error : " + t))
                 .subscribe();
 
-        tagFloorSubject.doOnNext(state -> holder.pushTagText.setText(state == TAG_STATE_NORMAL ? pushTagCount : floorCount))
+        tagFloorSubject.doOnNext(state -> pushTagText.setText(state == TAG_STATE_NORMAL ? pushTagCount : floorCount))
                 .doOnError(t -> Log.d(TAG, "configPushHolder: set tag text error : " + t))
                 .subscribe();
 

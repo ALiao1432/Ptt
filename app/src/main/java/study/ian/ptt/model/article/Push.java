@@ -10,7 +10,7 @@ public class Push {
     private final String time;
     private final int pushTagCount;
 
-    public Push(String pushTag, String author, String content, String time, int pushTagCount) {
+    Push(String pushTag, String author, String content, String time, int pushTagCount) {
         this.pushTag = pushTag;
         this.author = author;
         this.content = content;
