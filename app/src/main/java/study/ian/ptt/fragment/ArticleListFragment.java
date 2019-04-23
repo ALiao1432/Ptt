@@ -18,6 +18,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -29,7 +30,7 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 import org.jsoup.nodes.Document;
 
 import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleListAdapter;
@@ -63,6 +64,7 @@ public class ArticleListFragment extends BaseFragment
     private TextView boardInfoText;
     private CoordinatorLayout articleListLayout;
     private ConstraintLayout keywordBlackListLayout;
+    private SwipeRefreshLayout articleListRefreshLayout;
     private ConstraintLayout articleOptionLayout;
     private TextInputEditText searchEdt;
     private TextInputEditText blackListEdt;
@@ -81,7 +83,7 @@ public class ArticleListFragment extends BaseFragment
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
     private ArticleListAdapter articleListAdapter;
-    private Disposable disposable;
+    private CompositeDisposable disposables = new CompositeDisposable();
     private Category category;
     private String cate;
     private String searchQuery;
@@ -114,6 +116,7 @@ public class ArticleListFragment extends BaseFragment
     private void findViews(View v) {
         articleListLayout = v.findViewById(R.id.articleListLayout);
         articleListRecyclerView = v.findViewById(R.id.recyclerViewArticle);
+        articleListRefreshLayout = v.findViewById(R.id.articleListRefreshLayout);
         categoryText = v.findViewById(R.id.categoryInfoText);
         boardNameText = v.findViewById(R.id.boardNameText);
         boardInfoText = v.findViewById(R.id.boardInfoText);
@@ -268,6 +271,32 @@ public class ArticleListFragment extends BaseFragment
         searchEdtObservable.filter(c -> c.length() == 0)
                 .doOnNext(c -> setSearchBtnEnable(false))
                 .subscribe();
+
+        articleListRefreshLayout.setOnRefreshListener(() -> {
+            articleListAdapter.clearResults();
+
+            switch (currentLoading) {
+                case LOAD_NORMAL_ARTICLE:
+                    category = null;
+                    loadData();
+                    break;
+                case LOAD_SAME_TITLE:
+                    loadSameTitle(true);
+                    break;
+                case LOAD_SAME_AUTHOR:
+                    loadSameAuthor(true);
+                    break;
+                case LOAD_SEARCH_TITLE:
+                    loadSearchTitle(true, searchQuery);
+                    break;
+                case LOAD_SEARCH_AUTHOR:
+                    loadSearchAuthor(true, searchQuery);
+                    break;
+                case LOAD_SEARCH_PUSH:
+                    loadSearchPush(true, searchQuery);
+                    break;
+            }
+        });
     }
 
     public void setOnCategoryCLickedListener(OnCategoryClickedListener listener) {
@@ -325,7 +354,6 @@ public class ArticleListFragment extends BaseFragment
         processArticleListObservable(o);
     }
 
-
     private void loadSearchAuthor(boolean newSearch, String query) {
         isLoading = true;
 
@@ -351,12 +379,12 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void processArticleListObservable(Observable<Response<Document>> o) {
-        disposable = o.compose(ObserverHelper.applyHelper())
+        disposables.add(o.compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
                 .doOnNext(this::configData)
                 .doOnError(t -> Log.d(TAG, "setViews: load data error : " + t))
-                .subscribe();
+                .subscribe());
     }
 
     private void configData(Document document) {
@@ -370,6 +398,7 @@ public class ArticleListFragment extends BaseFragment
             scaleAnimator.start();
         } else {
             articleListAdapter.addResults(category.getArticleInfoList());
+            articleListRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -430,8 +459,8 @@ public class ArticleListFragment extends BaseFragment
         alphaAnimator.cancel();
         scaleAnimator.cancel();
 
-        if (disposable != null) {
-            disposable.dispose();
+        if (disposables.size() != 0) {
+            disposables.clear();
         }
 
         restoreTextState(categoryText, cate);

@@ -2,7 +2,6 @@ package study.ian.ptt;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import study.ian.ptt.adapter.viewpager.GenAdapter;
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (currentOutPage != 0) {
-            outPager.setCurrentItem(0);
+            outPager.setCurrentItem(currentOutPage - 1);
             return;
         } else if (doubleBackClickOnce) {
             super.onBackPressed();
