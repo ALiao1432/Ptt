@@ -41,5 +41,6 @@
     <color name="unknownTag">#0000FF</color>
 
     <color name="fav_view_color">#f44336</color>
+    <color name="poll_loading">#1b5e20</color>
 
 </resources>

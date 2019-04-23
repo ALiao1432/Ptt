@@ -159,6 +159,11 @@ public class ArticleFragment extends BaseFragment
                     } else {
                         interval = 5;
                     }
+
+                    if (interval == 0) {
+                        interval++;
+                    }
+
                     loadPollData(interval);
                     break;
                 case R.id.pollCancelBtn:
@@ -230,7 +235,8 @@ public class ArticleFragment extends BaseFragment
                 })
                 .compose(ObserverHelper.applyHelper())
                 .doOnNext(poll -> processPoll(poll.body()))
-                .doOnError(t -> Log.d(TAG, "initPollObservable: get poll error : " + t));
+                .doOnError(t -> Log.d(TAG, "initPollObservable: get poll error : " + t))
+                .doOnTerminate(() -> setPollState(ServiceBuilder.POLL_STATE_IDLE));
     }
 
     private void loadPollData() {

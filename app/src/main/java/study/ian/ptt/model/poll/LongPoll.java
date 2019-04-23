@@ -41,6 +41,14 @@ public class LongPoll {
         return cacheKey;
     }
 
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public void setSig(String sig) {
+        this.sig = sig;
+    }
+
     @NotNull
     @Override
     public String toString() {

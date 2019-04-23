@@ -12,6 +12,13 @@ import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
@@ -21,13 +28,8 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import org.jsoup.nodes.Document;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import retrofit2.Response;
 import study.ian.ptt.R;
 import study.ian.ptt.adapter.recyclerview.ArticleListAdapter;
@@ -53,9 +55,9 @@ public class ArticleListFragment extends BaseFragment
     private final static int LOAD_SEARCH_AUTHOR = 4;
     private final static int LOAD_SEARCH_PUSH = 5;
 
+    private final PttService pttService = ServiceBuilder.getPttService();
     private Context context;
     private PreManager preManager;
-    private final PttService pttService = ServiceBuilder.getPttService();
     private TextView categoryText;
     private TextView boardNameText;
     private TextView boardInfoText;
@@ -79,6 +81,7 @@ public class ArticleListFragment extends BaseFragment
     private ValueAnimator alphaAnimator;
     private ValueAnimator scaleAnimator;
     private ArticleListAdapter articleListAdapter;
+    private Disposable disposable;
     private Category category;
     private String cate;
     private String searchQuery;
@@ -348,7 +351,7 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void processArticleListObservable(Observable<Response<Document>> o) {
-        o.compose(ObserverHelper.applyHelper())
+        disposable = o.compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
                 .doOnNext(this::configData)
@@ -392,9 +395,11 @@ public class ArticleListFragment extends BaseFragment
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                runAnimation = false;
-                articleListAdapter.addResults(category.getArticleInfoList());
-                categoryText.setVisibility(View.GONE);
+                if (category != null) {
+                    runAnimation = false;
+                    articleListAdapter.addResults(category.getArticleInfoList());
+                    categoryText.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -422,6 +427,13 @@ public class ArticleListFragment extends BaseFragment
         categoryClickedListener.onCategoryClicked(boardInfo);
         sheetManager.collapseSheet(articleOptionSheet);
         sheetManager.collapseSheet(keywordBlackListSheet);
+        alphaAnimator.cancel();
+        scaleAnimator.cancel();
+
+        if (disposable != null) {
+            disposable.dispose();
+        }
+
         restoreTextState(categoryText, cate);
         loadData();
     }

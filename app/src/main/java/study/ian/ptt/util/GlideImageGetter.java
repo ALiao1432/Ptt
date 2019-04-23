@@ -19,7 +19,7 @@ public class GlideImageGetter implements Html.ImageGetter {
     private final String TAG = "GlideImageGetter";
     private final TextView textView;
 
-    GlideImageGetter(TextView textView) {
+    public GlideImageGetter(TextView textView) {
         this.textView = textView;
     }
 

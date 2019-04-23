@@ -1,8 +1,10 @@
 package study.ian.ptt.adapter.recyclerview;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +47,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int COLOR_ARROW;
     private final int COLOR_SHUSH;
     private final int COLOR_KNOWN;
+    private final ColorStateList loadingColorStateList;
+    private final ColorStateList idleColorStateList;
     private final PublishSubject<Integer> tagFloorSubject = PublishSubject.create();
     private final PublishSubject<String> highlightAuthorSubject = PublishSubject.create();
 
@@ -63,6 +68,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         COLOR_ARROW = ResourcesCompat.getColor(resources, R.color.arrow, null);
         COLOR_SHUSH = ResourcesCompat.getColor(resources, R.color.shush, null);
         COLOR_KNOWN = ResourcesCompat.getColor(resources, R.color.unknownTag, null);
+        loadingColorStateList = ContextCompat.getColorStateList(context, R.color.poll_loading);
+        idleColorStateList = ContextCompat.getColorStateList(context, R.color.themeDarkSecondary);
     }
 
     public void addResults(Article article) {
@@ -190,16 +197,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 .doOnError(t -> Log.d(TAG, "configPollHolder: poll long click error : " + t))
                 .subscribe();
 
-        final Observable<Integer> stateShare = pollStateSubject.observeOn(AndroidSchedulers.mainThread())
-                .share();
-        stateShare.filter(state -> state == ServiceBuilder.POLL_STATE_IDLE)
+        pollStateSubject.observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(state -> setPollButton(holder.pollBtn, state))
                 .doOnError(t -> Log.d(TAG, "configPollHolder: set pollBtn idle error : " + t))
-                .subscribe();
-
-        stateShare.filter(state -> state == ServiceBuilder.POLL_STATE_LOADING)
-                .doOnNext(state -> setPollButton(holder.pollBtn, state))
-                .doOnError(t -> Log.d(TAG, "configPollHolder: set pollBtn loading error : " + t))
                 .subscribe();
     }
 
@@ -208,10 +208,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             case ServiceBuilder.POLL_STATE_IDLE:
                 button.setText(R.string.load_new_push);
                 button.setIconResource(R.drawable.vd_load_new_push);
+                button.setBackgroundTintList(idleColorStateList);
                 break;
             case ServiceBuilder.POLL_STATE_LOADING:
                 button.setText(R.string.loading_new_push);
                 button.setIconResource(R.drawable.vd_loading_new_push);
+                button.setBackgroundTintList(loadingColorStateList);
                 break;
         }
         button.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_START);
@@ -280,6 +282,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             articleBoardText = v.findViewById(R.id.articleBoardText);
             articleAuthorText = v.findViewById(R.id.articleAuthorText);
             articleTimeText = v.findViewById(R.id.articleTimeText);
+
+            articleTitleText.setTextIsSelectable(true);
         }
     }
 
@@ -290,6 +294,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArticleContentHolder(@NonNull View v) {
             super(v);
             articleContentText = v.findViewById(R.id.articleContentText);
+            articleContentText.setMovementMethod(LinkMovementMethod.getInstance());
+            articleContentText.setTextIsSelectable(true);
         }
     }
 
