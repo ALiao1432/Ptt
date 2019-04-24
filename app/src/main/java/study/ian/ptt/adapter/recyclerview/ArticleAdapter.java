@@ -295,8 +295,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArticleContentHolder(@NonNull View v) {
             super(v);
             articleContentText = v.findViewById(R.id.articleContentText);
-            articleContentText.setMovementMethod(LinkMovementMethod.getInstance());
-            articleContentText.setTextIsSelectable(true);
         }
     }
 

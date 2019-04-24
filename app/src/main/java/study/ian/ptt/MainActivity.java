@@ -1,7 +1,10 @@
 package study.ian.ptt;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -24,6 +28,8 @@ import study.ian.ptt.adapter.viewpager.GenAdapter;
 import study.ian.ptt.fragment.ArticleFragment;
 import study.ian.ptt.fragment.ArticleListFragment;
 import study.ian.ptt.fragment.BoardFragment;
+import study.ian.ptt.model.board.BoardInfo;
+import study.ian.ptt.model.category.ArticleInfo;
 import study.ian.ptt.service.ServiceBuilder;
 import study.ian.ptt.transformer.SlideTransformer;
 import study.ian.ptt.util.PreManager;
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private OutViewPager outPager;
     private Disposable disposable;
     private Snackbar snackbar;
+    private Intent intent;
     private int currentOutPage;
     private boolean doubleBackClickOnce = false;
 
@@ -58,13 +65,17 @@ public class MainActivity extends AppCompatActivity {
 
         PreManager.initPreManager(getApplicationContext());
 
+        intent = getIntent();
+
         findViews();
         setViews();
     }
 
     @Override
     protected void onDestroy() {
-        disposable.dispose();
+        if (disposable != null) {
+            disposable.dispose();
+        }
         super.onDestroy();
     }
 
@@ -116,6 +127,30 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        if (intent != null && intent.getAction() != null && intent.getAction().equals(Intent.ACTION_VIEW)) {
+            final Uri uri = intent.getData();
+            if (uri != null) {
+                if (uri.toString().endsWith("html")) {
+                    String path = uri.getPath();
+                    StringTokenizer tokenizer = new StringTokenizer(path, "/");
+
+                    tokenizer.nextToken();
+                    String board = tokenizer.nextToken();
+
+                    articleListFragment.onAttach((Context) this);
+                    articleListFragment.onCreateView(LayoutInflater.from(this), outPager, null);
+
+                    articleFragment.onAttach((Context) this);
+                    articleFragment.onCreateView(LayoutInflater.from(this), outPager, null);
+
+                    articleListFragment.onCategoryClicked(new BoardInfo("/bbs/" + board + "/index.html", board, "", "", ""));
+                    articleFragment.onArticleListClicked(new ArticleInfo("", path, "", "", "", "", "", ""));
+                    articleFragment.setRunAnimation(true);
+                    outPager.setCurrentItem(2);
+                }
+            }
+        }
     }
 
     @Override

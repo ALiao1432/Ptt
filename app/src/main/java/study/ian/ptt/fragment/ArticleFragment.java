@@ -352,6 +352,10 @@ public class ArticleFragment extends BaseFragment
         pollStateSubject.onNext(state);
     }
 
+    public void setRunAnimation(boolean runAnimation) {
+        this.runAnimation = runAnimation;
+    }
+
     @Override
     public void onPollClicked() {
         if (pollingState == ServiceBuilder.POLL_STATE_IDLE) {

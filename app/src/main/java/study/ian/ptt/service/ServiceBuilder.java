@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.Observable;
 import io.reactivex.processors.PublishProcessor;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -13,6 +14,7 @@ import study.ian.networkstateutil.ConnectionType;
 import study.ian.networkstateutil.NetworkStateChangeListener;
 import study.ian.networkstateutil.NetworkStateUtil;
 import study.ian.ptt.util.JsoupConverter;
+import study.ian.ptt.util.LoggingInterceptor;
 
 public class ServiceBuilder {
     public final static String API_BASE_URL = "https://www.ptt.cc/bbs/";
@@ -23,11 +25,13 @@ public class ServiceBuilder {
     public final static long LONG_POLL_TIMEOUT = 10;
     public final static int POLL_STATE_LOADING = 0;
     public final static int POLL_STATE_IDLE = 1;
+    private final static OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new LoggingInterceptor()).build();
     private final static Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(API_BASE_URL)
             .addConverterFactory(JsoupConverter.FACTORY)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//            .client(client) // for debug
             .build();
     private final static PublishProcessor<ConnectionType> connectionTypeProcessor = PublishProcessor.create();
     private static PttService pttService = null;
