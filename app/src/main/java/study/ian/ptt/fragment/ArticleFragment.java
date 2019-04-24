@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 import retrofit2.Response;
 import study.ian.ptt.R;
@@ -64,7 +63,7 @@ public class ArticleFragment extends BaseFragment
 
     private final PttService pttService = ServiceBuilder.getPttService();
     private final BottomSheetManager sheetManager = new BottomSheetManager();
-    private final CompositeDisposable pollDisposables = new CompositeDisposable();
+    private final CompositeDisposable disposables = new CompositeDisposable();
     private final PublishSubject<Integer> pollStateSubject = PublishSubject.create();
     private Context context;
     private CoordinatorLayout articleLayout;
@@ -239,25 +238,23 @@ public class ArticleFragment extends BaseFragment
                     return poll;
                 })
                 .compose(ObserverHelper.applyHelper())
-                .doOnNext(poll -> processPoll(poll.body()))
+                .doOnNext(poll -> configPoll(poll.body()))
                 .doOnError(t -> Log.d(TAG, "initPollObservable: get poll error : " + t))
                 .doOnTerminate(() -> setPollState(ServiceBuilder.POLL_STATE_IDLE));
     }
 
     private void loadPollData() {
-        final Disposable disposable = initPollObservable().subscribe();
-        pollDisposables.add(disposable);
+        disposables.add(initPollObservable()
+                .subscribe());
     }
 
     private void loadPollData(final int interval) {
-        final Disposable disposable = initPollObservable()
-                .doOnEach(poll -> setPollState(ServiceBuilder.POLL_STATE_LOADING))
+        disposables.add(initPollObservable().doOnEach(poll -> setPollState(ServiceBuilder.POLL_STATE_LOADING))
                 .repeatWhen(o -> o.delay(interval, TimeUnit.SECONDS))
-                .subscribe();
-        pollDisposables.add(disposable);
+                .subscribe());
     }
 
-    private void processPoll(@Nullable Poll poll) {
+    private void configPoll(@Nullable Poll poll) {
         if (poll != null) {
             Document doc = Jsoup.parse(poll.getContentHtml());
             Elements pushElements = doc.select("div");
@@ -273,17 +270,13 @@ public class ArticleFragment extends BaseFragment
     }
 
     private void loadData() {
-        final Observable<Response<Document>> o = pttService.getArticle(ServiceBuilder.COOKIE, articleInfo.getHref());
-        processArticle(o);
-    }
-
-    private void processArticle(@NotNull Observable<Response<Document>> o) {
-        o.compose(ObserverHelper.applyHelper())
+        disposables.add(pttService.getArticle(ServiceBuilder.COOKIE, articleInfo.getHref())
+                .compose(ObserverHelper.applyHelper())
                 .filter(r -> r.code() == 200)
                 .map(Response::body)
                 .doOnNext(this::configData)
                 .doOnError(t -> Log.d(TAG, "processObservable: get article error : " + t))
-                .subscribe();
+                .subscribe());
     }
 
     private void configData(Document document) {
@@ -321,9 +314,9 @@ public class ArticleFragment extends BaseFragment
     @Override
     public void onArticleListClicked(ArticleInfo info) {
         articleInfo = info;
+        disposables.clear();
         articleAdapter.clearResults();
         pollIntervalEdt.setText("");
-        pollDisposables.clear();
         runAnimation = true;
         sheetManager.collapseSheet(pollOptionSheet);
         setPollState(ServiceBuilder.POLL_STATE_IDLE);
@@ -344,6 +337,7 @@ public class ArticleFragment extends BaseFragment
         currentOffset = "";
         currentOffsetSig = "";
 
+        disposables.clear();
         articleAdapter.clearResults();
     }
 
@@ -363,7 +357,7 @@ public class ArticleFragment extends BaseFragment
             loadPollData();
         } else {
             setPollState(ServiceBuilder.POLL_STATE_IDLE);
-            pollDisposables.clear();
+            disposables.clear();
         }
     }
 
@@ -373,7 +367,7 @@ public class ArticleFragment extends BaseFragment
             sheetManager.expandSheet(pollOptionSheet);
         } else {
             setPollState(ServiceBuilder.POLL_STATE_IDLE);
-            pollDisposables.clear();
+            disposables.clear();
         }
     }
 }

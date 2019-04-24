@@ -85,6 +85,7 @@ public class ArticleListFragment extends BaseFragment
     private ArticleListAdapter articleListAdapter;
     private CompositeDisposable disposables = new CompositeDisposable();
     private Category category;
+    private BoardInfo boardInfo;
     private String cate;
     private String searchQuery;
     private ArticleInfo selectInfo;
@@ -390,6 +391,13 @@ public class ArticleListFragment extends BaseFragment
     private void configData(Document document) {
         isLoading = false;
 
+        if (boardNameText.getText().equals("") && !boardInfo.getName().equals("")) {
+            boardNameText.setText(boardInfo.getName());
+        }
+        if (boardInfoText.getText().equals("") && !boardInfo.getBoardTitle().equals("")) {
+            boardInfoText.setText(boardInfo.getBoardTitle());
+        }
+
         boolean reverseData = (currentLoading == LOAD_NORMAL_ARTICLE);
         category = new Category(document, reverseData);
 
@@ -445,12 +453,13 @@ public class ArticleListFragment extends BaseFragment
 
     @Override
     public void onCategoryClicked(BoardInfo boardInfo) {
+        this.boardInfo = boardInfo;
         this.cate = boardInfo.getName();
         category = null;
         runAnimation = true;
         searchEdt.setText("");
-        boardNameText.setText(boardInfo.getName());
-        boardInfoText.setText(boardInfo.getBoardTitle());
+        boardNameText.setText("");
+        boardInfoText.setText("");
         currentLoading = LOAD_NORMAL_ARTICLE;
         articleListAdapter.clearResults();
         categoryClickedListener.onCategoryClicked(boardInfo);
