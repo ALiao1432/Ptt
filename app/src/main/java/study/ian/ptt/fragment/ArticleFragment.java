@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.jetbrains.annotations.NotNull;
@@ -167,7 +166,6 @@ public class ArticleFragment extends BaseFragment
                         interval++;
                     }
 
-                    Snackbar.make(articleLayout, getResources().getString(R.string.poll_start_hint) + interval, Snackbar.LENGTH_LONG).show();
                     loadPollData(interval);
                     break;
                 case R.id.pollCancelBtn:
