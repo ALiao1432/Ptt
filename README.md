@@ -2,8 +2,9 @@
 An app fetching data from https://www.ptt.cc/bbs/index.html and use Jsoup to parse HTML responses, then let user explore them intuitively
 
 # Screenshot
-![initial screen](https://i.imgur.com/RkVlgtB.png) ![FavFragment](https://i.imgur.com/Q8AnU9c.png)
-![HotFragment](https://i.imgur.com/Eteg0j0.png) ![PttClassFragment](https://i.imgur.com/8EheKDM.png)
+![initial screen](https://i.imgur.com/K9J0M6P.png) ![FavFragment](https://i.imgur.com/4WPTMNV.png) ![HotFragment](https://i.imgur.com/0GqUHxZ.png)
+![PttClassFragment](https://i.imgur.com/6LXSasi.png) ![ArticleListFragment](https://i.imgur.com/qqrk7Vf.png) ![ArticleFragment](https://i.imgur.com/GtkEkUg.png)
+!["LOAD NEW PUSH" button in ArticleFragment](https://i.imgur.com/9i1v6vE.png) ![loading new push in ArtucleFragment](https://i.imgur.com/GKOGPeg.png)
 
 # Used library
 * [RxBinding](https://github.com/JakeWharton/RxBinding) : let us to interact with UI in reactive way, also include RxJava2 and RxAndroid
