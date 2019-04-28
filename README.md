@@ -36,5 +36,4 @@ An app fetching data from https://www.ptt.cc/bbs/index.html and use Jsoup to par
 
 ![Strategy for no network connection](https://i.imgur.com/6RnnAD1.png)
 
-# Demo
-https://photos.app.goo.gl/iLqpHSYSDLQ5y7t69
+# [demo](https://photos.app.goo.gl/iLqpHSYSDLQ5y7t69)
