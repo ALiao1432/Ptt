@@ -3,6 +3,8 @@ package study.ian.ptt.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,7 +35,7 @@ public class PreManager {
         onFavActionListenerList.add(listener);
     }
 
-    private PreManager(Context cxt) {
+    private PreManager(@NotNull Context cxt) {
         sharedPreferences = cxt.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         initFavSet();
         initBlackListSet();
