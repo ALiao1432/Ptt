@@ -41,7 +41,7 @@ import study.ian.ptt.view.OutViewPager;
 
 // TODO: 2019-03-21 feature : set app theme color
 
-// TODO: 2019-03-20 improve : text color, test
+// TODO: 2019-03-20 improve : text color
 
 public class MainActivity extends AppCompatActivity {
 
