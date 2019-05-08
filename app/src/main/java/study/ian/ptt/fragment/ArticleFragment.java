@@ -335,6 +335,7 @@ public class ArticleFragment extends BaseFragment
         currentOffset = "";
         currentOffsetSig = "";
 
+        disposables.dispose();
         disposables.clear();
         articleAdapter.clearResults();
     }

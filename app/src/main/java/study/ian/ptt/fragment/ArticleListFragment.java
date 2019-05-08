@@ -99,12 +99,13 @@ public class ArticleListFragment extends BaseFragment
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
-        preManager = PreManager.getInstance();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        preManager = PreManager.getInstance();
+
         View v = inflater.inflate(R.layout.layout_article_list, container, false);
 
         initAnimator();

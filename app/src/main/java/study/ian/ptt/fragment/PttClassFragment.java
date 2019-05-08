@@ -50,13 +50,14 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         super.onAttach(context);
 
         this.context = context;
-        PreManager preManager = PreManager.getInstance();
-        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        PreManager preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
+
         View v = inflater.inflate(R.layout.layout_ptt_class, container, false);
 
         findViews(v);

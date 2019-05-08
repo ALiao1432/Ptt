@@ -30,14 +30,6 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     private BoardAdapter boardAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        preManager = PreManager.getInstance();
-        preManager.setOnFavActionListener(this);
-    }
-
-    @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
@@ -47,6 +39,9 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
+
         View v = inflater.inflate(R.layout.layout_fav, container, false);
 
         findViews(v);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="study.ian.ptt" >
+    package="study.ian.ptt">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,8 +10,14 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/vd_icon_ptt"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="true" />
+
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,12 +26,14 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="https"
                     android:host="www.ptt.cc"
-                    android:pathPattern="/bbs/.*/M.*html"/>
+                    android:pathPattern="/bbs/.*/M.*html"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
     </application>

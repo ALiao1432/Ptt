@@ -40,13 +40,14 @@ public class HotFragment extends BaseFragment implements PreManager.OnFavActionL
         super.onAttach(context);
 
         this.context = context;
-        PreManager preManager = PreManager.getInstance();
-        preManager.setOnFavActionListener(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        PreManager preManager = PreManager.getInstance();
+        preManager.setOnFavActionListener(this);
+
         View v = inflater.inflate(R.layout.layout_hot, container, false);
 
         findViews(v);
