@@ -38,6 +38,7 @@ public class BoardFragment extends BaseFragment {
 
         List<Fragment> fragmentList = new ArrayList<>();
 
+        LoginFragment loginFragment = new LoginFragment();
         FavFragment favFragment = new FavFragment();
         HotFragment hotFragment = new HotFragment();
         PttClassFragment pttClassFragment = new PttClassFragment();
@@ -51,12 +52,14 @@ public class BoardFragment extends BaseFragment {
         pttClassFragment.setOutPager(outPager);
         pttClassFragment.setOnCategoryClickedListener(onCategoryClickedListener);
 
+        fragmentList.add(loginFragment);
         fragmentList.add(favFragment);
         fragmentList.add(hotFragment);
         fragmentList.add(pttClassFragment);
 
         viewPager.setOffscreenPageLimit(fragmentList.size());
         viewPager.setAdapter(new GenAdapter(((FragmentActivity) context).getSupportFragmentManager(), fragmentList));
+        viewPager.setCurrentItem(1);
 
         return view;
     }
