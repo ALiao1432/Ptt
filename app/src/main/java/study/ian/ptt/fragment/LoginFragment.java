@@ -28,11 +28,14 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jakewharton.rxbinding3.view.RxView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -41,13 +44,16 @@ import study.ian.networkstateutil.RxNetworkStateUtil;
 import study.ian.ptt.R;
 import study.ian.ptt.util.GlideApp;
 import study.ian.ptt.util.OnSyncEmailFinishedListener;
+import study.ian.ptt.util.PreManager;
 
 public class LoginFragment extends Fragment implements OnSyncEmailFinishedListener {
 
     private final String TAG = "LoginFragment";
+    private final String COLLECTION_USERS = "users";
     private final int REQUEST_CODE_SIGN_IN = 0;
 
     private Context context;
+    private PreManager preManager = PreManager.getInstance();
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private GoogleSignInClient googleSignInClient;
@@ -83,6 +89,10 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
         firebaseAuth.addAuthStateListener(firebaseAuth -> {
             firebaseUser = firebaseAuth.getCurrentUser();
             updateUI(firebaseUser);
+
+            if (firebaseUser != null) {
+                syncUserData(firebaseUser, emailList.contains(firebaseUser.getEmail()));
+            }
         });
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -90,6 +100,48 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions);
+    }
+
+    private void syncUserData(FirebaseUser user, boolean isUserSynced) {
+        if (isUserSynced) {
+            syncFavBlacklist(user);
+        } else {
+            uploadFavBlacklist(user);
+        }
+    }
+
+    private void syncFavBlacklist(FirebaseUser user) {
+        if (user.getEmail() != null) {
+            firestore.collection(COLLECTION_USERS)
+                    .document(user.getEmail())
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            final DocumentSnapshot result = task.getResult();
+                            String favBoards = result.getString(PreManager.FAV_BOARD);
+                            if (favBoards != null) {
+                                preManager.syncFavBoards(favBoards);
+                            }
+
+                            String blacklists = result.getString(PreManager.BLACKLIST);
+                            if (blacklists != null) {
+                                preManager.syncBlacklists(blacklists);
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void uploadFavBlacklist(FirebaseUser user) {
+        if (user.getEmail() != null) {
+            Map<String, String> favMap = new HashMap<>();
+            favMap.put(PreManager.FAV_BOARD, preManager.getFavBoard());
+            favMap.put(PreManager.BLACKLIST, preManager.getBlacklist());
+
+            firestore.collection(COLLECTION_USERS)
+                    .document(user.getEmail())
+                    .set(favMap);
+        }
     }
 
     private void initFirestore() {
@@ -196,7 +248,7 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
 
     private void syncServerEmails() {
         List<String> list = new ArrayList<>();
-        firestore.collection("users")
+        firestore.collection(COLLECTION_USERS)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {

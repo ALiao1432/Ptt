@@ -63,11 +63,11 @@ public class ArticleListFragment extends BaseFragment
     private TextView boardNameText;
     private TextView boardInfoText;
     private CoordinatorLayout articleListLayout;
-    private ConstraintLayout keywordBlackListLayout;
+    private ConstraintLayout keywordBlacklistLayout;
     private SwipeRefreshLayout articleListRefreshLayout;
     private ConstraintLayout articleOptionLayout;
     private TextInputEditText searchEdt;
-    private TextInputEditText blackListEdt;
+    private TextInputEditText blacklistEdt;
     private MaterialButton titleBtn;
     private MaterialButton authorBtn;
     private MaterialButton pushBtn;
@@ -77,7 +77,7 @@ public class ArticleListFragment extends BaseFragment
     private MaterialButton sameTitleBtn;
     private MaterialButton sameAuthorBtn;
     private RecyclerView articleListRecyclerView;
-    private BottomSheetBehavior keywordBlackListSheet;
+    private BottomSheetBehavior keywordBlacklistSheet;
     private BottomSheetBehavior articleOptionSheet;
     private BottomAppBar bottomAppBar;
     private ValueAnimator alphaAnimator;
@@ -123,15 +123,15 @@ public class ArticleListFragment extends BaseFragment
         boardNameText = v.findViewById(R.id.boardNameText);
         boardInfoText = v.findViewById(R.id.boardInfoText);
         bottomAppBar = v.findViewById(R.id.bottomBar);
-        keywordBlackListLayout = v.findViewById(R.id.keywordBlackListBottomSheet);
+        keywordBlacklistLayout = v.findViewById(R.id.keywordBlacklistBottomSheet);
         articleOptionLayout = v.findViewById(R.id.articleOptionBottomSheet);
 
-        searchEdt = keywordBlackListLayout.findViewById(R.id.searchEdt);
-        titleBtn = keywordBlackListLayout.findViewById(R.id.searchTitleBtn);
-        authorBtn = keywordBlackListLayout.findViewById(R.id.searchAuthorBtn);
-        pushBtn = keywordBlackListLayout.findViewById(R.id.searchPushBtn);
-        updateBlackBtn = keywordBlackListLayout.findViewById(R.id.updateBlackBtn);
-        blackListEdt = keywordBlackListLayout.findViewById(R.id.blackListEdt);
+        searchEdt = keywordBlacklistLayout.findViewById(R.id.searchEdt);
+        titleBtn = keywordBlacklistLayout.findViewById(R.id.searchTitleBtn);
+        authorBtn = keywordBlacklistLayout.findViewById(R.id.searchAuthorBtn);
+        pushBtn = keywordBlacklistLayout.findViewById(R.id.searchPushBtn);
+        updateBlackBtn = keywordBlacklistLayout.findViewById(R.id.updateBlackBtn);
+        blacklistEdt = keywordBlacklistLayout.findViewById(R.id.blackListEdt);
 
         addBlackBtn = articleOptionLayout.findViewById(R.id.addBlackBtn);
         cancelBlackBtn = articleOptionLayout.findViewById(R.id.cancelBlackBtn);
@@ -140,14 +140,14 @@ public class ArticleListFragment extends BaseFragment
     }
 
     private void setViews() {
-        keywordBlackListSheet = BottomSheetBehavior.from(keywordBlackListLayout);
+        keywordBlacklistSheet = BottomSheetBehavior.from(keywordBlacklistLayout);
         articleOptionSheet = BottomSheetBehavior.from(articleOptionLayout);
-        sheetManager.addToSet(keywordBlackListSheet);
+        sheetManager.addToSet(keywordBlacklistSheet);
         sheetManager.addToSet(articleOptionSheet);
 
         categoryText.setTextSize(50);
 
-        bottomAppBar.setNavigationOnClickListener(v -> sheetManager.expandSheet(keywordBlackListSheet));
+        bottomAppBar.setNavigationOnClickListener(v -> sheetManager.expandSheet(keywordBlacklistSheet));
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         articleListAdapter = new ArticleListAdapter(context, outPager);
@@ -162,7 +162,7 @@ public class ArticleListFragment extends BaseFragment
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState != RecyclerView.SCROLL_STATE_IDLE) {
-                    sheetManager.collapseSheet(keywordBlackListSheet);
+                    sheetManager.collapseSheet(keywordBlacklistSheet);
                     sheetManager.collapseSheet(articleOptionSheet);
                 }
             }
@@ -224,30 +224,30 @@ public class ArticleListFragment extends BaseFragment
                     loadSearchPush(true, searchQuery);
                     break;
                 case R.id.updateBlackBtn:
-                    Editable bEditable = blackListEdt.getText();
+                    Editable bEditable = blacklistEdt.getText();
                     String blacks = "";
                     if (bEditable != null) {
                         blacks = bEditable.toString();
                     }
 
-                    preManager.updateBlackList(blacks);
-                    blackListEdt.setText(preManager.getBlackList());
+                    preManager.updateBlacklist(blacks);
+                    blacklistEdt.setText(preManager.getBlacklist());
                     Snackbar.make(articleListLayout, getResources().getString(R.string.update_blacklist_success), Snackbar.LENGTH_SHORT).show();
                     break;
             }
-            sheetManager.collapseSheet(keywordBlackListSheet);
+            sheetManager.collapseSheet(keywordBlacklistSheet);
         };
         titleBtn.setOnClickListener(searchClickListener);
         authorBtn.setOnClickListener(searchClickListener);
         pushBtn.setOnClickListener(searchClickListener);
         updateBlackBtn.setOnClickListener(searchClickListener);
-        blackListEdt.setText(preManager.getBlackList());
+        blacklistEdt.setText(preManager.getBlacklist());
 
         View.OnClickListener articleOptionClickListener = v -> {
             switch (v.getId()) {
                 case R.id.addBlackBtn:
-                    preManager.addBlackList(selectInfo.getAuthor());
-                    blackListEdt.setText(preManager.getBlackList());
+                    preManager.addBlacklist(selectInfo.getAuthor());
+                    blacklistEdt.setText(preManager.getBlacklist());
                     break;
                 case R.id.cancelBlackBtn:
                     break;
@@ -465,7 +465,7 @@ public class ArticleListFragment extends BaseFragment
         articleListAdapter.clearResults();
         categoryClickedListener.onCategoryClicked(boardInfo);
         sheetManager.collapseSheet(articleOptionSheet);
-        sheetManager.collapseSheet(keywordBlackListSheet);
+        sheetManager.collapseSheet(keywordBlacklistSheet);
         alphaAnimator.cancel();
         scaleAnimator.cancel();
 

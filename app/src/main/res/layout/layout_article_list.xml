@@ -72,7 +72,7 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <include
-        android:id="@+id/keywordBlackListBottomSheet"
+        android:id="@+id/keywordBlacklistBottomSheet"
         layout="@layout/layout_bottom_sheet_search_blacklist" />
 
     <include

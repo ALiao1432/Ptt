@@ -7,6 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jsoup.nodes.Document;
@@ -14,11 +20,6 @@ import org.jsoup.nodes.Document;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.reactivex.subjects.PublishSubject;
 import retrofit2.Response;
 import study.ian.ptt.R;
@@ -30,7 +31,8 @@ import study.ian.ptt.util.ObserverHelper;
 import study.ian.ptt.util.OnPageReloadRequestListener;
 import study.ian.ptt.util.PreManager;
 
-public class PttClassFragment extends BaseFragment implements OnPageReloadRequestListener, PreManager.OnFavActionListener {
+public class PttClassFragment extends BaseFragment implements OnPageReloadRequestListener,
+        PreManager.OnFavActionListener, PreManager.OnFavSyncFinishedListener {
 
     private final String TAG = "PttClassFragment";
 
@@ -56,7 +58,7 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         PreManager preManager = PreManager.getInstance();
-        preManager.setOnFavActionListener(this);
+        preManager.addOnFavActionListener(this);
 
         View v = inflater.inflate(R.layout.layout_ptt_class, container, false);
 
@@ -136,11 +138,6 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
         loadData(classPath);
     }
 
-    private void reloadItem(int changeIndex) {
-        boardAdapter.notifyItemChanged(changeIndex);
-        pttClassRefreshLayout.setRefreshing(false);
-    }
-
     @Override
     public void onFavAction(String b, int action) {
         pttClassRefreshLayout.setRefreshing(true);
@@ -149,7 +146,15 @@ public class PttClassFragment extends BaseFragment implements OnPageReloadReques
                 .map(BoardInfo::getName)
                 .collect(Collectors.toList())
                 .indexOf(b);
+        boardAdapter.notifyItemChanged(id);
+        pttClassRefreshLayout.setRefreshing(false);
+    }
 
-        reloadItem(id);
+
+    @Override
+    public void onFavSyncFinished() {
+        pttClassRefreshLayout.setRefreshing(true);
+        boardAdapter.notifyDataSetChanged();
+        pttClassRefreshLayout.setRefreshing(false);
     }
 }

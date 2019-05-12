@@ -14,31 +14,40 @@ import java.util.StringTokenizer;
 public class PreManager {
 
     private static final String PREF_NAME = "study.ian.ptt";
-    private static final String FAV_BOARD = "favBoard";
-    private static final String BLACK_LIST = "blackList";
+    public static final String FAV_BOARD = "favBoard";
+    public static final String BLACKLIST = "blackList";
 
     private static final int FAV_ACTION_ADD = 0;
     private static final int FAV_ACTION_REMOVE = 1;
 
     private static Set<String> favSet = new HashSet<>();
-    private static Set<String> blackListSet;
+    private static Set<String> blacklistSet;
     private static PreManager preManager;
     private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private final List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
+    private final List<OnFavSyncFinishedListener> onFavSyncFinishedListenerList = new ArrayList<>();
 
     public interface OnFavActionListener {
         void onFavAction(String b, int action);
     }
 
-    public void setOnFavActionListener(OnFavActionListener listener) {
+    public interface OnFavSyncFinishedListener {
+        void onFavSyncFinished();
+    }
+
+    public void addOnFavActionListener(OnFavActionListener listener) {
         onFavActionListenerList.add(listener);
+    }
+
+    public void addOnFavSyncFinishedListenerList(OnFavSyncFinishedListener listener) {
+        onFavSyncFinishedListenerList.add(listener);
     }
 
     private PreManager(@NotNull Context cxt) {
         sharedPreferences = cxt.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         initFavSet();
-        initBlackListSet();
+        initBlacklistSet();
     }
 
     private void initFavSet() {
@@ -51,13 +60,13 @@ public class PreManager {
         }
     }
 
-    private void initBlackListSet() {
-        blackListSet = new HashSet<>();
+    private void initBlacklistSet() {
+        blacklistSet = new HashSet<>();
 
-        String blackList = sharedPreferences.getString(BLACK_LIST, "");
-        StringTokenizer tokenizer = new StringTokenizer(blackList);
+        String blacklist = sharedPreferences.getString(BLACKLIST, "");
+        StringTokenizer tokenizer = new StringTokenizer(blacklist);
         while (tokenizer.hasMoreTokens()) {
-            blackListSet.add(tokenizer.nextToken());
+            blacklistSet.add(tokenizer.nextToken());
         }
     }
 
@@ -91,6 +100,20 @@ public class PreManager {
         onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_ADD));
     }
 
+    public void syncFavBoards(String boards) {
+        editor = sharedPreferences.edit();
+        editor.putString(FAV_BOARD, "");
+        favSet.clear();
+
+        StringTokenizer tokenizer = new StringTokenizer(boards, " ");
+        while (tokenizer.hasMoreTokens()) {
+            favSet.add(tokenizer.nextToken());
+        }
+        editor.putString(FAV_BOARD, boards);
+        editor.apply();
+        onFavSyncFinishedListenerList.forEach(OnFavSyncFinishedListener::onFavSyncFinished);
+    }
+
     private void removeFavBoard(String board) {
         editor = sharedPreferences.edit();
         String temp = sharedPreferences.getString(FAV_BOARD, "");
@@ -112,27 +135,40 @@ public class PreManager {
         return sharedPreferences.getString(FAV_BOARD, "");
     }
 
-    public void addBlackList(String black) {
+    public void addBlacklist(String black) {
         editor = sharedPreferences.edit();
-        String b = sharedPreferences.getString(BLACK_LIST, "");
+        String b = sharedPreferences.getString(BLACKLIST, "");
         if (b != null && !b.contains(black)) {
-            editor.putString(BLACK_LIST, black + " " + b);
+            editor.putString(BLACKLIST, black + " " + b);
 
-            blackListSet.add(black);
+            blacklistSet.add(black);
         }
         editor.apply();
     }
 
-    public void updateBlackList(String blacks) {
+    public void syncBlacklists(String blacks) {
         editor = sharedPreferences.edit();
-        editor.putString(BLACK_LIST, blacks);
-        editor.apply();
+        editor.putString(BLACKLIST, "");
+        blacklistSet.clear();
 
-        initBlackListSet();
+        StringTokenizer tokenizer = new StringTokenizer(blacks, " ");
+        while (tokenizer.hasMoreTokens()) {
+            blacklistSet.add(tokenizer.nextToken());
+        }
+        editor.putString(BLACKLIST, blacks);
+        editor.apply();
     }
 
-    public String getBlackList() {
-        return sharedPreferences.getString(BLACK_LIST, "");
+    public void updateBlacklist(String blacks) {
+        editor = sharedPreferences.edit();
+        editor.putString(BLACKLIST, blacks);
+        editor.apply();
+
+        initBlacklistSet();
+    }
+
+    public String getBlacklist() {
+        return sharedPreferences.getString(BLACKLIST, "");
     }
 
     public boolean isFavBoard(String targetBoard) {
@@ -140,6 +176,6 @@ public class PreManager {
     }
 
     public boolean isBlacklist(String black) {
-        return blackListSet.contains(black);
+        return blacklistSet.contains(black);
     }
 }
