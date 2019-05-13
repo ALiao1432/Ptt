@@ -2,6 +2,10 @@ package study.ian.ptt.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,9 +17,13 @@ import java.util.StringTokenizer;
 
 public class PreManager {
 
+    private final String TAG = "PreManager";
     private static final String PREF_NAME = "study.ian.ptt";
     public static final String FAV_BOARD = "favBoard";
     public static final String BLACKLIST = "blackList";
+    public static final String COLLECTION_USERS = "users";
+    public static final String DOCUMENT_USER_EMAIL_LIST = "USER_EMAIL_LIST";
+    public static final String FIELD_EMAILS = "EMAILS";
 
     private static final int FAV_ACTION_ADD = 0;
     private static final int FAV_ACTION_REMOVE = 1;
@@ -25,8 +33,10 @@ public class PreManager {
     private static PreManager preManager;
     private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
+    private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
     private final List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
     private final List<OnFavSyncFinishedListener> onFavSyncFinishedListenerList = new ArrayList<>();
+    private final List<OnBlacklistSyncFinishedListener> onBlacklistSyncFinishedListenerList = new ArrayList<>();
 
     public interface OnFavActionListener {
         void onFavAction(String b, int action);
@@ -36,12 +46,20 @@ public class PreManager {
         void onFavSyncFinished();
     }
 
+    public interface OnBlacklistSyncFinishedListener {
+        void onBlacklistSyncFinished();
+    }
+
     public void addOnFavActionListener(OnFavActionListener listener) {
         onFavActionListenerList.add(listener);
     }
 
     public void addOnFavSyncFinishedListenerList(OnFavSyncFinishedListener listener) {
         onFavSyncFinishedListenerList.add(listener);
+    }
+
+    public void addOnBlacklistSyncFinishedListener(OnBlacklistSyncFinishedListener listener) {
+        onBlacklistSyncFinishedListenerList.add(listener);
     }
 
     private PreManager(@NotNull Context cxt) {
@@ -70,6 +88,33 @@ public class PreManager {
         }
     }
 
+    private void initFirestoreSnapshotListener(FirebaseUser user) {
+        if (user != null && user.getEmail() != null) {
+            firestore.collection(COLLECTION_USERS)
+                    .document(user.getEmail())
+                    .addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            Log.d(TAG, "onEvent: listen failed : " + e);
+                            return;
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            String currentFavBoard = sharedPreferences.getString(FAV_BOARD, "");
+                            String favSnapshot = snapshot.getString(FAV_BOARD);
+                            if (currentFavBoard == null || !currentFavBoard.equals(favSnapshot)) {
+                                syncFavBoards(favSnapshot);
+                            }
+
+                            String currentBlacklist = sharedPreferences.getString(BLACKLIST, "");
+                            String blacklistSnapshot = snapshot.getString(BLACKLIST);
+                            if (currentBlacklist == null || !currentBlacklist.equals(blacklistSnapshot)) {
+                                syncBlacklists(blacklistSnapshot);
+                            }
+                        }
+                    });
+        }
+    }
+
     public static synchronized void initPreManager(Context cxt) {
         if (preManager == null) {
             preManager = new PreManager(cxt);
@@ -88,6 +133,18 @@ public class PreManager {
             // if it is not fav board, then add it
             addFavBoard(board);
         }
+    }
+
+    private void removeFavBoard(String board) {
+        editor = sharedPreferences.edit();
+        String temp = sharedPreferences.getString(FAV_BOARD, "");
+        if (temp != null && temp.contains(board)) {
+            temp = temp.replace(board, "").trim();
+            editor.putString(FAV_BOARD, temp);
+            editor.apply();
+        }
+        favSet.remove(board);
+        onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_REMOVE));
     }
 
     private void addFavBoard(String board) {
@@ -112,19 +169,6 @@ public class PreManager {
         editor.putString(FAV_BOARD, boards);
         editor.apply();
         onFavSyncFinishedListenerList.forEach(OnFavSyncFinishedListener::onFavSyncFinished);
-    }
-
-    private void removeFavBoard(String board) {
-        editor = sharedPreferences.edit();
-        String temp = sharedPreferences.getString(FAV_BOARD, "");
-        if (temp != null && temp.contains(board)) {
-            temp = temp.replace(board, "").trim();
-            editor.putString(FAV_BOARD, temp);
-            editor.apply();
-        }
-
-        favSet.remove(board);
-        onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_REMOVE));
     }
 
     public Set<String> getFavBoardSet() {
@@ -157,6 +201,7 @@ public class PreManager {
         }
         editor.putString(BLACKLIST, blacks);
         editor.apply();
+        onBlacklistSyncFinishedListenerList.forEach(OnBlacklistSyncFinishedListener::onBlacklistSyncFinished);
     }
 
     public void updateBlacklist(String blacks) {
@@ -177,5 +222,9 @@ public class PreManager {
 
     public boolean isBlacklist(String black) {
         return blacklistSet.contains(black);
+    }
+
+    public void setCurrentUser(FirebaseUser user) {
+        initFirestoreSnapshotListener(user);
     }
 }

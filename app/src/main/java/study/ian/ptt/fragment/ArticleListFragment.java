@@ -46,7 +46,7 @@ import study.ian.ptt.util.OnCategoryClickedListener;
 import study.ian.ptt.util.PreManager;
 
 public class ArticleListFragment extends BaseFragment
-        implements OnCategoryClickedListener, OnArticleListLongClickedListener {
+        implements OnCategoryClickedListener, OnArticleListLongClickedListener, PreManager.OnBlacklistSyncFinishedListener {
 
     private final String TAG = "ArticleListFragment";
     private final static int LOAD_NORMAL_ARTICLE = 0;
@@ -105,6 +105,7 @@ public class ArticleListFragment extends BaseFragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         preManager = PreManager.getInstance();
+        preManager.addOnBlacklistSyncFinishedListener(this);
 
         View v = inflater.inflate(R.layout.layout_article_list, container, false);
 
@@ -493,5 +494,11 @@ public class ArticleListFragment extends BaseFragment
         } else {
             sheetManager.collapseSheet(articleOptionSheet);
         }
+    }
+
+    @Override
+    public void onBlacklistSyncFinished() {
+        Log.d(TAG, "onBlacklistSyncFinished: preManager.getBlacklist() : " + preManager.getBlacklist());
+        blacklistEdt.setText(preManager.getBlacklist());
     }
 }

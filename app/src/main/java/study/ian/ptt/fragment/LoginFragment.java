@@ -32,6 +32,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.jakewharton.rxbinding3.view.RxView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +51,6 @@ import study.ian.ptt.util.PreManager;
 public class LoginFragment extends Fragment implements OnSyncEmailFinishedListener {
 
     private final String TAG = "LoginFragment";
-    private final String COLLECTION_USERS = "users";
     private final int REQUEST_CODE_SIGN_IN = 0;
 
     private Context context;
@@ -89,6 +90,7 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
         firebaseAuth.addAuthStateListener(firebaseAuth -> {
             firebaseUser = firebaseAuth.getCurrentUser();
             updateUI(firebaseUser);
+            preManager.setCurrentUser(firebaseUser);
 
             if (firebaseUser != null) {
                 syncUserData(firebaseUser, emailList.contains(firebaseUser.getEmail()));
@@ -110,9 +112,9 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
         }
     }
 
-    private void syncFavBlacklist(FirebaseUser user) {
+    private void syncFavBlacklist(@NotNull FirebaseUser user) {
         if (user.getEmail() != null) {
-            firestore.collection(COLLECTION_USERS)
+            firestore.collection(PreManager.COLLECTION_USERS)
                     .document(user.getEmail())
                     .get()
                     .addOnCompleteListener(task -> {
@@ -132,15 +134,20 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
         }
     }
 
-    private void uploadFavBlacklist(FirebaseUser user) {
+    private void uploadFavBlacklist(@NotNull FirebaseUser user) {
         if (user.getEmail() != null) {
             Map<String, String> favMap = new HashMap<>();
             favMap.put(PreManager.FAV_BOARD, preManager.getFavBoard());
             favMap.put(PreManager.BLACKLIST, preManager.getBlacklist());
 
-            firestore.collection(COLLECTION_USERS)
+            firestore.collection(PreManager.COLLECTION_USERS)
                     .document(user.getEmail())
                     .set(favMap);
+
+            emailList.add(user.getEmail());
+            firestore.collection(PreManager.COLLECTION_USERS)
+                    .document(PreManager.DOCUMENT_USER_EMAIL_LIST)
+                    .update(PreManager.FIELD_EMAILS, emailList);
         }
     }
 
@@ -247,13 +254,16 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
     }
 
     private void syncServerEmails() {
-        List<String> list = new ArrayList<>();
-        firestore.collection(COLLECTION_USERS)
+        firestore.collection(PreManager.COLLECTION_USERS)
+                .document(PreManager.DOCUMENT_USER_EMAIL_LIST)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful() && task.getResult() != null) {
-                        task.getResult().forEach(snapshot -> list.add(snapshot.getId()));
-                        onSyncEmailFinished(list);
+                        //noinspection unchecked
+                        List<String> emailList = (ArrayList<String>) task.getResult().get(PreManager.FIELD_EMAILS);
+                        onSyncEmailFinished(emailList);
+                    } else {
+                        Log.d(TAG, "syncServerEmails: failed : " + task.getException());
                     }
                 });
     }
