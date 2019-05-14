@@ -34,6 +34,7 @@ public class PreManager {
     private final SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private final FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+    private FirebaseUser firebaseUser;
     private final List<OnFavActionListener> onFavActionListenerList = new ArrayList<>();
     private final List<OnFavSyncFinishedListener> onFavSyncFinishedListenerList = new ArrayList<>();
     private final List<OnBlacklistSyncFinishedListener> onBlacklistSyncFinishedListenerList = new ArrayList<>();
@@ -133,6 +134,8 @@ public class PreManager {
             // if it is not fav board, then add it
             addFavBoard(board);
         }
+
+        updateFavToFirestore();
     }
 
     private void removeFavBoard(String board) {
@@ -157,9 +160,16 @@ public class PreManager {
         onFavActionListenerList.forEach(l -> l.onFavAction(board, FAV_ACTION_ADD));
     }
 
+    private void updateFavToFirestore() {
+        if (firebaseUser != null && firebaseUser.getEmail() != null) {
+            firestore.collection(COLLECTION_USERS)
+                    .document(firebaseUser.getEmail())
+                    .update(FAV_BOARD, sharedPreferences.getString(FAV_BOARD, ""));
+        }
+    }
+
     public void syncFavBoards(String boards) {
         editor = sharedPreferences.edit();
-        editor.putString(FAV_BOARD, "");
         favSet.clear();
 
         StringTokenizer tokenizer = new StringTokenizer(boards, " ");
@@ -191,16 +201,7 @@ public class PreManager {
     }
 
     public void syncBlacklists(String blacks) {
-        editor = sharedPreferences.edit();
-        editor.putString(BLACKLIST, "");
-        blacklistSet.clear();
-
-        StringTokenizer tokenizer = new StringTokenizer(blacks, " ");
-        while (tokenizer.hasMoreTokens()) {
-            blacklistSet.add(tokenizer.nextToken());
-        }
-        editor.putString(BLACKLIST, blacks);
-        editor.apply();
+        updateBlacklist(blacks);
         onBlacklistSyncFinishedListenerList.forEach(OnBlacklistSyncFinishedListener::onBlacklistSyncFinished);
     }
 
@@ -210,6 +211,14 @@ public class PreManager {
         editor.apply();
 
         initBlacklistSet();
+    }
+
+    public void updateBlacklistToFirestore() {
+        if (firebaseUser != null && firebaseUser.getEmail() != null) {
+            firestore.collection(COLLECTION_USERS)
+                    .document(firebaseUser.getEmail())
+                    .update(BLACKLIST, sharedPreferences.getString(BLACKLIST, ""));
+        }
     }
 
     public String getBlacklist() {
@@ -225,6 +234,7 @@ public class PreManager {
     }
 
     public void setCurrentUser(FirebaseUser user) {
-        initFirestoreSnapshotListener(user);
+        firebaseUser = user;
+        initFirestoreSnapshotListener(firebaseUser);
     }
 }

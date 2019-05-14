@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     private PreManager preManager;
     private SwipeRefreshLayout favRefreshLayout;
     private RecyclerView favRecyclerView;
+    private TextView noFavHintText;
     private BoardAdapter boardAdapter;
 
     @Override
@@ -55,6 +57,7 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
     private void findViews(View view) {
         favRecyclerView = view.findViewById(R.id.recyclerViewFav);
         favRefreshLayout = view.findViewById(R.id.refreshLayoutFav);
+        noFavHintText = view.findViewById(R.id.noFavHintText);
     }
 
     private void setViews() {
@@ -78,6 +81,12 @@ public class FavFragment extends BaseFragment implements PreManager.OnFavActionL
                 .map(board -> new BoardInfo("/bbs/" + board + "/index.html", board, "", "", ""))
                 .sorted((info1, info2) -> info1.getName().charAt(0) - info2.getName().charAt(0))
                 .collect(Collectors.toList());
+
+        if (favList.size() == 0) {
+            noFavHintText.setVisibility(View.VISIBLE);
+        } else {
+            noFavHintText.setVisibility(View.INVISIBLE);
+        }
         boardAdapter.setResults(favList);
         favRefreshLayout.setRefreshing(false);
     }

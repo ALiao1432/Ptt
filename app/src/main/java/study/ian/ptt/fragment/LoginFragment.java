@@ -144,10 +144,12 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
                     .document(user.getEmail())
                     .set(favMap);
 
-            emailList.add(user.getEmail());
-            firestore.collection(PreManager.COLLECTION_USERS)
-                    .document(PreManager.DOCUMENT_USER_EMAIL_LIST)
-                    .update(PreManager.FIELD_EMAILS, emailList);
+            if (!emailList.contains(user.getEmail())) {
+                emailList.add(user.getEmail());
+                firestore.collection(PreManager.COLLECTION_USERS)
+                        .document(PreManager.DOCUMENT_USER_EMAIL_LIST)
+                        .update(PreManager.FIELD_EMAILS, emailList);
+            }
         }
     }
 

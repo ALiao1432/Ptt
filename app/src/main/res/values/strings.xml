@@ -26,5 +26,6 @@
 
     <string name="login_feature">Login with google account can sync all your favorites and blacklist
     data across your different devices.</string>
+    <string name="no_fav_hint">You don\'t have any favorite board yet.\nSync data with your google account or add it manually</string>
 
 </resources>

@@ -201,7 +201,7 @@ public class ArticleListFragment extends BaseFragment
             }
         });
 
-        View.OnClickListener searchClickListener = v -> {
+        View.OnClickListener searchAndBlacklistClickListener = v -> {
             Editable sEditable = searchEdt.getText();
             String keyword = "";
             if (sEditable != null) {
@@ -232,16 +232,17 @@ public class ArticleListFragment extends BaseFragment
                     }
 
                     preManager.updateBlacklist(blacks);
+                    preManager.updateBlacklistToFirestore();
                     blacklistEdt.setText(preManager.getBlacklist());
                     Snackbar.make(articleListLayout, getResources().getString(R.string.update_blacklist_success), Snackbar.LENGTH_SHORT).show();
                     break;
             }
             sheetManager.collapseSheet(keywordBlacklistSheet);
         };
-        titleBtn.setOnClickListener(searchClickListener);
-        authorBtn.setOnClickListener(searchClickListener);
-        pushBtn.setOnClickListener(searchClickListener);
-        updateBlackBtn.setOnClickListener(searchClickListener);
+        titleBtn.setOnClickListener(searchAndBlacklistClickListener);
+        authorBtn.setOnClickListener(searchAndBlacklistClickListener);
+        pushBtn.setOnClickListener(searchAndBlacklistClickListener);
+        updateBlackBtn.setOnClickListener(searchAndBlacklistClickListener);
         blacklistEdt.setText(preManager.getBlacklist());
 
         View.OnClickListener articleOptionClickListener = v -> {
@@ -498,7 +499,6 @@ public class ArticleListFragment extends BaseFragment
 
     @Override
     public void onBlacklistSyncFinished() {
-        Log.d(TAG, "onBlacklistSyncFinished: preManager.getBlacklist() : " + preManager.getBlacklist());
         blacklistEdt.setText(preManager.getBlacklist());
     }
 }
