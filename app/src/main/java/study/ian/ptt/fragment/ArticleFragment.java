@@ -117,22 +117,6 @@ public class ArticleFragment extends BaseFragment
 
     private void setViews() {
         layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        smoothScroller = new LinearSmoothScroller(context) {
-            @Override
-            protected int getVerticalSnapPreference() {
-                return LinearSmoothScroller.SNAP_TO_END;
-            }
-
-            @Override
-            protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                return 100f / displayMetrics.densityDpi;
-            }
-
-            @Override
-            protected int calculateTimeForScrolling(int dx) {
-                return 200;
-            }
-        };
 
         articleAdapter = new ArticleAdapter(context);
         articleAdapter.setOnPollClickedListener(this);
@@ -260,6 +244,22 @@ public class ArticleFragment extends BaseFragment
             if (pushElements.size() != 0) {
                 article.addPushList(pushElements);
                 articleAdapter.notifyDataSetChanged();
+                smoothScroller = new LinearSmoothScroller(context) {
+                    @Override
+                    protected int getVerticalSnapPreference() {
+                        return LinearSmoothScroller.SNAP_TO_END;
+                    }
+
+                    @Override
+                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                        return 100f / displayMetrics.densityDpi;
+                    }
+
+                    @Override
+                    protected int calculateTimeForScrolling(int dx) {
+                        return 200;
+                    }
+                };
                 smoothScroller.setTargetPosition(article.getPushList().size() + 2);
                 layoutManager.startSmoothScroll(smoothScroller);
             }

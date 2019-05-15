@@ -1,6 +1,7 @@
 package study.ian.ptt.model.article;
 
 import android.net.Uri;
+import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
@@ -91,27 +92,29 @@ public class Article {
 
     public void addPushList(Elements pushElements) {
         pushElements.forEach(e -> {
-            int pushTagCategory = 0;
-            switch (e.child(0).text()) {
-                case "推":
-                    pushTagCategory = 0;
-                    break;
-                case "→":
-                    pushTagCategory = 1;
-                    break;
-                case "噓":
-                    pushTagCategory = 2;
-                    break;
-            }
+            if (e.childNodeSize() == 4) {
+                int pushTagCategory = 0;
+                switch (e.child(0).text()) {
+                    case "推":
+                        pushTagCategory = 0;
+                        break;
+                    case "→":
+                        pushTagCategory = 1;
+                        break;
+                    case "噓":
+                        pushTagCategory = 2;
+                        break;
+                }
 
-            pushTagCount[pushTagCategory]++;
-            pushList.add(new Push(
-                    e.child(0).text(),
-                    e.child(1).text().trim(),
-                    e.child(2).text().substring(1).trim(),
-                    e.child(3).text().trim(),
-                    pushTagCount[pushTagCategory]
-            ));
+                pushTagCount[pushTagCategory]++;
+                pushList.add(new Push(
+                        e.child(0).text(),
+                        e.child(1).text().trim(),
+                        e.child(2).text().substring(1).trim(),
+                        e.child(3).text().trim(),
+                        pushTagCount[pushTagCategory]
+                ));
+            }
         });
     }
 
