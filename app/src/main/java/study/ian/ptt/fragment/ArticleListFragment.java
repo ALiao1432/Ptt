@@ -249,6 +249,7 @@ public class ArticleListFragment extends BaseFragment
             switch (v.getId()) {
                 case R.id.addBlackBtn:
                     preManager.addBlacklist(selectInfo.getAuthor());
+                    preManager.updateBlacklistToFirestore();
                     blacklistEdt.setText(preManager.getBlacklist());
                     break;
                 case R.id.cancelBlackBtn:

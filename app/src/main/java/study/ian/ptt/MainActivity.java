@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
     private final int BACK_PRESS_CONFIRM_TIME = 2000;
-    private FirebaseAnalytics firebaseAnalytics;
     private CoordinatorLayout mainLayout;
     private OutViewPager outPager;
     private Disposable disposable;
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         setTheme(R.style.AppTheme_TrueDark);
         setContentView(R.layout.activity_main);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         firebaseAnalytics.setCurrentScreen(
                 this,
                 this.getClass().getSimpleName(),

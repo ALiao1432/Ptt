@@ -54,7 +54,7 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
     private final int REQUEST_CODE_SIGN_IN = 0;
 
     private Context context;
-    private PreManager preManager = PreManager.getInstance();
+    private PreManager preManager;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private GoogleSignInClient googleSignInClient;
@@ -70,6 +70,7 @@ public class LoginFragment extends Fragment implements OnSyncEmailFinishedListen
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        preManager = PreManager.getInstance();
 
         initFirestore();
         syncServerEmails();
