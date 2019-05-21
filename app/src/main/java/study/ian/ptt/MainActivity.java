@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         );
 
         ServiceBuilder.watchNetworkState(this);
-        PreManager.initPreManager(getApplicationContext());
 
         intent = getIntent();
 

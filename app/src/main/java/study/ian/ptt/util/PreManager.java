@@ -116,7 +116,7 @@ public class PreManager {
         }
     }
 
-    public static synchronized void initPreManager(Context cxt) {
+    static synchronized void initPreManager(Context cxt) {
         if (preManager == null) {
             preManager = new PreManager(cxt);
         }
