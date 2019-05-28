@@ -6,21 +6,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-
-import com.jakewharton.rxbinding3.view.RxView;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.jakewharton.rxbinding3.view.RxView;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.reactivex.Observable;
 import kotlin.Unit;
@@ -35,6 +36,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
     private final String TAG = "ArticleListAdapter";
 
+    private final Context context;
     private final ViewPager outPager;
     private final PreManager preManager;
     private final Resources resources;
@@ -43,6 +45,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private OnArticleListClickedListener clickedListener;
 
     public ArticleListAdapter(@NotNull Context context, ViewPager pager) {
+        this.context = context;
         resources = context.getResources();
         preManager = PreManager.getInstance();
         outPager = pager;
@@ -102,6 +105,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         holder.authorText.setText(info.getAuthor());
         holder.markText.setText(info.getMark());
         holder.dateText.setText(info.getDate());
+        holder.articleLayout.setAnimation(AnimationUtils.loadAnimation(context, R.anim.item_up));
     }
 
     @Override

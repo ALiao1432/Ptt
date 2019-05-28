@@ -29,4 +29,6 @@
     <dimen name="user_login_info">24sp</dimen>
     <dimen name="description_text_size">18sp</dimen>
 
+    <integer name="animation_list_show_duration">240</integer>
+
 </resources>
